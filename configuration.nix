@@ -120,6 +120,17 @@
 
   powerManagement.enable = true;
   programs.zsh.enable = true;
+  users.defaultUserShell=pkgs.zsh;
+  environment.shells = with pkgs; [ zsh ];
+
+  services.borgbackup.jobs."borgbase" = {
+    paths = "/home/bq";
+    encryption.mode = "none";
+    environment.BORG_RSH = "ssh -i /home/bq/.ssh/synology";
+    repo = "ssh://maciej_byczko@byczkosynology:41024/volume1/homes/maciej_byczko/Backup/nixos";
+    compression = "auto,zstd";
+    startAt = "daily";
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.

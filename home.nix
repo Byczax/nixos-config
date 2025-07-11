@@ -245,8 +245,20 @@
     xclip
     nerd-fonts.fira-code
     nerd-fonts.droid-sans-mono
+    gcc
+
+    # to fulfill lazyvim plugins
+    luarocks
+    lazygit
+    fd
+    lua
+    fzf
+    zathura
   ];
 
+  programs.texlive = {
+    enable = true;
+  };
   programs.lutris = {
     enable = true;
     winePackages = [
@@ -254,14 +266,14 @@
     ];
   };
 
-  services.mako.enable = true;
+  services.mako = {
+    enable = true;
+    defaultTimeout = 4000;
+  };
+
   programs.thunderbird = {
     enable = true;
-    profiles = {
-      default = {
-        isDefault = true;
-      };
-    };
+    profiles = {};
   };
 
   fonts = {
@@ -323,7 +335,6 @@
           vim-illuminate
           vim-startuptime
           which-key-nvim
-          vimtex
           { name = "LuaSnip"; path = luasnip; }
           { name = "catppuccin"; path = catppuccin-nvim; }
           { name = "mini.ai"; path = mini-nvim; }
@@ -351,7 +362,7 @@
           },
           dev = {
             -- reuse files from pkgs.vimPlugins.*
-            -- path = "${lazyPath}",
+            path = "${lazyPath}",
             patterns = { },
             -- fallback to download
             fallback = true,
@@ -367,8 +378,9 @@
             -- import/override with your plugins
             { import = "plugins" },
             -- treesitter handled by xdg.configFile."nvim/parser", put this line at the end of spec to clear ensure_installed
-            -- { "nvim-treesitter/nvim-treesitter", opts = { ensure_installed = {} } },
-            { "nvim-treesitter/nvim-treesitter",  opts = function(_, opts) opts.ensure_installed = {} end, },
+            { "nvim-treesitter/nvim-treesitter", opts = { ensure_installed = {} } },
+            -- { "nvim-treesitter/nvim-treesitter",  opts = function(_, opts) opts.ensure_installed = {} end, },
+            { "lervag/vimtex" },
           },
         })
       '';
@@ -380,8 +392,17 @@
       parsers = pkgs.symlinkJoin {
         name = "treesitter-parsers";
         paths = (pkgs.vimPlugins.nvim-treesitter.withPlugins (plugins: with plugins; [
-          c
-          lua
+        c
+        lua
+        python
+        json
+        yaml
+        bash
+        hcl
+        terraform
+        css
+        latex
+        typst
         ])).dependencies;
       };
     in
@@ -389,28 +410,26 @@
   
   # Normal LazyVim config here, see https://github.com/LazyVim/starter/tree/main/lua
   xdg.configFile."nvim/lua".source = ./lua;
-
   programs.helix = {
-  enable = true;
-  settings = {
-    theme = "autumn_night_transparent";
-    editor.cursor-shape = {
-      normal = "block";
-      insert = "bar";
-      select = "underline";
+    enable = true;
+    settings = {
+      theme = "autumn_night_transparent";
+      editor.cursor-shape = {
+        normal = "block";
+        insert = "bar";
+        select = "underline";
+      };
+    };
+    languages.language = [{
+      name = "nix";
+      auto-format = true;
+      formatter.command = lib.getExe pkgs.nixfmt-rfc-style;
+    }];
+    themes = {
+      autumn_night_transparent = {
+        "inherits" = "autumn_night";
+        "ui.background" = { };
+      };
     };
   };
-  languages.language = [{
-    name = "nix";
-    auto-format = true;
-    formatter.command = lib.getExe pkgs.nixfmt-rfc-style;
-  }];
-  themes = {
-    autumn_night_transparent = {
-      "inherits" = "autumn_night";
-      "ui.background" = { };
-    };
-  };
-};
-
 }
