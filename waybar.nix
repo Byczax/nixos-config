@@ -22,7 +22,7 @@ waybarCSS:
         "custom/temperature"
 	      "backlight"
         "battery"
-	      "hyprland/language"
+	      #"hyprland/language"
         "clock#date"
         "clock#time"
       ];
@@ -33,6 +33,16 @@ waybarCSS:
         "max-length" = 50;
         "on-click" = "exec alacritty -e nmtui";
       };
+      
+      "bluetooth" = {
+        "format" = " {status}";
+        "format-disabled" = ""; #// an empty format will hide the module
+        "format-connected" = " {num_connections} connected";
+        "tooltip-format" = "{controller_alias}\t{controller_address}";
+        "tooltip-format-connected" = "{controller_alias}\t{controller_address}\n\n{device_enumerate}";
+        "tooltip-format-enumerate-connected" = "{device_alias}\t{device_address}";
+      };
+
       "cpu" = {
         "format" = " {usage:02}%";
         "tooltip" = false;

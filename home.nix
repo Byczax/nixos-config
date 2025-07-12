@@ -185,7 +185,7 @@
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
     shellAliases = {
-    	update = "sudo nixos-rebuild switch --flake /home/bq/nixos/#default";
+    	update = "sudo nixos-rebuild switch --flake /home/bq/nixos-config/#default";
 	    calc = "qalc";
     };
     history.size = 100000;

@@ -29,7 +29,7 @@
     loader = {
       systemd-boot = {
         enable = true;      
-        configurationLimit = 2;
+        configurationLimit = 10;
       };
       timeout = 3;
       efi.canTouchEfiVariables = true;
@@ -90,6 +90,7 @@
 
     xserver.xkb = {
       layout = "pl";
+      variant = "";
     };
 
     tailscale.enable = true;
@@ -100,7 +101,12 @@
 
   time.timeZone = "Europe/Zurich";
 
-  console.keyMap = "pl";
+  console.keyMap = "pl"; # maybe pl2
+  #i18n.defaultLocale = "en_US.UTF-8";
+
+  # Enable CUPS to print documents.
+  services.printing.enable = true;
+
 
   users.users.bq = {
     isNormalUser = true;
@@ -160,5 +166,5 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "24.11"; # Did you read the comment?
+  system.stateVersion = "25.05"; # Did you read the comment?
 }

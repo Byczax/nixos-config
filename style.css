@@ -137,6 +137,7 @@ window#waybar.firefox {
 #tray,
 #mode,
 #idle_inhibitor,
+#language,
 #mpd {
     border-radius: 2rem;
     padding-left: 8px;
