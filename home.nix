@@ -27,6 +27,10 @@
     # suggests electron apps to use the default (wayland) backend
     ELECTRON_OZONE_PLATFORM_HINT = "auto";
     FONTCONFIG_FILE = "${pkgs.fontconfig.out}/etc/fonts/fonts.conf";
+
+    XDG_CURRENT_DESKTOP = "Hyprland";
+    XDG_SESSION_TYPE = "wayland";
+    XDG_SESSION_DESKTOP = "Hyprland";
   };
   
   programs.waybar = import ./waybar.nix ./style.css;
@@ -98,6 +102,14 @@
       "waybar"
       "flameshot"
     ];
+    exec = [
+      "gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'"   # for GTK4 apps
+
+    ];
+    env = [
+      "QT_QPA_PLATFORMTHEME,qt6ct"   # for Qt apps
+    ];
+
     general = {
     	gaps_in = 0;
 	    gaps_out = 0;
@@ -241,7 +253,6 @@
     opentofu
     direnv
     libnotify
-    dbus
     xclip
     nerd-fonts.fira-code
     nerd-fonts.droid-sans-mono
@@ -254,6 +265,11 @@
     lua
     fzf
     zathura
+    quickemu
+    xdg-utils # Trying to fix link clicking
+    xdg-desktop-portal
+    xdg-desktop-portal-gtk
+    xdg-desktop-portal-hyprland
   ];
 
   programs.lutris = {

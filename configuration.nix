@@ -42,6 +42,7 @@
 
     rtkit.enable = true;
   };
+  zramSwap.enable = true;
 
   networking = {
     hostName = "nixos"; # Define your hostname.
@@ -63,9 +64,11 @@
       extraPortals = [
         pkgs.xdg-desktop-portal-gtk
         pkgs.xdg-desktop-portal-hyprland
+        pkgs.xdg-desktop-portal-wlr
       ];
     };
   };
+  services.dbus.enable = true;
 
 
   services = {
