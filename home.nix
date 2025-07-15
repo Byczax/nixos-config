@@ -31,6 +31,10 @@
     XDG_CURRENT_DESKTOP = "Hyprland";
     XDG_SESSION_TYPE = "wayland";
     XDG_SESSION_DESKTOP = "Hyprland";
+
+    GTK_THEME_VARIANT = "dark";                   # For some GTK apps
+    QT_STYLE_OVERRIDE = "dark";           # Or just "dark" if supported
+    QT_QPA_PLATFORMTHEME = "gtk3";                # Make Qt apps follow GTK settings
   };
   
   programs.waybar = import ./waybar.nix ./style.css;
@@ -87,6 +91,8 @@
   home.keyboard = {
     layout = "pl";
   };
+
+  
 
   programs.hyprlock.enable = true;
   wayland.windowManager.hyprland = {
@@ -191,6 +197,18 @@
     };
   };
 
+  home.file.".config/hypr/hyprshade.toml".text = ''
+    [[shades]]
+    name = "vibrance"
+    default = true  # will be activated when no other shader is scheduled
+
+    [[shades]]
+    name = "blue-light-filter"
+    start_time = 19:00:00
+    end_time = 06:00:00   # optional if more than one shader has start_time
+  '';
+
+
   programs.zsh = {
     enable = true;
     enableCompletion = true;
@@ -237,7 +255,6 @@
     inkscape
     btop
     libreoffice-qt6-fresh
-    mpv
     wl-clipboard
     hyprshade
     helvum
@@ -270,7 +287,51 @@
     xdg-desktop-portal
     xdg-desktop-portal-gtk
     xdg-desktop-portal-hyprland
+
+    gamemode
+
+    simple-scan
+
+    (pkgs.texlive.combine {
+      inherit (pkgs.texlive)
+        scheme-medium  # base minimal setup
+        latex         # core LaTeX support
+        geometry      # example extra packages
+        xcolor
+        amsmath
+        fontspec
+        hyperref
+        moderncv
+        polski
+        latexmk
+        enumitem
+        pgf;
+    })
   ];
+
+  
+  programs.mpv = {
+    enable = true;
+
+    package = (
+      pkgs.mpv-unwrapped.wrapper {
+        #scripts = with pkgs.mpvScripts; [
+        #  uosc
+        #  sponsorblock
+        #];
+
+        mpv = pkgs.mpv-unwrapped.override {
+          waylandSupport = true;
+        };
+      }
+    );
+
+    config = {
+      profile = "high-quality";
+      ytdl-format = "bestvideo+bestaudio";
+      cache-default = 4000000;
+    };
+  };
 
   programs.lutris = {
     enable = true;
@@ -350,6 +411,7 @@
           vim-illuminate
           vim-startuptime
           which-key-nvim
+          vimtex
           { name = "LuaSnip"; path = luasnip; }
           { name = "catppuccin"; path = catppuccin-nvim; }
           { name = "mini.ai"; path = mini-nvim; }
@@ -395,9 +457,14 @@
             -- treesitter handled by xdg.configFile."nvim/parser", put this line at the end of spec to clear ensure_installed
             { "nvim-treesitter/nvim-treesitter", opts = { ensure_installed = {} } },
             -- { "nvim-treesitter/nvim-treesitter",  opts = function(_, opts) opts.ensure_installed = {} end, },
-            { "lervag/vimtex" },
+            { "lervag/vimtex", lazy = false },
           },
+
         })
+
+        vim.g.vimtex_view_method = "zathura"
+        vim.g.vimtex_compiler_method = "latexmk"
+
       '';
   };
   

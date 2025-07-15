@@ -23,6 +23,7 @@
   nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
     "steam"
     "steam-unwrapped"
+    "libfprint-2-tod1-goodix"
   ];
   
   boot = {
@@ -42,7 +43,7 @@
 
     rtkit.enable = true;
   };
-  zramSwap.enable = true;
+  #zramSwap.enable = true;
 
   networking = {
     hostName = "nixos"; # Define your hostname.
@@ -109,6 +110,28 @@
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
+  hardware.sane.enable = true; # enables support for SANE scanners
+
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;
+  };
+
+  programs.dconf = {
+    enable = true;
+  };
+
+  systemd.services.fprintd = {
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig.Type = "simple";
+  };
+
+# Install the driver
+  services.fprintd.enable = true;
+  services.fprintd.tod.enable = true;
+  services.fprintd.tod.driver = pkgs.libfprint-2-tod1-goodix;
+  #services.fprintd.tod.driver = pkgs.libfprint-2-tod1-goodix-550a;
 
 
   users.users.bq = {
@@ -140,6 +163,19 @@
     compression = "auto,zstd";
     startAt = "daily";
   };
+
+  services.tlp = {
+    enable = true;
+
+    # Optional: Enable specific ThinkPad battery threshold control
+    settings = {
+      START_CHARGE_THRESH_BAT0 = 40;
+      STOP_CHARGE_THRESH_BAT0 = 80;
+    };
+  };
+
+  # Needed kernel modules for Lenovo systems
+  boot.kernelModules = [ "acpi_call" "tp_smapi" ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
