@@ -16,6 +16,10 @@
     #  # If using a stable channel you can use `url = "github:nix-community/nixvim/nixos-<version>"`
     #  inputs.nixpkgs.follows = "nixpkgs";
     #};
+    aw-watcher-window-hyprland = {
+      url = "github:bobvanderlinden/aw-watcher-window-hyprland";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -31,6 +35,7 @@
         };
         modules = [
           ./configuration.nix
+          ./modules/steam.nix
 
 	        # make home-manager as a module of nixos so that home-manager configuration
           # will be deployed automatically when executing `nixos-rebuild switch`
@@ -44,7 +49,8 @@
             ];
           }
         ];
+
       };
-      aw-watcher-window-hyprland.url = "github:bobvanderlinden/aw-watcher-window-hyprland";
+      
     };
 }

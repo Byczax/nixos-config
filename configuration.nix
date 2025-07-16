@@ -111,6 +111,7 @@
   # Enable CUPS to print documents.
   services.printing.enable = true;
   hardware.sane.enable = true; # enables support for SANE scanners
+  services.colord.enable = true;
 
   services.avahi = {
     enable = true;
@@ -140,15 +141,7 @@
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [];
   }; 
-
-  programs.steam = {
-    enable = true;
-    extraCompatPackages = with pkgs; [
-      proton-ge-bin
-    ];
-    #remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-    #dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
-  };
+  steam.enable = true;
 
   powerManagement.enable = true;
   programs.zsh.enable = true;
@@ -163,7 +156,6 @@
     compression = "auto,zstd";
     startAt = "daily";
   };
-
   services.tlp = {
     enable = true;
 
