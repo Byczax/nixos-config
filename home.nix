@@ -19,6 +19,8 @@
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 
+  imports = [ ./modules/helix.nix ];
+
   home.sessionVariables = {
     XDG_CONFIG_HOME = "${config.home.homeDirectory}/.config";
 
@@ -494,6 +496,6 @@
   
   # Normal LazyVim config here, see https://github.com/LazyVim/starter/tree/main/lua
   xdg.configFile."nvim/lua".source = ./lua;
-
-  programs.helix = import ./dotfiles/helix.nix lib pkgs;
+  helix.enable = true;
+  #programs.helix = import ./dotfiles/helix.nix lib pkgs;
 }

@@ -40,6 +40,7 @@
 
             home-manager.users.bq.imports = [
               ./home.nix
+              ./modules/helix.nix
             ];
           }
         ];
