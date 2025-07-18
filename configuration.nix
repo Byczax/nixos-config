@@ -10,6 +10,7 @@
       ./hardware-configuration.nix
     ];
 
+  # Enable flakes, because they are amazing
   nix = {
     settings ={ 
       experimental-features = [ 
@@ -21,30 +22,41 @@
   };
 
   nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+    # Those are required to install steam and games
     "steam"
+    "steam-original"
     "steam-unwrapped"
+    "steam-run"
+
+    # printer driver for lenovo
     "libfprint-2-tod1-goodix"
   ];
-  
+ 
+  # boot specifications
   boot = {
     loader = {
       systemd-boot = {
-        enable = true;      
-        configurationLimit = 10;
+        enable = true;
+        configurationLimit = 10; # Amounts of build to store
       };
-      timeout = 3;
-      efi.canTouchEfiVariables = true;
+      timeout = 3; # time before it will start booting most recent build
+      efi.canTouchEfiVariables = true; # allow to register boots in boot
     };
   };
 
   security = {
+    # use sudo written in Rust
     sudo.enable = false;
     sudo-rs.enable = true;
 
+    # required by pipewire
     rtkit.enable = true;
   };
+
+  # Compressed ram, bad performance when gaming
   #zramSwap.enable = true;
 
+  # ennable internet and wifi support
   networking = {
     hostName = "nixos"; # Define your hostname.
     networkmanager = {
@@ -52,8 +64,11 @@
       wifi.backend = "iwd";
     };
   };
+
+  # bluetooth, what else
   hardware.bluetooth.enable = true;
 
+  # desktop portal, so hyprland works
   xdg = {
     portal = {
       enable = true;
@@ -69,10 +84,12 @@
       ];
     };
   };
+
   services.dbus.enable = true;
 
 
   services = {
+    # for multimedia
     pipewire = {
       enable = true; # if not already enabled
       alsa.enable = true;
@@ -80,6 +97,7 @@
       pulse.enable = true;
     };
 
+    # login screen with Hyprland as window manager 
     greetd = {
       enable = true;
       settings = {
@@ -90,60 +108,84 @@
       };
     };
 
+    # enable polish as keyboard layout
     xserver.xkb = {
       layout = "pl";
       variant = "";
     };
 
+    # tailscale, no option for home yet
     tailscale.enable = true;
-    thermald.enable = true;
-    auto-cpufreq.enable = true;
 
+    # proactively protect CPU overheating
+    thermald.enable = true;
+
+    # Show data about CPU
+    auto-cpufreq.enable = true;
   };
 
+  # timezone, to not be confused
   time.timeZone = "Europe/Zurich";
 
+  # enable also polish in console
   console.keyMap = "pl"; # maybe pl2
-  #i18n.defaultLocale = "en_US.UTF-8";
 
-  services.printing.enable = true;
-  hardware.sane.enable = true; # enables support for SANE scanners
-  services.colord.enable = true;
+  # language of the system with some of the formats
+  i18n.defaultLocale = "en_US.UTF-8";
 
+  # service to autodiscover printers in the same network
   services.avahi = {
     enable = true;
     nssmdns4 = true;
     openFirewall = true;
   };
 
-  programs.dconf = {
-    enable = true;
-  };
+  # do I need it?
+  programs.dconf.enable = true;
+  
+  # Required for printer to work
+  services.printing.enable = true;
+  hardware.sane.enable = true; # enables support for SANE scanners
+  services.colord.enable = true;
 
   systemd.services.fprintd = {
     wantedBy = [ "multi-user.target" ];
     serviceConfig.Type = "simple";
   };
-
   services.fprintd.enable = true;
   services.fprintd.tod.enable = true;
   services.fprintd.tod.driver = pkgs.libfprint-2-tod1-goodix;
 
-
+  # system user
   users.users.bq = {
     isNormalUser = true;
     description = "bq";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [];
-  }; 
+    shell = pkgs.zsh;
+    packages = with pkgs; [ ];
+  };
+
+  # eanble steam from module
   steam.enable = true;
 
-  powerManagement.enable = true;
+  programs.thunar = {
+    enable = true;
+    plugins = with pkgs; [
+      xfce.thunar-archive-plugin
+      xfce.thunar-media-tags-plugin
+      xfce.thunar-volman
+    ];
+  };
+  services.gvfs.enable = true; # Mount, trash, and other functionalities
+  services.tumbler.enable = true; # Thumbnail support for images
+
+  # use zsh
   programs.zsh.enable = true;
   users.defaultUserShell=pkgs.zsh;
   environment.shells = with pkgs; [ zsh ];
 
-  
+  # control battery, but I think, it does not work with my laptop
+  powerManagement.enable = true;
   services.tlp = {
     enable = true;
     settings = {
@@ -161,13 +203,14 @@
       #Optional helps save long term battery health
       START_CHARGE_THRESH_BAT0 = 40; # 40 and below it starts to charge
       STOP_CHARGE_THRESH_BAT0 = 80; # 80 and above it stops charging
-
     };
   };
+
+  # enable ports used by tailscale
   networking.firewall = rec {
-  allowedTCPPortRanges = [ { from = 1714; to = 1764; } ];
-  allowedUDPPortRanges = allowedTCPPortRanges;
-};
+    allowedTCPPortRanges = [ { from = 1714; to = 1764; } ];
+    allowedUDPPortRanges = allowedTCPPortRanges;
+  };
 
   # Needed kernel modules for Lenovo systems
   boot.kernelModules = [ "acpi_call" "tp_smapi" ];

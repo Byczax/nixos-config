@@ -14,32 +14,38 @@
   # You can update Home Manager without changing this value. See
   # the Home Manager release notes for a list of state version
   # changes in each release.
-  home.stateVersion = "24.11";
+  home.stateVersion = "25.05";
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 
-  imports = [ ./modules/helix.nix ];
-
+  
   home.sessionVariables = {
+    # info where to save config files 
     XDG_CONFIG_HOME = "${config.home.homeDirectory}/.config";
-
+    
+    # inform apps that we use wayland
     NIXOS_OZONE_WL = "1";
 
     # suggests electron apps to use the default (wayland) backend
     ELECTRON_OZONE_PLATFORM_HINT = "auto";
     FONTCONFIG_FILE = "${pkgs.fontconfig.out}/etc/fonts/fonts.conf";
 
+    # inform that we use hyprland
     XDG_CURRENT_DESKTOP = "Hyprland";
     XDG_SESSION_TYPE = "wayland";
     XDG_SESSION_DESKTOP = "Hyprland";
 
+    # dark mode, but does not work :/
     GTK_THEME_VARIANT = "dark";                   # For some GTK apps
     QT_STYLE_OVERRIDE = "dark";           # Or just "dark" if supported
     QT_QPA_PLATFORMTHEME = "gtk3";                # Make Qt apps follow GTK settings
   };
-  
+ 
+  # the bar on the top
   programs.waybar = import ./waybar.nix ./style.css;
+
+  # terminal
   programs.foot = {
   	enable = true;
 	  settings = {
@@ -48,11 +54,14 @@
 	    };
 	  };
   };
+
+  # sync between phone and pc 
   services.kdeconnect = {
     enable = true;
     indicator = true;
   };
 
+  # local telemetry on yourslef
   services.activitywatch = {
     enable = true;
     package = pkgs.aw-server-rust;
@@ -67,7 +76,6 @@
           poll_time = 2;
         };
       };
-
     aw-watcher-window = {
       package = pkgs.aw-watcher-window;
       settings = {
@@ -90,16 +98,21 @@
     };
   };
 
+  # make sure that user have polish layout
   home.keyboard = {
     layout = "pl";
   };
 
   
-
-  programs.hyprlock.enable = true;
+  # hyprland stack
   hyprland.enable = true; 
+  programs.hyprlock.enable = true;
+  services.hypridle.enable = true;
+  services.hyprsunset.enable = true;
+  services.hyprpolkitagent.enable = true;
+  services.hyprpaper.enable = true;
 
-
+  # more zsh stuff
   programs.zsh = {
     enable = true;
     enableCompletion = true;
@@ -124,49 +137,59 @@
 	    '';
   };
 
+  # app menu
   programs.wofi = {
   	enable = true;
   };
 
+  programs.obs-studio = {
+    enable = true;
+
+    plugins = with pkgs.obs-studio-plugins; [
+      wlrobs
+      obs-backgroundremoval
+      obs-pipewire-audio-capture
+      obs-gstreamer
+      obs-vkcapture
+    ];
+  };
+
   home.packages = with pkgs; [
-    fira-code
-    prismlauncher 
-    vim
+    fira-code #font for terminal
+    prismlauncher # minecraft 
+    vim # as a backup
     firefox
-    brightnessctl
-    font-awesome
-    hyprpaper
-    xournalpp
-    signal-desktop
+    brightnessctl # ability to change screen brightness
+    font-awesome # fancy icons
+    xournalpp # notes app
+    signal-desktop 
     vesktop
     git
-    traceroute
-    (flameshot.override { enableWlrSupport = true; })
-    grimblast
-    xorg.xlsclients
-    obs-studio
+    traceroute 
+    (flameshot.override { enableWlrSupport = true; }) # slow screenshot with drawings
+    grimblast # fast screenshot 
+    xorg.xlsclients # check if app is running under X11
     inkscape
     btop
     libreoffice-qt6-fresh
-    wl-clipboard
-    hyprshade
-    helvum
+    wl-clipboard #clipboard
+    helvum # audio configuration
     qbittorrent
     unzip
-    ncdu
-    logseq
-    lm_sensors
-    libqalculate
-    wine
-    winetricks
+    gdu # disk analyzer, better than ncdu
+    logseq 
+    #lm_sensors #maybe I don't need it
+    libqalculate #calculator
+    #wine #
+    #winetricks
     popsicle
     opentofu
-    direnv
-    libnotify
-    xclip
-    nerd-fonts.fira-code
+
+    direnv #why I have that?
+    libnotify # what is this for?
+    nerd-fonts.fira-code #more fonts?
     nerd-fonts.droid-sans-mono
-    gcc
+    gcc # C++ let's go
 
     # to fulfill lazyvim plugins
     luarocks
@@ -174,8 +197,10 @@
     fd
     lua
     fzf
-    zathura
-    quickemu
+
+    zathura #pdf viewer
+    quickemu # virtual machines
+
     xdg-utils # Trying to fix link clicking
     xdg-desktop-portal
     xdg-desktop-portal-gtk
@@ -183,7 +208,7 @@
 
     gamemode
 
-    simple-scan
+    simple-scan # scanner
 
     (pkgs.texlive.combine {
       inherit (pkgs.texlive)
@@ -202,7 +227,7 @@
     })
   ];
 
-  
+  # media player 
   programs.mpv = {
     enable = true;
 
@@ -223,9 +248,11 @@
       profile = "high-quality";
       ytdl-format = "bestvideo+bestaudio";
       cache-default = 4000000;
+      quit_watch_later = true;
     };
   };
 
+  # other games that are not on steam
   programs.lutris = {
     enable = true;
     winePackages = [
@@ -233,22 +260,39 @@
     ];
   };
 
+  # notifications
   services.mako = {
     enable = true;
     settings = {
       default-timeout = 4000;
+      "urgency=low" = {
+        "border-color" = "#313244";
+        "default-timeout" = "2000";
+      };
+      "urgency=normal" = {
+        "border-color" = "#313244";
+        "default-timeout" = "5000";
+      };
+      "urgency=high" = {
+        "border-color" = "#f38ba8";
+        "text-color" = "#f38ba8";
+        "default-timeout" = "0";
+      };    
     };
   };
 
+  # mail client
   programs.thunderbird = {
     enable = true;
     profiles = {};
   };
 
+  # do I need it?
   fonts = {
     fontconfig.enable = true;
    };
-    
+  
+  # modules
   nvim.enable = true;
   helix.enable = true;
 }
