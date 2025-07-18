@@ -108,7 +108,24 @@
   hyprland.enable = true; 
   programs.hyprlock.enable = true;
   services.hypridle.enable = true;
-  services.hyprsunset.enable = true;
+  services.hyprsunset = {
+    enable = true;
+  #  transitions = {
+  #    sunrise = {
+  #      calendar = "*-*-* 06:00:00";
+  #      requests = [
+  #        [ "temperature" "6500" ]
+  #        #[ "gamma 100" ]
+  #      ];
+  #    };
+  #    sunset = {
+  #      calendar = "*-*-* 19:00:00";
+  #      requests = [
+  #        [ "temperature" "3500" ]
+  #      ];
+  #    };
+  #  };
+  };
   services.hyprpolkitagent.enable = true;
   services.hyprpaper.enable = true;
 
@@ -225,6 +242,8 @@
         enumitem
         pgf;
     })
+
+    hyprsunset # need to install manually
   ];
 
   # media player 
@@ -295,4 +314,6 @@
   # modules
   nvim.enable = true;
   helix.enable = true;
+
+  #catppuccin.enable = true;
 }

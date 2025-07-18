@@ -4,6 +4,7 @@
   inputs = {
     # use stable version of nixos
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
+    catppuccin.url = "github:catppuccin/nix";
     # use home-manager, it's cool
     home-manager = {
       url = "github:nix-community/home-manager/release-25.05";
@@ -18,6 +19,7 @@
 
   outputs = {
     nixpkgs,
+    catppuccin,
     home-manager,
     ...
   }@inputs: {
@@ -37,6 +39,7 @@
 
           home-manager.users.bq.imports = [
             ./home.nix # home manager config file
+            catppuccin.homeModules.catppuccin
           ] ++ import ./modules/all-home-modules.nix; # modules for home manager
         }
       ];
