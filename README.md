@@ -12,3 +12,5 @@ Things that are annoying after loading fresh instance
 - [ ] Logging back into all accounts
 - [ ] Ability to store encrypted ssh keys in repository (forgot to back them up, idk if it's good idea)
 
+Create hosts with different configurations (configuration.nix, hardware-configuration.nix, home.nix)
+In modules directory, sort between nixos and home manager modules

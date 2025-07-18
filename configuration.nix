@@ -78,8 +78,6 @@
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
-      # If you want to use JACK applications, uncomment this
-      #jack.enable = true;
     };
 
     greetd = {
@@ -108,7 +106,6 @@
   console.keyMap = "pl"; # maybe pl2
   #i18n.defaultLocale = "en_US.UTF-8";
 
-  # Enable CUPS to print documents.
   services.printing.enable = true;
   hardware.sane.enable = true; # enables support for SANE scanners
   services.colord.enable = true;
@@ -128,11 +125,9 @@
     serviceConfig.Type = "simple";
   };
 
-# Install the driver
   services.fprintd.enable = true;
   services.fprintd.tod.enable = true;
   services.fprintd.tod.driver = pkgs.libfprint-2-tod1-goodix;
-  #services.fprintd.tod.driver = pkgs.libfprint-2-tod1-goodix-550a;
 
 
   users.users.bq = {
@@ -148,48 +143,34 @@
   users.defaultUserShell=pkgs.zsh;
   environment.shells = with pkgs; [ zsh ];
 
-  services.borgbackup.jobs."borgbase" = {
-    paths = "/home/bq";
-    encryption.mode = "none";
-    environment.BORG_RSH = "ssh -i /home/bq/.ssh/synology";
-    repo = "ssh://maciej_byczko@byczkosynology:41024/volume1/homes/maciej_byczko/Backup/nixos";
-    compression = "auto,zstd";
-    startAt = "daily";
-  };
+  
   services.tlp = {
     enable = true;
-
-    # Optional: Enable specific ThinkPad battery threshold control
     settings = {
-      START_CHARGE_THRESH_BAT0 = 40;
-      STOP_CHARGE_THRESH_BAT0 = 80;
+      CPU_SCALING_GOVERNOR_ON_AC = "performance";
+      CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+
+      CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
+      CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
+
+      CPU_MIN_PERF_ON_AC = 0;
+      CPU_MAX_PERF_ON_AC = 100;
+      CPU_MIN_PERF_ON_BAT = 0;
+      CPU_MAX_PERF_ON_BAT = 20;
+
+      #Optional helps save long term battery health
+      START_CHARGE_THRESH_BAT0 = 40; # 40 and below it starts to charge
+      STOP_CHARGE_THRESH_BAT0 = 80; # 80 and above it stops charging
+
     };
   };
+  networking.firewall = rec {
+  allowedTCPPortRanges = [ { from = 1714; to = 1764; } ];
+  allowedUDPPortRanges = allowedTCPPortRanges;
+};
 
   # Needed kernel modules for Lenovo systems
   boot.kernelModules = [ "acpi_call" "tp_smapi" ];
-
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
-
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
-  # networking.firewall = rec {
-  # allowedTCPPortRanges = [ { from = 1714; to = 1764; } ];
-  # allowedUDPPortRanges = allowedTCPPortRanges;
-  # };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

@@ -217,6 +217,8 @@
     shellAliases = {
     	update = "sudo nixos-rebuild switch --flake /home/bq/nixos-config/#default";
 	    calc = "qalc";
+      bat_protect_on = "sudo echo 1 > /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode";
+      bat_protect_off = "sudo echo 0 > /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode";
     };
     history.size = 100000;
     history.ignorePatterns = ["rm *" "pkill *" "cp *" "ls" ".." "l" "la"];
