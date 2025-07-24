@@ -30,6 +30,8 @@
 
     # printer driver for lenovo
     "libfprint-2-tod1-goodix"
+
+    "slack"
   ];
  
   # boot specifications
@@ -42,6 +44,8 @@
       timeout = 3; # time before it will start booting most recent build
       efi.canTouchEfiVariables = true; # allow to register boots in boot
     };
+    kernelParams = [ "i915.force_probe=9a49" ];
+
   };
 
   security = {
@@ -68,25 +72,38 @@
   # bluetooth, what else
   hardware.bluetooth.enable = true;
 
-  # desktop portal, so hyprland works
-  xdg = {
-    portal = {
-      enable = true;
-      xdgOpenUsePortal = true;
-      config = {
-        common.default = ["gtk"];
-        hyprland.default = ["gtk" "hyprland"];
-      };
-      extraPortals = [
-        pkgs.xdg-desktop-portal-gtk
-        pkgs.xdg-desktop-portal-hyprland
-        pkgs.xdg-desktop-portal-wlr
-      ];
-    };
+  hardware.graphics = {
+    enable = true;
+    extraPackages = with pkgs; [
+      #... # your Open GL, Vulkan and VAAPI drivers
+      intel-media-sdk
+      #vpl-gpu-rt # or intel-media-sdk for QSV
+    ];
   };
 
-  services.dbus.enable = true;
+  # desktop portal, so hyprland works
+  #xdg = {
+  #  portal = {
+  #    enable = true;
+  #    xdgOpenUsePortal = true;
+  #    config = {
+  #      common.default = ["gtk"];
+  #      hyprland.default = ["gtk" "hyprland"];
+  #    };
+  #    extraPortals = [
+  #      pkgs.xdg-desktop-portal-gtk
+  #      pkgs.xdg-desktop-portal-hyprland
+  #      pkgs.xdg-desktop-portal-wlr
+  #    ];
+  #  };
+  #};
 
+  services.dbus.enable = true;
+  
+
+
+  # Disable PulseAudio explicitly if using PipeWire
+  hardware.pulseaudio.enable = false;
 
   services = {
     # for multimedia

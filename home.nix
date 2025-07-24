@@ -37,10 +37,19 @@
     XDG_SESSION_DESKTOP = "Hyprland";
 
     # dark mode, but does not work :/
-    GTK_THEME_VARIANT = "dark";                   # For some GTK apps
-    QT_STYLE_OVERRIDE = "dark";           # Or just "dark" if supported
-    QT_QPA_PLATFORMTHEME = "gtk3";                # Make Qt apps follow GTK settings
+    #GTK_THEME_VARIANT = "dark";                   # For some GTK apps
+    #QT_STYLE_OVERRIDE = "dark";           # Or just "dark" if supported
+    #QT_QPA_PLATFORMTHEME = "gtk3";                # Make Qt apps follow GTK settings
   };
+
+  #qt = {
+  #  enable = true;
+  #  platformTheme = "gtk"; # Make Qt apps follow GTK theme
+  #  style = {
+  #    name = "Adwaita-dark";
+  #    package = pkgs.adwaita-qt;
+  #  };
+  #};
  
   # the bar on the top
   programs.waybar = import ./waybar.nix ./style.css;
@@ -171,11 +180,18 @@
     ];
   };
 
+  programs.firefox = {
+    enable = true;
+    #profiles.default = {
+    #    bookmarks = [];
+    #    settings = {};
+    #  };
+  };
+
   home.packages = with pkgs; [
     fira-code #font for terminal
     prismlauncher # minecraft 
     vim # as a backup
-    firefox
     brightnessctl # ability to change screen brightness
     font-awesome # fancy icons
     xournalpp # notes app
@@ -195,10 +211,11 @@
     unzip
     gdu # disk analyzer, better than ncdu
     logseq 
+    hyprshade
     #lm_sensors #maybe I don't need it
     libqalculate #calculator
-    #wine #
-    #winetricks
+    wine #
+    winetricks
     popsicle
     opentofu
 
@@ -244,7 +261,23 @@
     })
 
     hyprsunset # need to install manually
+
+    iperf
+    bitwarden
+
+    slack
   ];
+
+  xdg.enable = true;
+  xdg.portal = {
+    enable = true;
+    extraPortals = [pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-hyprland pkgs.xdg-desktop-portal-wlr pkgs.xdg-desktop-portal-gnome];
+    configPackages = [pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-hyprland pkgs.xdg-desktop-portal-wlr pkgs.xdg-desktop-portal-gnome];
+    config.common = {
+      default = ["gnome" "hyprland" "gtk"];
+      "org.freedesktop.impl.portal.Settings" = "gnome";
+    };
+  };
 
   # media player 
   programs.mpv = {
