@@ -1,5 +1,4 @@
-{ config, lib, pkgs, ... }:
-
+{ config, lib, pkgs, inputs, ... }:
 {
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
@@ -87,6 +86,7 @@
       };
     aw-watcher-window = {
       package = pkgs.aw-watcher-window;
+      #package = awHyprland;
       settings = {
         poll_time = 1;
         exclude_title = false;
@@ -111,6 +111,9 @@
   home.keyboard = {
     layout = "pl";
   };
+
+
+  services.swayidle.enable = true;
 
   
   # hyprland stack
@@ -146,6 +149,7 @@
     syntaxHighlighting.enable = true;
     shellAliases = {
     	update = "sudo nixos-rebuild switch --flake /home/bq/nixos-config/#default";
+      test_vm = "sudo nixos-rebuild build-vm --flake /home/bq/nixos-config/#default";
 	    calc = "qalc";
       bat_protect_on = "sudo echo 1 > /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode";
       bat_protect_off = "sudo echo 0 > /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode";
@@ -214,9 +218,9 @@
     hyprshade
     #lm_sensors #maybe I don't need it
     libqalculate #calculator
-    wine #
-    winetricks
-    popsicle
+    #wine #
+    #winetricks
+    popsicle # os burner
     opentofu
 
     direnv #why I have that?
@@ -239,8 +243,6 @@
     xdg-desktop-portal
     xdg-desktop-portal-gtk
     xdg-desktop-portal-hyprland
-
-    gamemode
 
     simple-scan # scanner
 
@@ -265,8 +267,24 @@
     iperf
     bitwarden
 
-    slack
+    pavucontrol # add audio control alongside helvum
+    adwaita-icon-theme # icons for gnome apps
+
+    feh
+    tmux
+    blender
+    krita
+    #vscodium
+    #atom
+    #freecad
+    #wireshark
+    joplin
+    
   ];
+
+  services.syncthing = {
+    enable = true;
+  };
 
   xdg.enable = true;
   xdg.portal = {
@@ -299,8 +317,8 @@
     config = {
       profile = "high-quality";
       ytdl-format = "bestvideo+bestaudio";
-      cache-default = 4000000;
-      quit_watch_later = true;
+      #cache-default = 4000000;
+      save-position-on-quit="yes";
     };
   };
 
@@ -345,8 +363,21 @@
    };
   
   # modules
-  nvim.enable = true;
+  #nvim.enable = true;
   helix.enable = true;
+
+  programs.nvf = {
+    enable = true;
+    # your settings need to go into the settings attribute set
+    # most settings are documented in the appendix
+    settings = {
+      vim.viAlias = false;
+      vim.vimAlias = true;
+      vim.lsp = {
+        enable = true;
+      };
+    };
+  };
 
   #catppuccin.enable = true;
 }

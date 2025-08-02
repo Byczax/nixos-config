@@ -45,10 +45,13 @@ in {
         "$mod, P, pseudo,"
         "$mod, J, togglesplit,"
         "$mod, L, exec, hyprlock"
+        "$mod, D, exec, vesktop"
         "$mod, Return, exec, $terminal"
         "$mod, $print, exec, grimblast copy area"
         ", $print, exec, flameshot gui"
-        "$mod, F, exec, firefox"
+        #"$mod, F, exec, firefox"
+
+        "$mod, F, fullscreen" 
 
         # Move focus with mod + arrow keys
         "$mod, left, movefocus, l"

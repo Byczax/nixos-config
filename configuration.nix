@@ -100,11 +100,6 @@
 
   services.dbus.enable = true;
   
-
-
-  # Disable PulseAudio explicitly if using PipeWire
-  hardware.pulseaudio.enable = false;
-
   services = {
     # for multimedia
     pipewire = {
@@ -177,10 +172,19 @@
   users.users.bq = {
     isNormalUser = true;
     description = "bq";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "docker"];
     shell = pkgs.zsh;
     packages = with pkgs; [ ];
   };
+
+
+  #users.users.nixosvmtest = {
+  #  isSystemUser = true ;
+  #  initialPassword = "test";
+  #  group = "nixosvmtest";
+  #};
+  #users.groups.nixosvmtest = {};
+
 
   # eanble steam from module
   steam.enable = true;
@@ -231,6 +235,10 @@
 
   # Needed kernel modules for Lenovo systems
   boot.kernelModules = [ "acpi_call" "tp_smapi" ];
+
+  virtualisation.docker = {
+    enable = true;
+  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
