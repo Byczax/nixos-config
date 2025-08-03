@@ -30,8 +30,7 @@
 
     # printer driver for lenovo
     "libfprint-2-tod1-goodix"
-
-    "slack"
+    "python3.12-youtube-dl-2021.12.17"
   ];
  
   # boot specifications
