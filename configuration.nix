@@ -17,7 +17,7 @@
         "nix-command" 
         "flakes" 
       ];
-      auto-optimise-store = true;
+      #auto-optimise-store = true;
     };
   };
 
@@ -133,6 +133,8 @@
 
     # Show data about CPU
     auto-cpufreq.enable = true;
+
+    upower.enable = true;
   };
 
   # timezone, to not be confused

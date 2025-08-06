@@ -26,14 +26,12 @@
     signcolumn = "yes"; # Always show the signcolumn, otherwise it would shift the text each time
     smartcase = true; # Don't ignore case with capitals
     smartindent = true; # Insert indents automatically
-    #spelllang = { "en" };
     splitbelow = true; # Put new windows below current
     splitkeep = "screen";
     splitright = true; # Put new windows right of current
     #statuscolumn = [[%!v:lua.require'snacks.statuscolumn'.get()]];
     tabstop = 2; # Number of spaces tabs count for
     termguicolors = true; # True color support
-    #timeoutlen = vim.g.vscode and 1000 or 300; # Lower than default (1000) to quickly trigger which-key
     undofile = true;
     undolevels = 10000;
     updatetime = 200; # Save swap file and trigger CursorHold

@@ -18,13 +18,17 @@ in {
         "$terminal"
         "waybar"
         "flameshot"
+        "kdeconnectd"
       ];
       exec = [
         "gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita_dark'"   # for GTK3 apps
         "gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'"   # for GTK4 apps
+        "hyprshade auto"
       ];
       env = [
         "QT_QPA_PLATFORMTHEME,qt6ct"   # for Qt apps
+        "XCURSOR_SIZE,24"
+        "HYPRCURSOR_SIZE,24"
       ];
 
       general = {
@@ -48,7 +52,7 @@ in {
         "$mod, D, exec, vesktop"
         "$mod, Return, exec, $terminal"
         "$mod, $print, exec, grimblast copy area"
-        ", $print, exec, flameshot gui"
+        ", $print, exec, flameshot gui 2>/dev/null"
         #"$mod, F, exec, firefox"
 
         "$mod, F, fullscreen" 
@@ -58,6 +62,18 @@ in {
         "$mod, right, movefocus, r"
         "$mod, up, movefocus, u"
         "$mod, down, movefocus, d"
+
+        # Move window with mod + arrow keys
+        "$mod SHIFT, left, movewindow, l"
+        "$mod SHIFT, right, movewindow, r"
+        "$mod SHIFT, up, movewindow, u"
+        "$mod SHIFT, down, movewindow, d"
+
+        "$mod, t, togglegroup"
+        "$mod, k, changegroupactive, f"
+        "$mod, j, changegroupactive, b"
+
+
 
         # Example special workspace (scratchpad)
         "$mod, S, togglespecialworkspace, magic"
@@ -110,6 +126,10 @@ in {
         ];	
       };
     };
+
+    # TODO decoration
+    # TODO animations
+    #
 
     home.file.".config/hypr/hyprshade.toml".text = ''
       [[shades]]

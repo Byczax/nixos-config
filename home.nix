@@ -280,6 +280,13 @@
     #wireshark
     joplin
     vlc
+    nodejs
+    tree-sitter
+    imagemagick # convert images
+    ripgrep
+    xdotool
+    hugo
+    go
   ];
 
   services.syncthing = {
