@@ -89,7 +89,7 @@ in {
               enable = true; # Collection of mini-tools to boost productivity
               setupOpts = {
                 bigfile.enable = true; # Handle large files efficiently
-                dashboard.enable = false; # Dashboard from snacks
+                # dashboard.enable = false; # Dashboard from snacks
                 explorer.enable = true; # File explorer
                 input.enable = true; # Enhanced input prompts
                 quickfile.enable = true; # Quick-access recent files
@@ -98,8 +98,8 @@ in {
                 statuscolumn.enable = true; # Enhanced gutter/status column
                 words.enable = true; # Word highlighting/navigation
                 notifier.enable = true; # Notification framework
-                picker.enable = true; # Enhanced picker integration
-                image.enable = false; # Image preview in buffer
+                # picker.enable = true; # Enhanced picker integration
+                # image.enable = false; # Image preview in buffer
               };
             };
           };
@@ -136,7 +136,7 @@ in {
           binds = {
             whichKey.enable = true; # Shows keybindings in popup
             cheatsheet.enable = true; # In-editor keybinding cheatsheet
-            hardtime-nvim.enable = true; # Prevent bad habits by limiting repeated keys
+            # hardtime-nvim.enable = true; # Prevent bad habits by limiting repeated keys
           };
 
           comments = {

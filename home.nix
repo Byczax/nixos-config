@@ -218,8 +218,6 @@
     hyprshade
     #lm_sensors #maybe I don't need it
     libqalculate #calculator
-    #wine #
-    #winetricks
     popsicle # os burner
     opentofu
 
@@ -236,7 +234,7 @@
     lua
     fzf
 
-    zathura #pdf viewer
+    #zathura #pdf viewer
     quickemu # virtual machines
 
     xdg-utils # Trying to fix link clicking
@@ -293,15 +291,22 @@
     enable = true;
   };
 
-  xdg.enable = true;
-  xdg.portal = {
+  xdg ={
     enable = true;
-    extraPortals = [pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-hyprland pkgs.xdg-desktop-portal-wlr pkgs.xdg-desktop-portal-gnome];
-    configPackages = [pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-hyprland pkgs.xdg-desktop-portal-wlr pkgs.xdg-desktop-portal-gnome];
-    config.common = {
-      default = ["gnome" "hyprland" "gtk"];
-      "org.freedesktop.impl.portal.Settings" = "gnome";
+    portal = {
+      enable = true;
+      extraPortals = [pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-hyprland pkgs.xdg-desktop-portal-wlr pkgs.xdg-desktop-portal-gnome];
+      configPackages = [pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-hyprland pkgs.xdg-desktop-portal-wlr pkgs.xdg-desktop-portal-gnome];
+      config.common = {
+        default = ["gnome" "hyprland" "gtk"];
+        "org.freedesktop.impl.portal.Settings" = "gnome";
+      };
     };
+  };
+
+  programs.zathura = {
+    enable = true;
+    extraConfig = "set selection-clipboard clipboard";
   };
 
   # media player 
