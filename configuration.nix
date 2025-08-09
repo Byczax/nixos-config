@@ -59,12 +59,26 @@
   # Compressed ram, bad performance when gaming
   #zramSwap.enable = true;
 
-  # ennable internet and wifi support
+  # enable internet and wifi support
   networking = {
-    hostName = "nixos"; # Define your hostname.
+    hostName = "nixos";
     networkmanager = {
       enable = true;
-      wifi.backend = "iwd";
+      wifi = {
+        backend = "iwd";
+        powersave = true;
+      };
+    };
+    wireless.iwd = {
+      enable = true;
+      settings = {
+        Network = {
+          EnableIPv6 = true;
+        };
+        Settings = {
+          AutoConnect = true;
+        };
+      };
     };
   };
 
@@ -98,6 +112,8 @@
   #};
 
   services.dbus.enable = true;
+
+  services.gnome.gnome-keyring.enable = true;
   
   services = {
     # for multimedia
@@ -145,6 +161,7 @@
 
   # language of the system with some of the formats
   i18n.defaultLocale = "en_US.UTF-8";
+  i18n.supportedLocales = ["en_US.UTF-8/UTF-8" "ja_JP.UTF-8/UTF-8"];
 
   # service to autodiscover printers in the same network
   services.avahi = {
@@ -173,7 +190,7 @@
   users.users.bq = {
     isNormalUser = true;
     description = "bq";
-    extraGroups = [ "networkmanager" "wheel" "docker"];
+    extraGroups = [ "networkmanager" "wheel" "docker" "libvirtd"];
     shell = pkgs.zsh;
     packages = with pkgs; [ ];
   };
@@ -240,6 +257,8 @@
   virtualisation.docker = {
     enable = true;
   };
+
+  virtualisation.libvirtd.enable = true;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

@@ -236,6 +236,8 @@
 
     #zathura #pdf viewer
     quickemu # virtual machines
+    qemu
+    virt-manager
 
     xdg-utils # Trying to fix link clicking
     xdg-desktop-portal
