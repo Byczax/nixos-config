@@ -34,6 +34,7 @@
     XDG_CURRENT_DESKTOP = "Hyprland";
     XDG_SESSION_TYPE = "wayland";
     XDG_SESSION_DESKTOP = "Hyprland";
+    PIPEWIRE_ENABLE = "1";
 
     # dark mode, but does not work :/
     #GTK_THEME_VARIANT = "dark";                   # For some GTK apps
@@ -41,15 +42,6 @@
     #QT_QPA_PLATFORMTHEME = "gtk3";                # Make Qt apps follow GTK settings
   };
 
-  #qt = {
-  #  enable = true;
-  #  platformTheme = "gtk"; # Make Qt apps follow GTK theme
-  #  style = {
-  #    name = "Adwaita-dark";
-  #    package = pkgs.adwaita-qt;
-  #  };
-  #};
- 
   # the bar on the top
   programs.waybar = import ./waybar.nix ./style.css;
 
@@ -117,26 +109,11 @@
 
   
   # hyprland stack
-  hyprland.enable = true; 
+  module.hyprland.enable = true; 
   programs.hyprlock.enable = true;
   services.hypridle.enable = true;
   services.hyprsunset = {
     enable = true;
-  #  transitions = {
-  #    sunrise = {
-  #      calendar = "*-*-* 06:00:00";
-  #      requests = [
-  #        [ "temperature" "6500" ]
-  #        #[ "gamma 100" ]
-  #      ];
-  #    };
-  #    sunset = {
-  #      calendar = "*-*-* 19:00:00";
-  #      requests = [
-  #        [ "temperature" "3500" ]
-  #      ];
-  #    };
-  #  };
   };
   services.hyprpolkitagent.enable = true;
   services.hyprpaper.enable = true;
@@ -200,7 +177,6 @@
     font-awesome # fancy icons
     xournalpp # notes app
     signal-desktop 
-    vesktop
     git
     traceroute 
     (flameshot.override { enableWlrSupport = true; }) # slow screenshot with drawings
@@ -239,28 +215,23 @@
     qemu
     virt-manager
 
-    xdg-utils # Trying to fix link clicking
-    xdg-desktop-portal
-    xdg-desktop-portal-gtk
-    xdg-desktop-portal-hyprland
-
     simple-scan # scanner
 
-    (pkgs.texlive.combine {
-      inherit (pkgs.texlive)
-        scheme-medium  # base minimal setup
-        latex         # core LaTeX support
-        geometry      # example extra packages
-        xcolor
-        amsmath
-        fontspec
-        hyperref
-        moderncv
-        polski
-        latexmk
-        enumitem
-        pgf;
-    })
+    #(pkgs.texlive.combine {
+    #  inherit (pkgs.texlive)
+    #    scheme-medium  # base minimal setup
+    #    latex         # core LaTeX support
+    #    geometry      # example extra packages
+    #    xcolor
+    #    amsmath
+    #    fontspec
+    #    hyperref
+    #    moderncv
+    #    polski
+    #    latexmk
+    #    enumitem
+    #    pgf;
+    #})
 
     hyprsunset # need to install manually
 
@@ -293,18 +264,22 @@
     enable = true;
   };
 
-  xdg ={
+  programs.vesktop = {
     enable = true;
-    portal = {
-      enable = true;
-      extraPortals = [pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-hyprland pkgs.xdg-desktop-portal-wlr pkgs.xdg-desktop-portal-gnome];
-      configPackages = [pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-hyprland pkgs.xdg-desktop-portal-wlr pkgs.xdg-desktop-portal-gnome];
-      config.common = {
-        default = ["gnome" "hyprland" "gtk"];
-        "org.freedesktop.impl.portal.Settings" = "gnome";
-      };
-    };
   };
+
+  #xdg = {
+  #  portal = {
+  #    enable = true;
+  #    extraPortals = [
+  #      pkgs.xdg-desktop-portal
+  #      pkgs.xdg-desktop-portal-hyprland
+  #    ];
+  #    config = {
+  #      common.default = [ "hyprland" ];
+  #    };
+  #  };
+  #};
 
   programs.zathura = {
     enable = true;
@@ -317,11 +292,6 @@
 
     package = (
       pkgs.mpv-unwrapped.wrapper {
-        #scripts = with pkgs.mpvScripts; [
-        #  uosc
-        #  sponsorblock
-        #];
-
         mpv = pkgs.mpv-unwrapped.override {
           waylandSupport = true;
         };
@@ -331,7 +301,6 @@
     config = {
       profile = "high-quality";
       ytdl-format = "bestvideo+bestaudio";
-      #cache-default = 4000000;
       save-position-on-quit="yes";
     };
   };
@@ -378,9 +347,9 @@
   
   # modules
   #nvim.enable = true;
-  helix.enable = true;
+  module.helix.enable = true;
 
-  nvf.enable = true;
+  module.nvf.enable = true;
 
   #catppuccin.enable = true;
 } 

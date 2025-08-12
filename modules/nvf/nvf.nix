@@ -4,9 +4,9 @@
   lib,
   ...
 }: let
-  cfg = config.nvf;
+  cfg = config.module.nvf;
 in {
-  options.nvf.enable = lib.mkEnableOption "Enable custom nvf config";
+  options.module.nvf.enable = lib.mkEnableOption "Enable custom nvf config";
 
   config = lib.mkIf cfg.enable {
     programs.nvf = {
@@ -156,7 +156,7 @@ in {
                   owner = "lervag";
                   repo = "vimtex";
                   rev = "master";
-                  sha256 = "fwDUEsOrDBO+LOWiExu9EEe9oNoejYtt5JWN5AW4i0c=";
+                  sha256 = "6ClxRxHQgr/qRSI7jg071MO5G4GTbHtyTt6iS6Wqq90=";
                 };
               };
               setup = ''

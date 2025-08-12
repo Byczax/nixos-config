@@ -21,6 +21,13 @@
     };
   };
 
+
+  xdg.portal = {
+    enable = true;
+    extraPortals = with pkgs; [ xdg-desktop-portal-hyprland ];
+    config.common.default = [ "hyprland" ];
+  };
+
   nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
     # Those are required to install steam and games
     "steam"
@@ -31,6 +38,9 @@
     # printer driver for lenovo
     "libfprint-2-tod1-goodix"
     "python3.12-youtube-dl-2021.12.17"
+
+    # Intel Wi-Fi firmware
+    "linux-firmware"
   ];
  
   # boot specifications
@@ -56,9 +66,6 @@
     rtkit.enable = true;
   };
 
-  # Compressed ram, bad performance when gaming
-  #zramSwap.enable = true;
-
   # enable internet and wifi support
   networking = {
     hostName = "nixos";
@@ -81,35 +88,20 @@
       };
     };
   };
-
+  services.connman.wifi.backend = "iwd";
   # bluetooth, what else
-  hardware.bluetooth.enable = true;
+  hardware = {
+    bluetooth.enable = true;
 
-  hardware.graphics = {
-    enable = true;
-    extraPackages = with pkgs; [
-      #... # your Open GL, Vulkan and VAAPI drivers
-      intel-media-sdk
-      #vpl-gpu-rt # or intel-media-sdk for QSV
-    ];
+    graphics = {
+      enable = true;
+      extraPackages = with pkgs; [
+        intel-media-sdk
+      ];
+    };
+
+    enableRedistributableFirmware = true;
   };
-
-  # desktop portal, so hyprland works
-  #xdg = {
-  #  portal = {
-  #    enable = true;
-  #    xdgOpenUsePortal = true;
-  #    config = {
-  #      common.default = ["gtk"];
-  #      hyprland.default = ["gtk" "hyprland"];
-  #    };
-  #    extraPortals = [
-  #      pkgs.xdg-desktop-portal-gtk
-  #      pkgs.xdg-desktop-portal-hyprland
-  #      pkgs.xdg-desktop-portal-wlr
-  #    ];
-  #  };
-  #};
 
   services.dbus.enable = true;
 
@@ -122,6 +114,7 @@
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
+      wireplumber.enable = true;
     };
 
     # login screen with Hyprland as window manager 
@@ -190,7 +183,7 @@
   users.users.bq = {
     isNormalUser = true;
     description = "bq";
-    extraGroups = [ "networkmanager" "wheel" "docker" "libvirtd"];
+    extraGroups = [ "networkmanager" "wheel" "docker" "libvirtd" "video"];
     shell = pkgs.zsh;
     packages = with pkgs; [ ];
   };
