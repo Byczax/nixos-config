@@ -258,6 +258,10 @@
     xdotool
     hugo
     go
+    notesnook
+
+    nwg-displays
+    lm_sensors
   ];
 
   services.syncthing = {

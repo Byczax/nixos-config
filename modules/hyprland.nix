@@ -113,9 +113,7 @@ in {
         ", XF86AudioPlay, exec, playerctl play-pause"
         ", XF86AudioPrev, exec, playerctl previous"
       ];
-      monitor = [
-      ",preffered,auto,1"
-      ];
+      source = [ "~/.config/hypr/monitors.conf" ];
 
       windowrulev2 = [
         # Ignore maximize requests from apps. You'll probably like this.
