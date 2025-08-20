@@ -9,9 +9,7 @@ waybarCSS:
       modules-left = [
         "hyprland/workspaces"
         "hyprland/window"
-        "hyprland/mode"
       ];
-      modules-center = [ "" ];
       modules-right = [
         "tray"
         "network"
@@ -22,7 +20,6 @@ waybarCSS:
         "custom/temperature"
 	      "backlight"
         "battery"
-	      #"hyprland/language"
         "clock#date"
         "clock#time"
       ];
@@ -51,14 +48,11 @@ waybarCSS:
       };
       "memory" = {
         "format" = "  {used:0.1f}G/{total:0.1f}G ";
-        #"format" = " {:02}%";
       };
       "custom/temperature" = {
         "exec" = "sensors | awk '/^Package id 0:/ {print int($4)}'";
         "format" = " {}°C ";
         "interval" = 5;
-        #"tooltip": true,
-        #"tooltip-format": "当前 CPU 温度: {}°C"
       };
       "backlight" = {
       	"format" = "{icon} {percent}%";
