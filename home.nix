@@ -52,6 +52,9 @@
 	    main = {
 	      font = "Fira Code:size=11";
 	    };
+      #url = {
+      #  launch = "xdg-open";
+      #};
 	  };
   };
 
@@ -111,9 +114,39 @@
   # hyprland stack
   module.hyprland.enable = true; 
   programs.hyprlock.enable = true;
-  services.hypridle.enable = true;
+  services.hypridle = {
+    enable = true;
+    settings = {
+      listener = [
+        {
+          timeout = 300;
+          on-timeout = "hyprlock";
+        }
+        {
+          timeout = 600;
+          on-timeout = "hyprctl dispatch dpms off";
+          on-resume = "hyprctl dispatch dpms on";
+        }
+      ];
+    };
+  };
   services.hyprsunset = {
     enable = true;
+    transitions = {
+      sunrise = {
+        calendar = "*-*-* 06:00:00";
+        requests = [
+          [ "temperature" "6500" ]
+          [ "gamma 100" ]
+        ];
+      };
+      sunset = {
+        calendar = "*-*-* 19:00:00";
+        requests = [
+          [ "temperature" "2500" ]
+        ];
+      };
+    };
   };
   services.hyprpolkitagent.enable = true;
   services.hyprpaper.enable = true;
@@ -182,7 +215,7 @@
     (flameshot.override { enableWlrSupport = true; }) # slow screenshot with drawings
     grimblast # fast screenshot 
     xorg.xlsclients # check if app is running under X11
-    inkscape
+    inkscape-with-extensions
     btop
     libreoffice-qt6-fresh
     wl-clipboard #clipboard
@@ -199,9 +232,7 @@
 
     direnv #why I have that?
     libnotify # what is this for?
-    nerd-fonts.fira-code #more fonts?
-    nerd-fonts.droid-sans-mono
-    gcc # C++ let's go
+        gcc # C++ let's go
 
     # to fulfill lazyvim plugins
     luarocks
@@ -262,6 +293,10 @@
 
     nwg-displays
     lm_sensors
+    adwaita-icon-theme
+    dysk
+
+    
   ];
 
   services.syncthing = {
@@ -271,19 +306,6 @@
   programs.vesktop = {
     enable = true;
   };
-
-  #xdg = {
-  #  portal = {
-  #    enable = true;
-  #    extraPortals = [
-  #      pkgs.xdg-desktop-portal
-  #      pkgs.xdg-desktop-portal-hyprland
-  #    ];
-  #    config = {
-  #      common.default = [ "hyprland" ];
-  #    };
-  #  };
-  #};
 
   programs.zathura = {
     enable = true;
@@ -346,6 +368,7 @@
 
   # do I need it?
   fonts = {
+    #enableDefaultPackages = true;
     fontconfig.enable = true;
    };
   

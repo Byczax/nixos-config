@@ -179,15 +179,48 @@
   #services.fprintd.tod.enable = true;
   #services.fprintd.tod.driver = pkgs.libfprint-2-tod1-goodix;
 
+  fonts = {
+    enableDefaultPackages = true;
+    #fontDir.enable = true;
+    packages = with pkgs; [
+      noto-fonts
+      noto-fonts-cjk-sans
+      noto-fonts-emoji
+      liberation_ttf
+      fira-code
+      fira-code-symbols
+      mplus-outline-fonts.githubRelease
+      dina-font
+      proggyfonts
+      nerd-fonts.fira-code
+      nerd-fonts.droid-sans-mono
+    ];
+  };
   # system user
   users.users.bq = {
     isNormalUser = true;
     description = "bq";
+    initialPassword = "changeme";
     extraGroups = [ "networkmanager" "wheel" "docker" "libvirtd" "video"];
     shell = pkgs.zsh;
     packages = with pkgs; [ ];
   };
 
+  environment.systemPackages = with pkgs; [
+    bash
+    coreutils
+    vim   # optional
+  ];
+  programs.hyprland.enable = true;
+
+  users.users.vmuser = {
+    isNormalUser = true;
+    initialPassword = "vmpass";
+    extraGroups = [ "wheel" ];
+    #shell = pkgs.zsh;
+    #packages = with pkgs; [ ];
+  };
+  #users.groups.vmuser = {};
 
   #users.users.nixosvmtest = {
   #  isSystemUser = true ;
@@ -245,7 +278,7 @@
   };
 
   # Needed kernel modules for Lenovo systems
-  boot.kernelModules = [ "acpi_call" "tp_smapi" ];
+  boot.kernelModules = [ "acpi_call" "tp_smapi" "i2c-dev" ];
 
   virtualisation.docker = {
     enable = true;
