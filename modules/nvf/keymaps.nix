@@ -624,4 +624,22 @@
     action = "function() Snacks.toggle.zen() end";
     desc = "Toggle Zen Mode";
   }
+  {
+    key = "<leader>fe";
+    mode = ["n"];
+    action = "<cmd>lua require('neo-tree.command').execute({ toggle = true, dir = vim.fn.getcwd() })<CR>";
+    desc = "Explorer NeoTree (Root Dir)";
+  }
+  {
+    key = "<leader>e";
+    mode = ["n"];
+    action = "<cmd>lua require('neo-tree.command').execute({ toggle = true, dir = vim.fn.getcwd() })<CR>";
+    desc = "Explorer NeoTree (Root Dir)";
+  }
+  {
+    key = "<leader>ge";
+    mode = ["n"];
+    action = "<cmd>lua require('neo-tree.command').execute({ source = 'git_status', toggle = true })<CR>";
+    desc = "Git Explorer";
+  }
 ]

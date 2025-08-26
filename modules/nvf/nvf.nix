@@ -51,8 +51,8 @@ in {
 
           autopairs.nvim-autopairs.enable = true; # Auto-close brackets, quotes, etc.
           formatter.conform-nvim.enable = true; # Code formatter integration
-          #filetree.neo-tree.enable = true; # Alternative file tree explorer
-          filetree.nvimTree.enable = true; # File explorer on the left sidebar
+          filetree.neo-tree.enable = true; # Alternative file tree explorer
+          #filetree.nvimTree.enable = true; # File explorer on the left sidebar
           notify.nvim-notify.enable = true; # Better notification system
           dashboard.dashboard-nvim.enable = true; # Startup screen/dashboard
           lazy.enable = true; # Plugin lazy-loading manager
@@ -90,7 +90,7 @@ in {
               setupOpts = {
                 bigfile.enable = true; # Handle large files efficiently
                 # dashboard.enable = false; # Dashboard from snacks
-                explorer.enable = true; # File explorer
+                # explorer.enable = true; # File explorer
                 input.enable = true; # Enhanced input prompts
                 quickfile.enable = true; # Quick-access recent files
                 scope.enable = true; # Tab/workspace scope management
@@ -98,6 +98,7 @@ in {
                 statuscolumn.enable = true; # Enhanced gutter/status column
                 words.enable = true; # Word highlighting/navigation
                 notifier.enable = true; # Notification framework
+                indent.enable = true;
                 # picker.enable = true; # Enhanced picker integration
                 # image.enable = false; # Image preview in buffer
               };
