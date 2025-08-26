@@ -10,6 +10,7 @@ waybarCSS:
         "hyprland/workspaces"
         "hyprland/window"
       ];
+      modules-center =[];
       modules-right = [
         "tray"
         "network"
@@ -28,13 +29,14 @@ waybarCSS:
         "format-ethernet" = "{ifname}";
         "format-disconnected" = " ";
         "max-length" = 50;
-        "on-click" = "exec alacritty -e nmtui";
+        #"on-click" = "exec alacritty -e nmtui";
+        "format-alt" = "{ifname}: {ipaddr}/{cidr}";
       };
       
       "bluetooth" = {
         "format" = " {status}";
         "format-disabled" = ""; #// an empty format will hide the module
-        "format-connected" = " {num_connections} connected";
+        "format-connected" = " {num_connections} conn";
         "tooltip-format" = "{controller_alias}\t{controller_address}";
         "tooltip-format-connected" = "{controller_alias}\t{controller_address}\n\n{device_enumerate}";
         "tooltip-format-enumerate-connected" = "{device_alias}\t{device_address}";
@@ -47,7 +49,7 @@ waybarCSS:
         "on-click" = "exec alacritty -e btop";
       };
       "memory" = {
-        "format" = "  {used:0.1f}G/{total:0.1f}G ";
+        "format" = "  {used:0.1f}/{total:0.1f}G ";
       };
       "custom/temperature" = {
         "exec" = "sensors | awk '/^Package id 0:/ {print int($4)}'";
@@ -105,7 +107,8 @@ waybarCSS:
         "format" = "{:%d.%m}";
       };
       "clock#time" = {
-        "format" = "{:%H:%M}";
+        "format" = "{:%H:%M:%OS}";
+        "interval" = 1;
       };
       "wireplumber" = {
         "format" = "{icon} {volume:02}%";
