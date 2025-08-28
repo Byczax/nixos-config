@@ -174,11 +174,22 @@ in {
                   repo = "typst.vim";
                   rev = "master";
                   sha256="PfrkOn2c2JhqplTYnm8Lz4H3/0zVUSlA7l+FN0okKDY=";
-                  #sha256 = "6ClxRxHQgr/qRSI7jg071MO5G4GTbHtyTt6iS6Wqq90=";
+                };
+              };
+            };
+            vimjsonnet = {
+              package = pkgs.vimUtils.buildVimPlugin {
+                pname = "vim-jsonnet";
+                version = "master";
+                src = pkgs.fetchFromGitHub {
+                  owner = "google";
+                  repo = "vim-jsonnet";
+                  rev = "master";
+                  sha256 = "sha256-ChgUGTrLthuGSws/UpF71JYI/c2QqItax6hsh7mYX/w="; # replace with actual
                 };
               };
               #setup = ''
-              #  " any vim.g or vim.cmd setup you want for typst
+              #  " nothing extra needed, syntax highlighting works automatically
               #'';
             };
           };
