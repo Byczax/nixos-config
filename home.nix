@@ -27,7 +27,7 @@
     NIXOS_OZONE_WL = "1";
 
     # suggests electron apps to use the default (wayland) backend
-    ELECTRON_OZONE_PLATFORM_HINT = "auto";
+    ELECTRON_OZONE_PLATFORM_HINT = "wayland";
     FONTCONFIG_FILE = "${pkgs.fontconfig.out}/etc/fonts/fonts.conf";
 
     # inform that we use hyprland
@@ -58,12 +58,108 @@
 	  };
   };
 
+  home.file.".config/zoomus.conf".text = ''
+    [General]
+    %2B8gcPZIuASRcihpYJW6UA83rPnH%2B7ifu11s9xp3p8Rc%23=1756246768
+    63tJmSFEpYg9dR34FZPBHK8VKGPcUT1yDVJWSS9UTuU%23=1756246768
+    GeoLocale=system
+    KXhiCZ2HpmjrAEVlAVyB4VHAVsfnyTQR06weNL9BKYY%23=1756246768
+    SensitiveInfoMaskOn=true
+    ShowBiDirecSyncNoti=true
+    UeJ7AgrtBappnQjaaFui4jk8yVCY2K4zE14gyE34Rzo%23=1756246768
+    autoPlayGif=false
+    autoScale=true
+    bForceMaximizeWM=false
+    captureHDCamera=true
+    cefInstanceCountLimit=-1
+    cefRefreshTime=0
+    chatListPanelLastWidth=230
+    com.zoom.client.langid=0
+    conf.webserver=https://eu01web.zoom.us
+    conf.webserver.vendor.default=https://ethz.zoom.us
+    currentMeetingId=66118033985
+    deviceID=F4:A4:75:47:60:85
+    disableCef=false
+    enable.host.auto.grab=true
+    enableAlphaBuffer=true
+    enableCefGpu=false
+    enableCefLog=false
+    enableCefTa=false
+    enableCloudSwitch=true
+    enableLog=true
+    enableMiniWindow=true
+    enableQmlCache=true
+    enableScreenSaveGuard=false
+    enableStartMeetingWithRoomSystem=false
+    enableTestMode=false
+    enablegpucomputeutilization=false
+    fake.version=
+    flashChatTime=0
+    forceEnableTrayIcon=true
+    forceSSOURL=
+    hideCrashReport=false
+    host.auto.grab.interval=10
+    isTransCoding=false
+    jK9BkbV8zNjw7whdX9AnddbmbOu4N8hVKwVt8iDnC38%23=1756246768
+    logLevel=info
+    newMeetingWithVideo=true
+    noSandbox=false
+    pOoALJyX%2BqjXWD3Cr1Q4lH5ZpVshFjYob0SH3xBr2jQ%23=1756246768
+    playSoundForNewMessage=false
+    shareBarTopMargin=0
+    showOneTimePTAICTipHubble=false
+    showOneTimeQAMostUpvoteHubble=true
+    showOneTimeQueriesOptionTip=true
+    showOneTimeTranslationUpSellTip=false
+    showSystemTitlebar=false
+    speaker_volume=255
+    sso_domain=.zoom.us
+    sso_gov_domain=.zoomgov.com
+    system.audio.type=default
+    systemDockMargin=0
+    timeFormat12HoursEnable=true
+    translationFreeTrialTipShowTime=0
+    upcoming_meeting_header_image=
+    useSystemTheme=false
+    userEmailAddress=mbyczko@ethz.ch
+    webview.debug.enable=false
+    xwayland=false
+
+    [1VGa6fEsTQYEquYOdMv]
+    j1V5NQSTWNQPlSB8TSaIgvM%23=1756246768
+
+    [AS]
+    showframewindow=true
+
+    [chat.recent]
+    recentlast.session=
+
+    [e2oewir4]
+    zlsEjhEtnrfV\1\RNfupD3GFHXnLPoOTzI%23=1756246768
+
+    [p2j01nOS5WVbsNRvQFnMTmH5SbwLdPoVQxAt]
+    B0jJHc%23=1756246768
+
+    [pvKc9SrvNy]
+    UrM6djKC7sBYYhjF2xNCSHVpXDpFealQ%23=1756246768
+
+    [zoom_new_im]
+    is_landscape_mode=true
+    main_frame_pixel_pos_narrow="376,600"
+    main_frame_pixel_pos_wide="1920,1034"
+  '';
+  home.file.".config/electron-flags.conf".text = ''
+    --enable-features=WaylandWindowDecorations
+    --ozone-platform-hint=auto
+  '';
+
+
+
   # sync between phone and pc 
   services.kdeconnect = {
     enable = true;
     indicator = true;
   };
-
   # local telemetry on yourslef
   services.activitywatch = {
     enable = true;
@@ -173,8 +269,10 @@
 	   
     };
     initContent = ''
-	    bindkey "^R" history-incremental-search-backward;
-	    '';
+    bindkey "^R" history-incremental-search-backward;
+    export PATH="''${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+    export KUBECONFIG=/home/bq/.kube/vis-config
+    '';
   };
 
   # app menu
@@ -296,7 +394,22 @@
     adwaita-icon-theme
     dysk
 
-    
+    k9s
+    kubectl
+    krew
+    tanka
+    jsonnet-bundler
+    gnumake
+    (wrapHelm kubernetes-helm {
+        plugins = with pkgs.kubernetes-helmPlugins; [
+          helm-secrets
+          helm-diff
+          helm-s3
+          helm-git
+        ];
+      })
+
+    zoom-us
   ];
 
   services.syncthing = {
