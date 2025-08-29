@@ -157,7 +157,7 @@ in {
                   owner = "lervag";
                   repo = "vimtex";
                   rev = "master";
-                  sha256 = "6ClxRxHQgr/qRSI7jg071MO5G4GTbHtyTt6iS6Wqq90=";
+                  sha256 = "XPEDGKOhfpoWSMv8hs5gDfp+azDMLRd9CvuH0bg1dR8=";
                 };
               };
               setup = ''
