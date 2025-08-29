@@ -40,7 +40,6 @@
       };
       modules = [
         ./configuration.nix # systemwide configuration
-        ./modules/steam.nix # steam config, avaliable only systemwide
 
         home-manager.nixosModules.home-manager
         {
@@ -49,7 +48,6 @@
 
           home-manager.users.bq.imports = [
             ./home.nix # home manager config file
-            catppuccin.homeModules.catppuccin
             inputs.nvf.homeManagerModules.default 
           ] ++ import ./modules/all-home-modules.nix; # modules for home manager
         }
