@@ -21,20 +21,22 @@
   
   home.sessionVariables = {
     # info where to save config files 
-    XDG_CONFIG_HOME = "${config.home.homeDirectory}/.config";
+    #XDG_CONFIG_HOME = "${config.home.homeDirectory}/.config";
     
     # inform apps that we use wayland
     NIXOS_OZONE_WL = "1";
+    OZONE_PLATFORM="wayland";
 
-    # suggests electron apps to use the default (wayland) backend
+    # suggests electron apps to use the wayland backend
     ELECTRON_OZONE_PLATFORM_HINT = "wayland";
+
     FONTCONFIG_FILE = "${pkgs.fontconfig.out}/etc/fonts/fonts.conf";
 
     # inform that we use hyprland
     XDG_CURRENT_DESKTOP = "Hyprland";
     XDG_SESSION_TYPE = "wayland";
-    XDG_SESSION_DESKTOP = "Hyprland";
-    PIPEWIRE_ENABLE = "1";
+    #XDG_SESSION_DESKTOP = "Hyprland";
+    #PIPEWIRE_ENABLE = "1";
 
     # dark mode, but does not work :/
     #GTK_THEME_VARIANT = "dark";                   # For some GTK apps
@@ -321,7 +323,7 @@
     qbittorrent
     unzip
     gdu # disk analyzer, better than ncdu
-    logseq 
+    logseq
     hyprshade
     #lm_sensors #maybe I don't need it
     libqalculate #calculator
@@ -400,6 +402,10 @@
     tanka
     jsonnet-bundler
     gnumake
+    kubeseal
+
+    vesktop
+
     (wrapHelm kubernetes-helm {
         plugins = with pkgs.kubernetes-helmPlugins; [
           helm-secrets
@@ -410,13 +416,10 @@
       })
 
     zoom-us
+    trilium-desktop
   ];
 
   services.syncthing = {
-    enable = true;
-  };
-
-  programs.vesktop = {
     enable = true;
   };
 
@@ -480,10 +483,7 @@
   };
 
   # do I need it?
-  fonts = {
-    #enableDefaultPackages = true;
-    fontconfig.enable = true;
-   };
+  fonts.fontconfig.enable = true;
   
   # modules
   #nvim.enable = true;
