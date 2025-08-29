@@ -41,6 +41,8 @@
 
     # Intel Wi-Fi firmware
     "linux-firmware"
+
+    "zoom"
   ];
  
   # boot specifications
@@ -213,23 +215,6 @@
   ];
   programs.hyprland.enable = true;
 
-  users.users.vmuser = {
-    isNormalUser = true;
-    initialPassword = "vmpass";
-    extraGroups = [ "wheel" ];
-    #shell = pkgs.zsh;
-    #packages = with pkgs; [ ];
-  };
-  #users.groups.vmuser = {};
-
-  #users.users.nixosvmtest = {
-  #  isSystemUser = true ;
-  #  initialPassword = "test";
-  #  group = "nixosvmtest";
-  #};
-  #users.groups.nixosvmtest = {};
-
-
   # eanble steam from module
   steam.enable = true;
 
@@ -285,6 +270,14 @@
   };
 
   virtualisation.libvirtd.enable = true;
+
+  virtualisation.vmVariant = {
+    # following configuration is added only when building VM with build-vm
+    virtualisation = {
+      memorySize =  2048; # Use 2048MiB memory.
+      cores = 3;
+    };
+  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
