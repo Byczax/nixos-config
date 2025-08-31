@@ -45,7 +45,7 @@
   };
 
   # the bar on the top
-  programs.waybar = import ./waybar.nix ./style.css;
+  programs.waybar = import ../../waybar.nix ../../style.css;
 
   # terminal
   programs.foot = {
@@ -256,7 +256,7 @@
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
     shellAliases = {
-    	update = "sudo nixos-rebuild switch --flake /home/bq/nixos-config/#default";
+    	update = "sudo nixos-rebuild switch --flake /home/bq/nixos-config/#yoga";
       test_vm = "sudo nixos-rebuild build-vm --flake /home/bq/nixos-config/#default";
 	    calc = "qalc";
       bat_protect_on = "sudo echo 1 > /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode";

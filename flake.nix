@@ -22,13 +22,13 @@
     home-manager,
     ...
   }@inputs: {
-    nixosConfigurations.default = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.yoga = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = {
         inherit inputs;
       };
       modules = [
-        ./configuration.nix
+        ./hosts/yoga/configuration.nix
 
         home-manager.nixosModules.home-manager
         {
@@ -36,7 +36,7 @@
           home-manager.useUserPackages = true;
 
           home-manager.users.bq.imports = [
-            ./home.nix
+            ./hosts/yoga/home.nix
             inputs.nvf.homeManagerModules.default 
           ] ++ import ./modules/all-home-modules.nix; # modules for home manager
         }
