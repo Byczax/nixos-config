@@ -45,7 +45,7 @@
   };
 
   # the bar on the top
-  programs.waybar = import ../../waybar.nix ../../style.css;
+  #programs.waybar = import ../../waybar.nix ../../style.css;
 
   # terminal
   programs.foot = {
@@ -490,6 +490,8 @@
   module.helix.enable = true;
 
   module.nvf.enable = true;
+
+  module.waybar.enable = true;
 
   #catppuccin.enable = true;
 } 

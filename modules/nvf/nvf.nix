@@ -85,6 +85,7 @@ in {
           utility = {
             vim-wakatime.enable = true; # Track coding activity
             motion.flash-nvim.enable = true; # Enhanced movement/navigation
+            preview.markdownPreview.enable = true;
             snacks-nvim = {
               enable = true; # Collection of mini-tools to boost productivity
               setupOpts = {
@@ -101,6 +102,7 @@ in {
                 indent.enable = true;
                 # picker.enable = true; # Enhanced picker integration
                 # image.enable = false; # Image preview in buffer
+                
               };
             };
           };
@@ -113,6 +115,8 @@ in {
           git = {
             enable = true; # Git integration
             gitsigns.enable = true; # Git signs in gutter (add/delete/change)
+            git-conflict.enable = true;
+            hunk-nvim.enable = true;
           };
 
           terminal = {

@@ -22,7 +22,7 @@
   home.sessionVariables = {
     # info where to save config files 
     #XDG_CONFIG_HOME = "${config.home.homeDirectory}/.config";
-    
+    EDITOR="nvim"; 
     # inform apps that we use wayland
     NIXOS_OZONE_WL = "1";
     OZONE_PLATFORM="wayland";
@@ -39,13 +39,24 @@
     #PIPEWIRE_ENABLE = "1";
 
     # dark mode, but does not work :/
+    #GTK_THEME = "Adwaita-dark";
+    #QT_QPA_PLATFORMTHEME = "qt6ct";
     #GTK_THEME_VARIANT = "dark";                   # For some GTK apps
     #QT_STYLE_OVERRIDE = "dark";           # Or just "dark" if supported
     #QT_QPA_PLATFORMTHEME = "gtk3";                # Make Qt apps follow GTK settings
   };
 
+  gtk.theme = {
+    name = "Adwaita-dark";
+    package = pkgs.gnome-themes-extra;
+  };
+  qt = {
+    enable = true;
+    platformTheme.name = "qtct";
+  };
+
   # the bar on the top
-  programs.waybar = import ../../waybar.nix ../../style.css;
+  #programs.waybar = import ../../waybar.nix ../../style.css;
 
   # terminal
   programs.foot = {
@@ -417,6 +428,9 @@
 
     zoom-us
     trilium-desktop
+    element-desktop
+    vscodium
+    gimp
   ];
 
   services.syncthing = {
@@ -490,6 +504,8 @@
   module.helix.enable = true;
 
   module.nvf.enable = true;
+
+  module.waybar.enable = true;
 
   #catppuccin.enable = true;
 } 

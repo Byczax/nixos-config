@@ -22,6 +22,11 @@
     };
   };
 
+  networking.extraHosts =
+  ''
+    127.0.0.1 minio
+  '';
+
 
   xdg.portal = {
     enable = true;
@@ -218,7 +223,7 @@
 
   # eanble steam from module
   steam.enable = true;
-
+  programs.xfconf.enable = true;
   programs.thunar = {
     enable = true;
     plugins = with pkgs; [
