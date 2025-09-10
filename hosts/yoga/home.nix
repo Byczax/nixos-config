@@ -75,11 +75,18 @@
   	enable = true;
 	  settings = {
 	    main = {
+        term = "xterm-256color";
 	      font = "Fira Code:size=11";
+        #dpi-aware = "yes";
 	    };
-      #url = {
-      #  launch = "xdg-open";
-      #};
+      cursor = {
+        style = "beam";
+        blink = "no";
+      };
+      url = {
+        osc8-underline="always";
+        launch = "xdg-open \${url}";
+      };
 	  };
   };
 
@@ -371,21 +378,22 @@
 
     simple-scan # scanner
 
-    #(pkgs.texlive.combine {
-    #  inherit (pkgs.texlive)
-    #    scheme-medium  # base minimal setup
-    #    latex         # core LaTeX support
-    #    geometry      # example extra packages
-    #    xcolor
-    #    amsmath
-    #    fontspec
-    #    hyperref
-    #    moderncv
-    #    polski
-    #    latexmk
-    #    enumitem
-    #    pgf;
-    #})
+    (pkgs.texlive.combine {
+      inherit (pkgs.texlive)
+        scheme-basic  # base minimal setup
+        latex         # core LaTeX support
+        geometry      # example extra packages
+        xcolor
+        amsmath
+        fontspec
+        hyperref
+        moderncv
+        polski
+        latexmk
+        enumitem
+        pgf
+        titlesec;
+    })
 
     hyprsunset # need to install manually
 
