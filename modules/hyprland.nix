@@ -118,6 +118,16 @@ in {
 
         # Fix some dragging issues with XWayland
         "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
+        
+        # moves the window to x0, y0 on the screen
+        "move 0 0,class:(flameshot),title:(flameshot)"
+        # shows the window on all workspaces
+        "pin,class:(flameshot),title:(flameshot)"
+        # tell the application it's in fullscreen mode
+        "fullscreenstate,class:(flameshot),title:(flameshot)"
+        # force the window to be floating ( not in a tiled pane )
+        "float,class:(flameshot),title:(flameshot)"
+
         ];	
       };
     };
