@@ -642,4 +642,9 @@
     action = "<cmd>lua require('neo-tree.command').execute({ source = 'git_status', toggle = true })<CR>";
     desc = "Git Explorer";
   }
+  {
+    key = "Y";
+    mode = ["v"];
+    action = "\"+y";
+    }
 ]
