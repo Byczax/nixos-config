@@ -44,6 +44,28 @@ in {
           clipboard.providers.wl-copy.enable = true; # Clipboard support for Wayland (wl-copy)
           snippets.luasnip.enable = true; # Snippet engine used by completion tools
 
+          languages = {
+            bash.lsp.enable = true;
+            css.lsp.enable = true;
+            go.lsp.enable = true;
+            hcl.lsp.enable = true;
+            helm.lsp.enable = true;
+            java.lsp.enable = true;
+            lua.lsp.enable = true;
+            markdown = {
+              lsp.enable = true;
+              extensions.markview-nvim.enable = true;
+            };
+            nix.lsp.enable = true;
+            python.lsp.enable = true;
+            rust.lsp.enable = true;
+            sql.lsp.enable = true;
+            terraform.lsp.enable = true;
+            ts.lsp.enable = true;
+            typst.lsp.enable = true;
+            yaml.lsp.enable = true;
+          };
+
           ui.noice = {
             enable = true; # Enhanced UI for messages, cmdline, and LSP
             setupOpts.lsp.signature.enabled = true; # Show LSP signature help
@@ -129,6 +151,7 @@ in {
           lsp = {
             enable = true; # Enable LSP features
             formatOnSave = true; # Format files when saving
+            inlayHints.enable = true;
             lightbulb.enable = false; #  Code action lightbulb
             lspsaga.enable = false; #  UI for LSP interactions
             trouble.enable = false; #  LSP diagnostics viewer
