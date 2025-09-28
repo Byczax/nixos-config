@@ -258,24 +258,24 @@
       ];
     };
   };
-  services.hyprsunset = {
-    enable = true;
-    transitions = {
-      sunrise = {
-        calendar = "*-*-* 06:00:00";
-        requests = [
-          [ "temperature" "6500" ]
-          [ "gamma 100" ]
-        ];
-      };
-      sunset = {
-        calendar = "*-*-* 19:00:00";
-        requests = [
-          [ "temperature" "2500" ]
-        ];
-      };
-    };
-  };
+  #services.hyprsunset = {
+  #  enable = true;
+  #  transitions = {
+  #    sunrise = {
+  #      calendar = "*-*-* 06:00:00";
+  #      requests = [
+  #        [ "temperature" "6500" ]
+  #        [ "gamma 100" ]
+  #      ];
+  #    };
+  #    sunset = {
+  #      calendar = "*-*-* 19:00:00";
+  #      requests = [
+  #        [ "temperature" "2500" ]
+  #      ];
+  #    };
+  #  };
+  #};
   services.hyprpolkitagent.enable = true;
   services.hyprpaper.enable = true;
 
@@ -451,7 +451,29 @@
     element-desktop
     vscodium
     gimp
+    typst
+    pdf2svg
+    python3
+    dig
+    whois
+    nmap
+    dnslookup
+    fastfetch
+    pdfpc
+    
+    kdePackages.dolphin
+    kdePackages.kio-fuse #to mount remote filesystems via FUSE
+    kdePackages.kio-extras #extra protocols support (sftp, fish and more)
+    kdePackages.qtsvg
+
   ];
+
+  programs.nh = {
+    enable = true;
+    clean.enable = true;
+    clean.extraArgs = "--keep-since 4d --keep 3";
+    flake = "/home/bq/nixos-config/hosts/yoga";
+  };
 
   services.syncthing = {
     enable = true;
