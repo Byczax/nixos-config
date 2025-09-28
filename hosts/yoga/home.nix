@@ -472,7 +472,7 @@
     enable = true;
     clean.enable = true;
     clean.extraArgs = "--keep-since 4d --keep 3";
-    flake = "/home/bq/nixos-config/hosts/yoga";
+    flake = "/home/bq/nixos-config";
   };
 
   services.syncthing = {
