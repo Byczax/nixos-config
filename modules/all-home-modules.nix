@@ -3,5 +3,6 @@
   ./nvim.nix
   ./hyprland.nix
   ./nvf/nvf.nix
-  ./waybar.nix
+  ./waybar/waybar.nix
+  ./mpv.nix
 ]
