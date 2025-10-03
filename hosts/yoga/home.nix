@@ -215,6 +215,14 @@
         exclude_title = false;
       };
     };
+    aw-watcher-window-hyprland = {
+      package = pkgs.aw-watcher-window;
+      #package = awHyprland;
+      settings = {
+        poll_time = 1;
+        exclude_title = false;
+      };
+    };
     };
   };
 
