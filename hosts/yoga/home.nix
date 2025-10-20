@@ -294,7 +294,7 @@
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
     shellAliases = {
-    	update = "sudo nixos-rebuild switch --flake /home/bq/nixos-config/#yoga";
+    	update = "nh os switch /home/bq/nixos-config -H yoga --ask";
       test_vm = "sudo nixos-rebuild build-vm --flake /home/bq/nixos-config/#default";
 	    calc = "qalc";
       bat_protect_on = "sudo echo 1 > /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode";
@@ -473,6 +473,8 @@
     kdePackages.kio-fuse #to mount remote filesystems via FUSE
     kdePackages.kio-extras #extra protocols support (sftp, fish and more)
     kdePackages.qtsvg
+
+    ddcutil
 
   ];
 

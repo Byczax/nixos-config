@@ -100,6 +100,7 @@
   # bluetooth, what else
   hardware = {
     bluetooth.enable = true;
+    i2c.enable = true;
 
     graphics = {
       enable = true;
@@ -209,7 +210,7 @@
     isNormalUser = true;
     description = "bq";
     initialPassword = "changeme";
-    extraGroups = [ "networkmanager" "wheel" "docker" "libvirtd" "video"];
+    extraGroups = [ "networkmanager" "wheel" "docker" "libvirtd" "video" "i2c"];
     shell = pkgs.zsh;
     packages = with pkgs; [ ];
   };
