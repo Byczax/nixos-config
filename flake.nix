@@ -21,7 +21,12 @@
     nixpkgs,
     home-manager,
     ...
-  }@inputs: {
+  }@inputs: 
+  let 
+    inherit (nixpkgs) lib;
+    inherit (builtins) filter map toString;
+  in
+  {
     nixosConfigurations.yoga = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = {
@@ -34,11 +39,16 @@
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
+          home-manager.extraSpecialArgs = {
+            inherit inputs;
+          };
 
           home-manager.users.bq.imports = [
             ./hosts/yoga/home.nix
-            inputs.nvf.homeManagerModules.default 
-          ] ++ import ./modules/all-home-modules.nix; # modules for home manager
+            inputs.nvf.homeManagerModules.default
+          ] ++ lib.filter (lib.hasSuffix ".mod.nix") (map toString (lib.filesystem.listFilesRecursive ./modules));
+
+          #++ import ./modules/all-home-modules.nix; # modules for home manager
         }
       ];
     };
@@ -58,7 +68,8 @@
           home-manager.users.bq.imports = [
             ./hosts/g7/home.nix
             inputs.nvf.homeManagerModules.default 
-          ] ++ import ./modules/all-home-modules.nix; # modules for home manager
+          ] ++ lib.filter (lib.hasSuffix ".mod.nix") (map toString (lib.filesystem.listFilesRecursive ./modules));
+          #++ import ./modules/all-home-modules.nix; # modules for home manager
         }
       ];
     };

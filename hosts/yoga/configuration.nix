@@ -25,6 +25,8 @@
   networking.extraHosts =
   ''
     127.0.0.1 minio
+    127.0.0.1 eventmanager-minio
+    127.0.0.1 keycloak
   '';
 
 
@@ -72,6 +74,7 @@
 
     # required by pipewire
     rtkit.enable = true;
+    pam.services.kwallet.enable = true;
   };
 
   # enable internet and wifi support

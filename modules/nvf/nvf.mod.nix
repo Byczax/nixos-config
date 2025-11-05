@@ -176,22 +176,22 @@ in {
           # ];
 
           extraPlugins = {
-            vimtex = { # latex support in nvim
-              package = pkgs.vimUtils.buildVimPlugin {
-                pname = "vimtex";
-                version = "master";
-                src = pkgs.fetchFromGitHub {
-                  owner = "lervag";
-                  repo = "vimtex";
-                  rev = "master";
-                  sha256 = "ErJoIuRlqZWr2jjfT/Bczc5bu2Bw1E6mbgk/cjvobsY=";
-                };
-              };
-              setup = ''
-                vim.g.vimtex_view_method = 'zathura' 
-                vim.g.vimtex_compiler_method = 'latexmk' 
-              '';
-            };
+            #vimtex = { # latex support in nvim
+            #  package = pkgs.vimUtils.buildVimPlugin {
+            #    pname = "vimtex";
+            #    version = "master";
+            #    src = pkgs.fetchFromGitHub {
+            #      owner = "lervag";
+            #      repo = "vimtex";
+            #      rev = "master";
+            #      sha256 = "sha256-Tx4HQmwM2bRx2e/3vuEsKAYMcLbKYr9tELWjipehxew=";
+            #    };
+            #  };
+            #  setup = ''
+            #    vim.g.vimtex_view_method = 'zathura' 
+            #    vim.g.vimtex_compiler_method = 'latexmk' 
+            #  '';
+            #};
             typst = {
               package = pkgs.vimUtils.buildVimPlugin {
                 pname = "typst";
@@ -200,7 +200,7 @@ in {
                   owner = "kaarmu";
                   repo = "typst.vim";
                   rev = "master";
-                  sha256="PfrkOn2c2JhqplTYnm8Lz4H3/0zVUSlA7l+FN0okKDY=";
+                  sha256="sha256-2FZnhkp2pN8axzrwsFy0p28vQTmmPs0eyf2j0ojovnk=";
                 };
               };
             };

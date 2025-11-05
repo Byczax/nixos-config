@@ -15,10 +15,10 @@ in {
       "$fileManager" = "thunar";
       "$menu" = "wofi -G --allow-images --show drun";
       exec-once = [
-        "$terminal"
-        "waybar"
-        "flameshot"
-        "kdeconnectd"
+        "$terminal &"
+        "waybar &"
+        "flameshot &"
+        "kdeconnectd &"
       ];
       exec = [
         "hyprshade auto"

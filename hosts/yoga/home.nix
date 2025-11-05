@@ -207,22 +207,37 @@
           poll_time = 2;
         };
       };
-    aw-watcher-window = {
-      package = pkgs.aw-watcher-window;
-      #package = awHyprland;
-      settings = {
-        poll_time = 1;
-        exclude_title = false;
+      aw-watcher-window = {
+        package = pkgs.aw-watcher-window;
+        settings = {
+          poll_time = 1;
+          exclude_title = false;
+        };
       };
-    };
-    aw-watcher-window-hyprland = {
-      package = pkgs.aw-watcher-window;
-      #package = awHyprland;
-      settings = {
-        poll_time = 1;
-        exclude_title = false;
+
+      aw-watcher-window-wayland = {
+        package = pkgs.aw-watcher-window-wayland;
+        settings = {
+          poll_time = 1;
+          exclude_title = false;
+        };
       };
-    };
+      aw-watcher-window-hyprland = {
+        package = inputs.aw-watcher-hyprland.packages.${pkgs.stdenv.system}.aw-watcher-window-hyprland;
+        settings = {
+          poll_time = 1;
+          exclude_title = false;
+        };
+      };
+      #aw-watcher-keyboard = {
+      #  package = pkgs.aw-watcher-keyboard;
+      #  settings = { poll_time = 1; };
+      #};
+      #
+      #aw-watcher-mouse = {
+      #  package = pkgs.aw-watcher-mouse;
+      #  settings = { poll_time = 1; };
+      #};
     };
   };
 
@@ -301,7 +316,7 @@
       bat_protect_off = "sudo echo 0 > /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode";
     };
     history.size = 100000;
-    history.ignorePatterns = ["rm *" "pkill *" "cp *" "ls" ".." "l" "la"];
+    history.ignorePatterns = ["rm *" "pkill *" "cp *" "la*" ".." "l*" "la*" "./rsync_local.sh" "update" "git *"];
     oh-my-zsh = {
 	    enable = true;
 	    plugins = [ "git" ];
@@ -475,7 +490,8 @@
     kdePackages.qtsvg
 
     ddcutil
-
+    prusa-slicer
+    openssl
   ];
 
   programs.nh = {
