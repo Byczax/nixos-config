@@ -1,70 +1,70 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-
-{ config, lib, pkgs, ... }:
-
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-      ../../modules/steam.nix # steam config, avaliable only systemwide
-    ];
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+    ../../modules/steam.nix # steam config, avaliable only systemwide
+  ];
 
   # Enable flakes, because they are amazing
   nix = {
-    settings ={ 
-      experimental-features = [ 
-        "nix-command" 
-        "flakes" 
+    settings = {
+      experimental-features = [
+        "nix-command"
+        "flakes"
       ];
       #auto-optimise-store = true;
     };
   };
 
-  networking.extraHosts =
-  ''
+  networking.extraHosts = ''
     127.0.0.1 minio
     127.0.0.1 eventmanager-minio
     127.0.0.1 keycloak
   '';
 
-
   xdg.portal = {
     enable = true;
-    extraPortals = with pkgs; [ xdg-desktop-portal-hyprland ];
-    config.common.default = [ "hyprland" ];
+    extraPortals = with pkgs; [xdg-desktop-portal-hyprland];
+    config.common.default = ["hyprland"];
   };
 
-  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-    # Those are required to install steam and games
-    "steam"
-    "steam-original"
-    "steam-unwrapped"
-    "steam-run"
+  nixpkgs.config.allowUnfreePredicate = pkg:
+    builtins.elem (lib.getName pkg) [
+      # Those are required to install steam and games
+      "steam"
+      "steam-original"
+      "steam-unwrapped"
+      "steam-run"
 
-    # printer driver for lenovo
-    "libfprint-2-tod1-goodix"
-    "python3.12-youtube-dl-2021.12.17"
+      # printer driver for lenovo
+      "libfprint-2-tod1-goodix"
+      "python3.12-youtube-dl-2021.12.17"
 
-    # Intel Wi-Fi firmware
-    "linux-firmware"
+      # Intel Wi-Fi firmware
+      "linux-firmware"
 
-    "zoom"
-  ];
- 
+      "zoom"
+    ];
+
   # boot specifications
   boot = {
     loader = {
       systemd-boot = {
         enable = true;
-        configurationLimit = 10; # Amounts of build to store
+        configurationLimit = 5; # Amounts of build to store
       };
       timeout = 3; # time before it will start booting most recent build
       efi.canTouchEfiVariables = true; # allow to register boots in boot
     };
-    kernelParams = [ "i915.force_probe=9a49" ];
-
+    kernelParams = ["i915.force_probe=9a49"];
   };
 
   security = {
@@ -118,7 +118,7 @@
   services.dbus.enable = true;
 
   services.gnome.gnome-keyring.enable = true;
-  
+
   services = {
     # for multimedia
     pipewire = {
@@ -129,7 +129,7 @@
       wireplumber.enable = true;
     };
 
-    # login screen with Hyprland as window manager 
+    # login screen with Hyprland as window manager
     greetd = {
       enable = true;
       settings = {
@@ -177,14 +177,14 @@
 
   # do I need it?
   programs.dconf.enable = true;
-  
+
   # Required for printer to work
   services.printing.enable = true;
   hardware.sane.enable = true; # enables support for SANE scanners
   services.colord.enable = true;
 
   systemd.services.fprintd = {
-    wantedBy = [ "multi-user.target" ];
+    wantedBy = ["multi-user.target"];
     serviceConfig.Type = "simple";
   };
   services.fprintd.enable = true;
@@ -213,15 +213,15 @@
     isNormalUser = true;
     description = "bq";
     initialPassword = "changeme";
-    extraGroups = [ "networkmanager" "wheel" "docker" "libvirtd" "video" "i2c"];
+    extraGroups = ["networkmanager" "wheel" "docker" "libvirtd" "video" "i2c"];
     shell = pkgs.zsh;
-    packages = with pkgs; [ ];
+    packages = with pkgs; [];
   };
 
   environment.systemPackages = with pkgs; [
     bash
     coreutils
-    vim   # optional
+    vim # optional
   ];
   programs.hyprland.enable = true;
 
@@ -241,8 +241,8 @@
 
   # use zsh
   programs.zsh.enable = true;
-  users.defaultUserShell=pkgs.zsh;
-  environment.shells = with pkgs; [ zsh ];
+  users.defaultUserShell = pkgs.zsh;
+  environment.shells = with pkgs; [zsh];
 
   # control battery, but I think, it does not work with my laptop
   powerManagement.enable = true;
@@ -268,13 +268,23 @@
 
   # enable ports used by tailscale
   networking.firewall = rec {
-    allowedTCPPortRanges = [ { from = 1714; to = 1764; } ];
+    allowedTCPPortRanges = [
+      {
+        from = 1714;
+        to = 1764;
+      }
+    ];
     allowedUDPPortRanges = allowedTCPPortRanges;
   };
 
   # Needed kernel modules for Lenovo systems
-  boot.kernelModules = [ "acpi_call" "tp_smapi" "i2c-dev" ];
-
+  boot.kernelModules = ["acpi_call" "tp_smapi" "i2c-dev" "rts5139" "rts_u" "rts_bio" "rtsx_usb"];
+  boot.extraModprobeConfig = ''
+    options rts5139 device_table=0x5812
+    options rts_u device_table=0x5812
+    options rts_bio device_table=0x5812
+    options rtsx_usb device_table=0x5812
+  '';
   virtualisation.docker = {
     enable = true;
   };
@@ -284,7 +294,7 @@
   virtualisation.vmVariant = {
     # following configuration is added only when building VM with build-vm
     virtualisation = {
-      memorySize =  2048; # Use 2048MiB memory.
+      memorySize = 2048; # Use 2048MiB memory.
       cores = 3;
     };
   };

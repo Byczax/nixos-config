@@ -8,6 +8,7 @@ in {
   config = lib.mkIf cfg.enable {
     wayland.windowManager.hyprland = {
       enable = true;
+      systemd.enable = true;
       settings = {
       "$mod" = "SUPER";
       "$print" = "XF86SelectiveScreenshot";

@@ -203,30 +203,37 @@
       aw-watcher-afk = {
         package = pkgs.aw-watcher-afk;
         settings = {
-          timeout = 300;
           poll_time = 2;
+          timeout = 60;
+          log_level = "debug";
+          testing_backend = "wayland";
         };
       };
-      aw-watcher-window = {
-        package = pkgs.aw-watcher-window;
-        settings = {
-          poll_time = 1;
-          exclude_title = false;
-        };
-      };
+      #aw-watcher-window = {
+      #  package = pkgs.aw-watcher-window;
+      #  settings = {
+      #    poll_time = 1;
+      #    exclude_title = false;
+      #  };
+      #};
 
-      aw-watcher-window-wayland = {
-        package = pkgs.aw-watcher-window-wayland;
-        settings = {
-          poll_time = 1;
-          exclude_title = false;
-        };
-      };
+      #aw-watcher-window-wayland = {
+      #  package = pkgs.aw-watcher-window-wayland;
+      #  settings = {
+      #    poll_time = 1;
+      #    exclude_title = false;
+      #  };
+      #};
       aw-watcher-window-hyprland = {
         package = inputs.aw-watcher-hyprland.packages.${pkgs.stdenv.system}.aw-watcher-window-hyprland;
         settings = {
           poll_time = 1;
           exclude_title = false;
+          timeout = 60;
+          Service = {
+            "Environment=WAYLAND_DISPLAY"="wayland-0";
+            "Environment=XDG_RUNTIME_DIR"="/run/user/1000";
+          };
         };
       };
       #aw-watcher-keyboard = {
@@ -300,7 +307,7 @@
   #  };
   #};
   services.hyprpolkitagent.enable = true;
-  services.hyprpaper.enable = true;
+  #services.hyprpaper.enable = true;
 
   # more zsh stuff
   programs.zsh = {
@@ -492,6 +499,8 @@
     ddcutil
     prusa-slicer
     openssl
+
+    freecad
   ];
 
   programs.nh = {
