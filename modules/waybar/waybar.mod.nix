@@ -1,6 +1,9 @@
-{ config, pkgs, lib, ... }:
-
-let
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}: let
   cfg = config.module.waybar;
 in {
   options.module.waybar.enable = lib.mkEnableOption "Enable custom waybar config";
@@ -17,7 +20,7 @@ in {
             "hyprland/workspaces"
             "hyprland/window"
           ];
-          modules-center =[];
+          modules-center = [];
           modules-right = [
             "tray"
             "network"
@@ -39,7 +42,7 @@ in {
             #"on-click" = "exec alacritty -e nmtui";
             "format-alt" = "{ifname}: {ipaddr}/{cidr}";
           };
-          
+
           "bluetooth" = {
             "format" = " {status}";
             "format-disabled" = ""; #// an empty format will hide the module
@@ -65,20 +68,20 @@ in {
           };
           "backlight" = {
             "format" = "{icon} {percent}%";
-          "format-icons" = [
-            ""
-            ""
-            ""
-            ""
-            ""
-            ""
-            ""
-            ""
-            ""
-            ""
-            ""
-            ""
-          ];
+            "format-icons" = [
+              ""
+              ""
+              ""
+              ""
+              ""
+              ""
+              ""
+              ""
+              ""
+              ""
+              ""
+              ""
+            ];
           };
           "battery" = {
             "format" = "{icon} {capacity:02}%";
@@ -109,7 +112,7 @@ in {
               "critical" = 10;
             };
           };
-          
+
           "clock#date" = {
             "format" = "{:%d.%m}";
           };
@@ -132,8 +135,6 @@ in {
           };
         }
       ];
-
     };
   };
 }
-

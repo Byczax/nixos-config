@@ -1,5 +1,10 @@
-{ pkgs ? import <nixpkgs> { config = {
-  }; } }:
+{
+  pkgs ?
+    import <nixpkgs> {
+      config = {
+      };
+    },
+}:
 pkgs.mkShell {
   buildInputs = [
     pkgs.apksigner
@@ -16,3 +21,4 @@ pkgs.mkShell {
 # adb logcat
 # keytool -genkeypair -v -keystore key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias appkey
 # js-beatify from npm
+

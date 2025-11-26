@@ -21,12 +21,10 @@
     nixpkgs,
     home-manager,
     ...
-  }@inputs: 
-  let 
+  } @ inputs: let
     inherit (nixpkgs) lib;
     inherit (builtins) filter map toString;
-  in
-  {
+  in {
     nixosConfigurations.yoga = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = {
@@ -43,10 +41,12 @@
             inherit inputs;
           };
 
-          home-manager.users.bq.imports = [
-            ./hosts/yoga/home.nix
-            inputs.nvf.homeManagerModules.default
-          ] ++ lib.filter (lib.hasSuffix ".mod.nix") (map toString (lib.filesystem.listFilesRecursive ./modules));
+          home-manager.users.bq.imports =
+            [
+              ./hosts/yoga/home.nix
+              inputs.nvf.homeManagerModules.default
+            ]
+            ++ lib.filter (lib.hasSuffix ".mod.nix") (map toString (lib.filesystem.listFilesRecursive ./modules));
 
           #++ import ./modules/all-home-modules.nix; # modules for home manager
         }
@@ -65,10 +65,12 @@
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
 
-          home-manager.users.bq.imports = [
-            ./hosts/g7/home.nix
-            inputs.nvf.homeManagerModules.default 
-          ] ++ lib.filter (lib.hasSuffix ".mod.nix") (map toString (lib.filesystem.listFilesRecursive ./modules));
+          home-manager.users.bq.imports =
+            [
+              ./hosts/g7/home.nix
+              inputs.nvf.homeManagerModules.default
+            ]
+            ++ lib.filter (lib.hasSuffix ".mod.nix") (map toString (lib.filesystem.listFilesRecursive ./modules));
           #++ import ./modules/all-home-modules.nix; # modules for home manager
         }
       ];

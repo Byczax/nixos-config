@@ -1,9 +1,11 @@
-{ config, pkgs, lib, ... }:
-
-let
-  enableSteam = config.steam.enable;
-in
 {
+  config,
+  pkgs,
+  lib,
+  ...
+}: let
+  enableSteam = config.steam.enable;
+in {
   options.steam.enable = lib.mkOption {
     type = lib.types.bool;
     default = false;
@@ -21,4 +23,3 @@ in
     };
   };
 }
-

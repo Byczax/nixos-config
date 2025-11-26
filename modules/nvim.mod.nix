@@ -1,25 +1,27 @@
-{ config, pkgs, lib, ... }:
-
-let
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}: let
   cfg = config.nvim;
 in {
   options.nvim.enable = lib.mkEnableOption "Enable custom nvim config";
 
   config = lib.mkIf cfg.enable {
-  programs.neovim = {
-    enable = true;
-    extraPackages = with pkgs; [
-      lua-language-server
-      stylua
-      ripgrep
-    ];
-  
-    plugins = with pkgs.vimPlugins; [
-      lazy-nvim
-    ];
-  
-    extraLuaConfig =
-      let
+    programs.neovim = {
+      enable = true;
+      extraPackages = with pkgs; [
+        lua-language-server
+        stylua
+        ripgrep
+      ];
+
+      plugins = with pkgs.vimPlugins; [
+        lazy-nvim
+      ];
+
+      extraLuaConfig = let
         plugins = with pkgs.vimPlugins; [
           LazyVim
           bufferline-nvim
@@ -62,23 +64,48 @@ in {
           vim-startuptime
           which-key-nvim
           vimtex
-          { name = "LuaSnip"; path = luasnip; }
-          { name = "catppuccin"; path = catppuccin-nvim; }
-          { name = "mini.ai"; path = mini-nvim; }
-          { name = "mini.bufremove"; path = mini-nvim; }
-          { name = "mini.comment"; path = mini-nvim; }
-          { name = "mini.indentscope"; path = mini-nvim; }
-          { name = "mini.pairs"; path = mini-nvim; }
-          { name = "mini.surround"; path = mini-nvim; }
+          {
+            name = "LuaSnip";
+            path = luasnip;
+          }
+          {
+            name = "catppuccin";
+            path = catppuccin-nvim;
+          }
+          {
+            name = "mini.ai";
+            path = mini-nvim;
+          }
+          {
+            name = "mini.bufremove";
+            path = mini-nvim;
+          }
+          {
+            name = "mini.comment";
+            path = mini-nvim;
+          }
+          {
+            name = "mini.indentscope";
+            path = mini-nvim;
+          }
+          {
+            name = "mini.pairs";
+            path = mini-nvim;
+          }
+          {
+            name = "mini.surround";
+            path = mini-nvim;
+          }
         ];
         mkEntryFromDrv = drv:
-          if lib.isDerivation drv then
-            { name = "${lib.getName drv}"; path = drv; }
-          else
-            drv;
+          if lib.isDerivation drv
+          then {
+            name = "${lib.getName drv}";
+            path = drv;
+          }
+          else drv;
         lazyPath = pkgs.linkFarm "lazy-plugins" (builtins.map mkEntryFromDrv plugins);
-      in
-      ''
+      in ''
         -- 💡 Fix: Prevent Lazy from writing to doc/tags in Nix store
         local util = require("lazy.core.util")
         util.generate_doc_tags = function() end
@@ -116,32 +143,31 @@ in {
         vim.g.vimtex_compiler_method = "latexmk"
 
       '';
-  };
-  
-  # https://github.com/nvim-treesitter/nvim-treesitter#i-get-query-error-invalid-node-type-at-position
-  xdg.configFile."nvim/parser".source =
-    let
+    };
+
+    # https://github.com/nvim-treesitter/nvim-treesitter#i-get-query-error-invalid-node-type-at-position
+    xdg.configFile."nvim/parser".source = let
       parsers = pkgs.symlinkJoin {
         name = "treesitter-parsers";
-        paths = (pkgs.vimPlugins.nvim-treesitter.withPlugins (plugins: with plugins; [
-        c
-        lua
-        python
-        json
-        yaml
-        bash
-        hcl
-        terraform
-        css
-        latex
-        typst
-        ])).dependencies;
+        paths =
+          (pkgs.vimPlugins.nvim-treesitter.withPlugins (plugins:
+            with plugins; [
+              c
+              lua
+              python
+              json
+              yaml
+              bash
+              hcl
+              terraform
+              css
+              latex
+              typst
+            ])).dependencies;
       };
-    in
-    "${parsers}/parser";
-  
-  # Normal LazyVim config here, see https://github.com/LazyVim/starter/tree/main/lua
-  xdg.configFile."nvim/lua".source = ./lua;
+    in "${parsers}/parser";
+
+    # Normal LazyVim config here, see https://github.com/LazyVim/starter/tree/main/lua
+    xdg.configFile."nvim/lua".source = ./lua;
   };
 }
-

@@ -1,5 +1,10 @@
-{ config, lib, pkgs, inputs, ... }:
 {
+  config,
+  lib,
+  pkgs,
+  inputs,
+  ...
+}: {
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
   home.username = "bq";
@@ -18,15 +23,14 @@
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 
-  
   home.sessionVariables = {
-    # info where to save config files 
+    # info where to save config files
     XDG_CONFIG_HOME = "${config.home.homeDirectory}/.config";
-    EDITOR="nvim";
+    EDITOR = "nvim";
 
     # inform apps that we use wayland
     NIXOS_OZONE_WL = "1";
-    OZONE_PLATFORM="wayland";
+    OZONE_PLATFORM = "wayland";
 
     # suggests electron apps to use the wayland backend
     ELECTRON_OZONE_PLATFORM_HINT = "wayland";
@@ -72,22 +76,22 @@
 
   # terminal
   programs.foot = {
-  	enable = true;
-	  settings = {
-	    main = {
+    enable = true;
+    settings = {
+      main = {
         term = "xterm-256color";
-	      font = "Fira Code:size=11";
+        font = "Fira Code:size=11";
         #dpi-aware = "yes";
-	    };
+      };
       cursor = {
         style = "beam";
         blink = "no";
       };
       url = {
-        osc8-underline="always";
+        osc8-underline = "always";
         launch = "xdg-open \${url}";
       };
-	  };
+    };
   };
 
   home.file.".config/zoomus.conf".text = ''
@@ -185,9 +189,7 @@
     --ozone-platform-hint=auto
   '';
 
-
-
-  # sync between phone and pc 
+  # sync between phone and pc
   services.kdeconnect = {
     enable = true;
     indicator = true;
@@ -231,8 +233,8 @@
           exclude_title = false;
           timeout = 60;
           Service = {
-            "Environment=WAYLAND_DISPLAY"="wayland-0";
-            "Environment=XDG_RUNTIME_DIR"="/run/user/1000";
+            "Environment=WAYLAND_DISPLAY" = "wayland-0";
+            "Environment=XDG_RUNTIME_DIR" = "/run/user/1000";
           };
         };
       };
@@ -265,12 +267,10 @@
     layout = "pl";
   };
 
-
   services.swayidle.enable = true;
 
-  
   # hyprland stack
-  module.hyprland.enable = true; 
+  module.hyprland.enable = true;
   programs.hyprlock.enable = true;
   services.hypridle = {
     enable = true;
@@ -316,30 +316,29 @@
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
     shellAliases = {
-    	update = "nh os switch /home/bq/nixos-config -H yoga --ask";
+      update = "nh os switch /home/bq/nixos-config -H yoga --ask";
       test_vm = "sudo nixos-rebuild build-vm --flake /home/bq/nixos-config/#default";
-	    calc = "qalc";
+      calc = "qalc";
       bat_protect_on = "sudo echo 1 > /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode";
       bat_protect_off = "sudo echo 0 > /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode";
     };
     history.size = 100000;
     history.ignorePatterns = ["rm *" "pkill *" "cp *" "la*" ".." "l*" "la*" "./rsync_local.sh" "update" "git *"];
     oh-my-zsh = {
-	    enable = true;
-	    plugins = [ "git" ];
-	    theme = "robbyrussell";
-	   
+      enable = true;
+      plugins = ["git"];
+      theme = "robbyrussell";
     };
     initContent = ''
-    bindkey "^R" history-incremental-search-backward;
-    export PATH="''${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
-    export KUBECONFIG=/home/bq/.kube/vis-config
+      bindkey "^R" history-incremental-search-backward;
+      export PATH="''${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+      export KUBECONFIG=/home/bq/.kube/vis-config
     '';
   };
 
   # app menu
   programs.wofi = {
-  	enable = true;
+    enable = true;
   };
 
   programs.obs-studio = {
@@ -364,16 +363,16 @@
 
   home.packages = with pkgs; [
     fira-code #font for terminal
-    prismlauncher # minecraft 
+    prismlauncher # minecraft
     vim # as a backup
     brightnessctl # ability to change screen brightness
     font-awesome # fancy icons
     xournalpp # notes app
-    signal-desktop 
+    signal-desktop
     git
-    traceroute 
-    (flameshot.override { enableWlrSupport = true; }) # slow screenshot with drawings
-    grimblast # fast screenshot 
+    traceroute
+    (flameshot.override {enableWlrSupport = true;}) # slow screenshot with drawings
+    grimblast # fast screenshot
     xorg.xlsclients # check if app is running under X11
     inkscape-with-extensions
     btop
@@ -392,7 +391,7 @@
 
     direnv #why I have that?
     libnotify # what is this for?
-        gcc # C++ let's go
+    gcc # C++ let's go
 
     # to fulfill lazyvim plugins
     luarocks
@@ -409,10 +408,11 @@
     simple-scan # scanner
 
     (pkgs.texlive.combine {
-      inherit (pkgs.texlive)
-        scheme-basic  # base minimal setup
-        latex         # core LaTeX support
-        geometry      # example extra packages
+      inherit
+        (pkgs.texlive)
+        scheme-basic # base minimal setup
+        latex # core LaTeX support
+        geometry # example extra packages
         xcolor
         amsmath
         fontspec
@@ -422,7 +422,8 @@
         latexmk
         enumitem
         pgf
-        titlesec;
+        titlesec
+        ;
     })
 
     hyprsunset # need to install manually
@@ -468,13 +469,13 @@
     vesktop
 
     (wrapHelm kubernetes-helm {
-        plugins = with pkgs.kubernetes-helmPlugins; [
-          helm-secrets
-          helm-diff
-          helm-s3
-          helm-git
-        ];
-      })
+      plugins = with pkgs.kubernetes-helmPlugins; [
+        helm-secrets
+        helm-diff
+        helm-s3
+        helm-git
+      ];
+    })
 
     zoom-us
     trilium-desktop
@@ -490,7 +491,7 @@
     dnslookup
     fastfetch
     pdfpc
-    
+
     kdePackages.dolphin
     kdePackages.kio-fuse #to mount remote filesystems via FUSE
     kdePackages.kio-extras #extra protocols support (sftp, fish and more)
@@ -519,7 +520,7 @@
     extraConfig = "set selection-clipboard clipboard";
   };
 
-  # media player 
+  # media player
   programs.mpv = {
     enable = true;
 
@@ -534,7 +535,7 @@
     config = {
       profile = "high-quality";
       ytdl-format = "bestvideo+bestaudio";
-      save-position-on-quit="yes";
+      save-position-on-quit = "yes";
     };
   };
 
@@ -563,7 +564,7 @@
         "border-color" = "#f38ba8";
         "text-color" = "#f38ba8";
         "default-timeout" = "0";
-      };    
+      };
     };
   };
 
@@ -575,7 +576,7 @@
 
   # do I need it?
   fonts.fontconfig.enable = true;
-  
+
   # modules
   #nvim.enable = true;
   module.helix.enable = true;
@@ -585,4 +586,4 @@
   module.waybar.enable = true;
 
   #catppuccin.enable = true;
-} 
+}

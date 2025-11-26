@@ -1,5 +1,10 @@
-{ config, lib, pkgs, inputs, ... }:
 {
+  config,
+  lib,
+  pkgs,
+  inputs,
+  ...
+}: {
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
   home.username = "bq";
@@ -18,14 +23,13 @@
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 
-  
   home.sessionVariables = {
-    # info where to save config files 
+    # info where to save config files
     #XDG_CONFIG_HOME = "${config.home.homeDirectory}/.config";
-    
+
     # inform apps that we use wayland
     NIXOS_OZONE_WL = "1";
-    OZONE_PLATFORM="wayland";
+    OZONE_PLATFORM = "wayland";
 
     # suggests electron apps to use the wayland backend
     ELECTRON_OZONE_PLATFORM_HINT = "wayland";
@@ -49,15 +53,15 @@
 
   # terminal
   programs.foot = {
-  	enable = true;
-	  settings = {
-	    main = {
-	      font = "Fira Code:size=11";
-	    };
+    enable = true;
+    settings = {
+      main = {
+        font = "Fira Code:size=11";
+      };
       #url = {
       #  launch = "xdg-open";
       #};
-	  };
+    };
   };
 
   home.file.".config/zoomus.conf".text = ''
@@ -155,9 +159,7 @@
     --ozone-platform-hint=auto
   '';
 
-
-
-  # sync between phone and pc 
+  # sync between phone and pc
   services.kdeconnect = {
     enable = true;
     indicator = true;
@@ -177,14 +179,14 @@
           poll_time = 2;
         };
       };
-    aw-watcher-window = {
-      package = pkgs.aw-watcher-window;
-      #package = awHyprland;
-      settings = {
-        poll_time = 1;
-        exclude_title = false;
+      aw-watcher-window = {
+        package = pkgs.aw-watcher-window;
+        #package = awHyprland;
+        settings = {
+          poll_time = 1;
+          exclude_title = false;
+        };
       };
-    };
     };
   };
 
@@ -205,12 +207,10 @@
     layout = "pl";
   };
 
-
   services.swayidle.enable = true;
 
-  
   # hyprland stack
-  module.hyprland.enable = true; 
+  module.hyprland.enable = true;
   programs.hyprlock.enable = true;
   services.hypridle = {
     enable = true;
@@ -234,14 +234,14 @@
       sunrise = {
         calendar = "*-*-* 06:00:00";
         requests = [
-          [ "temperature" "6500" ]
-          [ "gamma 100" ]
+          ["temperature" "6500"]
+          ["gamma 100"]
         ];
       };
       sunset = {
         calendar = "*-*-* 19:00:00";
         requests = [
-          [ "temperature" "2500" ]
+          ["temperature" "2500"]
         ];
       };
     };
@@ -256,30 +256,29 @@
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
     shellAliases = {
-    	update = "sudo nixos-rebuild switch --flake /home/bq/nixos-config/#g7";
+      update = "sudo nixos-rebuild switch --flake /home/bq/nixos-config/#g7";
       test_vm = "sudo nixos-rebuild build-vm --flake /home/bq/nixos-config/#default";
-	    calc = "qalc";
+      calc = "qalc";
       bat_protect_on = "sudo echo 1 > /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode";
       bat_protect_off = "sudo echo 0 > /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode";
     };
     history.size = 100000;
     history.ignorePatterns = ["rm *" "pkill *" "cp *" "ls" ".." "l" "la"];
     oh-my-zsh = {
-	    enable = true;
-	    plugins = [ "git" ];
-	    theme = "robbyrussell";
-	   
+      enable = true;
+      plugins = ["git"];
+      theme = "robbyrussell";
     };
     initContent = ''
-    bindkey "^R" history-incremental-search-backward;
-    export PATH="''${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
-    export KUBECONFIG=/home/bq/.kube/vis-config
+      bindkey "^R" history-incremental-search-backward;
+      export PATH="''${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+      export KUBECONFIG=/home/bq/.kube/vis-config
     '';
   };
 
   # app menu
   programs.wofi = {
-  	enable = true;
+    enable = true;
   };
 
   programs.obs-studio = {
@@ -304,16 +303,16 @@
 
   home.packages = with pkgs; [
     fira-code #font for terminal
-    prismlauncher # minecraft 
+    prismlauncher # minecraft
     vim # as a backup
     brightnessctl # ability to change screen brightness
     font-awesome # fancy icons
     xournalpp # notes app
-    signal-desktop 
+    signal-desktop
     git
-    traceroute 
-    (flameshot.override { enableWlrSupport = true; }) # slow screenshot with drawings
-    grimblast # fast screenshot 
+    traceroute
+    (flameshot.override {enableWlrSupport = true;}) # slow screenshot with drawings
+    grimblast # fast screenshot
     xorg.xlsclients # check if app is running under X11
     inkscape-with-extensions
     btop
@@ -332,7 +331,7 @@
 
     direnv #why I have that?
     libnotify # what is this for?
-        gcc # C++ let's go
+    gcc # C++ let's go
 
     # to fulfill lazyvim plugins
     luarocks
@@ -407,13 +406,13 @@
     vesktop
 
     (wrapHelm kubernetes-helm {
-        plugins = with pkgs.kubernetes-helmPlugins; [
-          helm-secrets
-          helm-diff
-          helm-s3
-          helm-git
-        ];
-      })
+      plugins = with pkgs.kubernetes-helmPlugins; [
+        helm-secrets
+        helm-diff
+        helm-s3
+        helm-git
+      ];
+    })
 
     zoom-us
     trilium-desktop
@@ -428,7 +427,7 @@
     extraConfig = "set selection-clipboard clipboard";
   };
 
-  # media player 
+  # media player
   programs.mpv = {
     enable = true;
 
@@ -443,7 +442,7 @@
     config = {
       profile = "high-quality";
       ytdl-format = "bestvideo+bestaudio";
-      save-position-on-quit="yes";
+      save-position-on-quit = "yes";
     };
   };
 
@@ -472,7 +471,7 @@
         "border-color" = "#f38ba8";
         "text-color" = "#f38ba8";
         "default-timeout" = "0";
-      };    
+      };
     };
   };
 
@@ -484,7 +483,7 @@
 
   # do I need it?
   fonts.fontconfig.enable = true;
-  
+
   # modules
   #nvim.enable = true;
   module.helix.enable = true;
@@ -494,4 +493,4 @@
   module.waybar.enable = true;
 
   #catppuccin.enable = true;
-} 
+}

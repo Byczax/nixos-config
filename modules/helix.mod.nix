@@ -1,6 +1,9 @@
-{ config, pkgs, lib, ... }:
-
-let
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}: let
   cfg = config.module.helix;
 in {
   options.module.helix.enable = lib.mkEnableOption "Enable custom Helix config";
@@ -18,11 +21,13 @@ in {
         };
       };
 
-      languages.language = [{
-        name = "nix";
-        auto-format = true;
-        formatter.command = lib.getExe pkgs.nixfmt-rfc-style;
-      }];
+      languages.language = [
+        {
+          name = "nix";
+          auto-format = true;
+          formatter.command = lib.getExe pkgs.nixfmt-rfc-style;
+        }
+      ];
 
       themes = {
         autumn_night_transparent = {
@@ -33,4 +38,3 @@ in {
     };
   };
 }
-
