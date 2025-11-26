@@ -45,25 +45,104 @@ in {
           snippets.luasnip.enable = true; # Snippet engine used by completion tools
 
           languages = {
-            bash.lsp.enable = true;
-            css.lsp.enable = true;
-            go.lsp.enable = true;
-            hcl.lsp.enable = true;
-            helm.lsp.enable = true;
-            java.lsp.enable = true;
-            lua.lsp.enable = true;
-            markdown = {
+            enableExtraDiagnostics = true;
+            enableFormat = true;
+            enableTreesitter = true;
+            assembly.enable = false;
+            astro = {
+              enable = true;
               lsp.enable = true;
-              extensions.markview-nvim.enable = true;
+              format.package = pkgs.nodePackages.prettier;
             };
-            nix.lsp.enable = true;
-            python.lsp.enable = true;
-            rust.lsp.enable = true;
-            sql.lsp.enable = true;
-            terraform.lsp.enable = true;
-            ts.lsp.enable = true;
-            typst.lsp.enable = true;
-            yaml.lsp.enable = true;
+            bash = {
+              enable = true;
+              lsp.enable = true;
+            };
+            clang.enable = false;
+            csharp.enable = false;
+
+            css = {
+              enable = true;
+              lsp.enable = true;
+              format.package = pkgs.nodePackages.prettier;
+            };
+            dart = {
+              enable = false;
+              lsp.enable = false;
+            };
+            go = {
+              enable = true;
+              lsp.enable = true;
+            };
+            hcl = {
+              enable = true;
+              lsp.enable = true;
+            };
+            helm = {
+              enable = true;
+              lsp.enable = true;
+            };
+            html = {
+              enable = true;
+            };
+            java = {
+              enable = true;
+              lsp.enable = true;
+            };
+            kotlin.enable = false;
+            lua = {
+              enable = true;
+              lsp.enable = true;
+            };
+            markdown = {
+              enable = true;
+              lsp.enable = true;
+              extensions = {
+                markview-nvim.enable = true;
+                render-markdown-nvim.enable = true;
+              };
+              format.enable = true;
+            };
+            nix = {
+              enable = true;
+              lsp.enable = true;
+              format.enable = true;
+            };
+            php.enable = false;
+            python = {
+              enable = true;
+              lsp.enable = true;
+            };
+            rust = {
+              enable = true;
+              lsp.enable = true;
+            };
+            sql = {
+              enable = true;
+              lsp.enable = true;
+            };
+            svelte.enable = false;
+            tailwind = {
+              enable = true;
+              lsp.enable = true;
+            };
+            terraform = {
+              enable = true;
+              lsp.enable = true;
+            };
+            ts = {
+              enable = true;
+              lsp.enable = true;
+              format.package = pkgs.nodePackages.prettier;
+            };
+            typst = {
+              enable = true;
+              lsp.enable = true;
+            };
+            yaml = {
+              enable = true;
+              lsp.enable = true;
+            };
           };
 
           ui.noice = {
@@ -87,6 +166,9 @@ in {
           };
 
           autocomplete = {
+            nvim-cmp = {
+              enable = false;
+            };
             blink-cmp = {
               enable = true; # Modern completion plugin alternative to nvim-cmp
               friendly-snippets.enable = true; # Predefined code snippets
@@ -94,8 +176,8 @@ in {
           };
 
           spellcheck = {
-            enable = true; 
-            languages = [ "en" "pl" "de" "ru" ];
+            enable = true;
+            languages = ["en" "pl" "de" "ru"];
           };
 
           diagnostics = {
@@ -124,7 +206,6 @@ in {
                 indent.enable = true;
                 # picker.enable = true; # Enhanced picker integration
                 # image.enable = false; # Image preview in buffer
-                
               };
             };
           };
@@ -153,7 +234,7 @@ in {
             formatOnSave = true; # Format files when saving
             inlayHints.enable = true;
             lightbulb.enable = false; #  Code action lightbulb
-            lspsaga.enable = false; #  UI for LSP interactions
+            lspsaga.enable = true; #  UI for LSP interactions
             trouble.enable = false; #  LSP diagnostics viewer
             lspSignature.enable = false; #  Show function signature help
             lspconfig.enable = true; # Basic LSP configuration
@@ -170,9 +251,15 @@ in {
           comments = {
             comment-nvim.enable = true; # Toggle comments easily with `gc`
           };
+          projects = {
+            project-nvim.enable = true;
+          };
+          session = {
+            nvim-session-manager.enable = true;
+          };
 
           # startPlugins = [
-            # "plenary-nvim" # Dependency for many Lua plugins
+          # "plenary-nvim" # Dependency for many Lua plugins
           # ];
 
           extraPlugins = {
@@ -188,22 +275,22 @@ in {
             #    };
             #  };
             #  setup = ''
-            #    vim.g.vimtex_view_method = 'zathura' 
-            #    vim.g.vimtex_compiler_method = 'latexmk' 
+            #    vim.g.vimtex_view_method = 'zathura'
+            #    vim.g.vimtex_compiler_method = 'latexmk'
             #  '';
             #};
-            typst = {
-              package = pkgs.vimUtils.buildVimPlugin {
-                pname = "typst";
-                version = "master";
-                src = pkgs.fetchFromGitHub {
-                  owner = "kaarmu";
-                  repo = "typst.vim";
-                  rev = "master";
-                  sha256="sha256-2FZnhkp2pN8axzrwsFy0p28vQTmmPs0eyf2j0ojovnk=";
-                };
-              };
-            };
+            #typst = {
+            #  package = pkgs.vimUtils.buildVimPlugin {
+            #    pname = "typst";
+            #    version = "master";
+            #    src = pkgs.fetchFromGitHub {
+            #      owner = "kaarmu";
+            #      repo = "typst.vim";
+            #      rev = "master";
+            #      sha256 = "sha256-2FZnhkp2pN8axzrwsFy0p28vQTmmPs0eyf2j0ojovnk=";
+            #    };
+            #  };
+            #};
             vimjsonnet = {
               package = pkgs.vimUtils.buildVimPlugin {
                 pname = "vim-jsonnet";
@@ -215,13 +302,34 @@ in {
                   sha256 = "sha256-ChgUGTrLthuGSws/UpF71JYI/c2QqItax6hsh7mYX/w="; # replace with actual
                 };
               };
-              #setup = ''
-              #  " nothing extra needed, syntax highlighting works automatically
-              #'';
+            };
+            vimtanka = {
+              package = pkgs.vimUtils.buildVimPlugin {
+                pname = "vim-jsonnet";
+                version = "master";
+                src = pkgs.fetchFromGitHub {
+                  owner = "dsabsay";
+                  repo = "vim-tanka";
+                  rev = "master";
+                  sha256 = "sha256-ChgUGTrLthuGSws/UpF71JYI/c2QqItax6hsh7mYX/w="; # replace with actual
+                };
+              };
+            };
+            vimsmali = {
+              package = pkgs.vimUtils.buildVimPlugin {
+                pname = "vim-smali";
+                version = "master";
+                src = pkgs.fetchFromGitHub {
+                  owner = "kelwin";
+                  repo = "vim-smali";
+                  rev = "master";
+                  sha256 = "sha256-2arBJ4sY+QbqkSG02bibMX22Dcr7m9Eiv3dpw5+tPb4="; # replace with actual
+                };
+              };
             };
           };
         };
-     };
+      };
     };
   };
 }
