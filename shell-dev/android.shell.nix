@@ -2,15 +2,27 @@
     allowUnfree = true;
     android_sdk.accept_license = true;
   }; } }:
-
+let
+  androidPkgs = pkgs.androidenv.composeAndroidPackages {
+    toolsVersion = "26.1.1";
+    platformToolsVersion = "34.0.5";
+    buildToolsVersions = [ "34.0.0" ];
+    platformVersions = [ "34" ];
+    includeEmulator = false;
+    includeNDK = false;
+  };
+in 
 pkgs.mkShell {
   name = "flutter-env";
 
   buildInputs = [
-    pkgs.jdk17
+    pkgs.zsh
+    pkgs.jdk
     pkgs.flutter
     pkgs.android-tools
+    androidPkgs.androidsdk
   ];
+  shell = pkgs.zsh;
 
   shellHook = ''
     export JAVA_HOME=${pkgs.jdk17}/lib/openjdk
@@ -19,6 +31,8 @@ pkgs.mkShell {
     # Use a writable SDK location outside the Nix store
     export ANDROID_SDK_ROOT=$HOME/Android/Sdk
     export ANDROID_HOME=$ANDROID_SDK_ROOT
+
+    export CHROME_EXECUTABLE=$(which firefox)
 
     # Ensure the directory exists
     mkdir -p $ANDROID_SDK_ROOT
