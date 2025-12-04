@@ -40,6 +40,7 @@
     # inform that we use hyprland
     XDG_CURRENT_DESKTOP = "Hyprland";
     XDG_SESSION_TYPE = "wayland";
+    MOZ_ENABLE_WAYLAND = "1";
   };
 
   qt = {
@@ -502,6 +503,7 @@
     openssl
 
     freecad
+    brave
   ];
 
   programs.nh = {
