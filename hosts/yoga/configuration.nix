@@ -2,7 +2,6 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 {
-  config,
   lib,
   pkgs,
   ...
@@ -12,7 +11,6 @@
     ./hardware-configuration.nix
   ];
 
-  # Enable flakes, because they are amazing
   nix = {
     settings = {
       experimental-features = [
@@ -22,12 +20,6 @@
       #auto-optimise-store = true;
     };
   };
-
-  networking.extraHosts = ''
-    127.0.0.1 minio
-    127.0.0.1 eventmanager-minio
-    127.0.0.1 keycloak
-  '';
 
   xdg.portal = {
     enable = true;
@@ -53,7 +45,6 @@
       "zoom"
     ];
 
-  # boot specifications
   boot = {
     loader = {
       systemd-boot = {
@@ -64,10 +55,18 @@
       efi.canTouchEfiVariables = true; # allow to register boots in boot
     };
     kernelParams = ["i915.force_probe=9a49"];
+
+    # Needed kernel modules for Lenovo systems
+    kernelModules = ["acpi_call" "tp_smapi" "i2c-dev" "rts5139" "rts_u" "rts_bio" "rtsx_usb"];
+    extraModprobeConfig = ''
+      options rts5139 device_table=0x5812
+      options rts_u device_table=0x5812
+      options rts_bio device_table=0x5812
+      options rtsx_usb device_table=0x5812
+    '';
   };
 
   security = {
-    # use sudo written in Rust
     sudo.enable = false;
     sudo-rs.enable = true;
 
@@ -76,7 +75,6 @@
     pam.services.kwallet.enable = true;
   };
 
-  # enable internet and wifi support
   networking = {
     hostName = "nixos";
     networkmanager = {
@@ -97,28 +95,40 @@
         };
       };
     };
+    extraHosts = ''
+      127.0.0.1 minio
+      127.0.0.1 eventmanager-minio
+      127.0.0.1 keycloak
+    '';
+
+    # enable ports used by tailscale
+    firewall = rec {
+      allowedTCPPortRanges = [
+        {
+          from = 1714;
+          to = 1764;
+        }
+      ];
+      allowedUDPPortRanges = allowedTCPPortRanges;
+    };
   };
-  services.connman.wifi.backend = "iwd";
-  # bluetooth, what else
+
   hardware = {
     bluetooth.enable = true;
     i2c.enable = true;
-
     graphics = {
       enable = true;
       extraPackages = with pkgs; [
         intel-media-sdk
       ];
     };
-
     enableRedistributableFirmware = true;
   };
 
-  services.dbus.enable = true;
-
-  services.gnome.gnome-keyring.enable = true;
-
   services = {
+    connman.wifi.backend = "iwd";
+    dbus.enable = true;
+    gnome.gnome-keyring.enable = true;
     # for multimedia
     pipewire = {
       enable = true; # if not already enabled
@@ -128,7 +138,6 @@
       wireplumber.enable = true;
     };
 
-    # login screen with Hyprland as window manager
     greetd = {
       enable = true;
       settings = {
@@ -138,44 +147,53 @@
         };
       };
     };
-
     # enable polish as keyboard layout
     xserver.xkb = {
       layout = "pl";
       variant = "";
     };
 
-    # tailscale, no option for home yet
-    tailscale.enable = true;
-
-    # proactively protect CPU overheating
-    thermald.enable = true;
-
-    # Show data about CPU
-    auto-cpufreq.enable = true;
-
+    tailscale.enable = true; # tailscale, no option for home yet
+    thermald.enable = true; # proactively protect CPU overheating
+    auto-cpufreq.enable = true; # Show data about CPU
     upower.enable = true;
+
+    tlp = {
+      enable = true;
+      settings = {
+        CPU_SCALING_GOVERNOR_ON_AC = "performance";
+        CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+
+        CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
+        CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
+
+        CPU_MIN_PERF_ON_AC = 0;
+        CPU_MAX_PERF_ON_AC = 100;
+        CPU_MIN_PERF_ON_BAT = 0;
+        CPU_MAX_PERF_ON_BAT = 20;
+
+        #Optional helps save long term battery health
+        START_CHARGE_THRESH_BAT0 = 40; # 40 and below it starts to charge
+        STOP_CHARGE_THRESH_BAT0 = 80; # 80 and above it stops charging
+      };
+    };
+    # service to autodiscover printers in the same network
+    avahi = {
+      enable = true;
+      nssmdns4 = true;
+      openFirewall = true;
+    };
+    gvfs.enable = true; # Mount, trash, and other functionalities
+    tumbler.enable = true; # Thumbnail support for images
   };
 
-  # timezone, to not be confused
-  time.timeZone = "Europe/Zurich";
+  time.timeZone = "Europe/Zurich"; # timezone, to not be confused
 
-  # enable also polish in console
-  console.keyMap = "pl"; # maybe pl2
+  console.keyMap = "pl"; # enable also polish in console
 
   # language of the system with some of the formats
   i18n.defaultLocale = "en_US.UTF-8";
   i18n.supportedLocales = ["en_US.UTF-8/UTF-8" "ja_JP.UTF-8/UTF-8"];
-
-  # service to autodiscover printers in the same network
-  services.avahi = {
-    enable = true;
-    nssmdns4 = true;
-    openFirewall = true;
-  };
-
-  # do I need it?
-  programs.dconf.enable = true;
 
   # Required for printer to work
   services.printing.enable = true;
@@ -212,7 +230,7 @@
     isNormalUser = true;
     description = "bq";
     initialPassword = "changeme";
-    extraGroups = ["networkmanager" "wheel" "docker" "libvirtd" "video" "i2c"];
+    extraGroups = ["networkmanager" "wheel" "docker" "libvirtd" "video" "i2c" "input"];
     shell = pkgs.zsh;
     packages = with pkgs; [];
   };
@@ -222,79 +240,42 @@
     coreutils
     vim # optional
   ];
-  programs.hyprland.enable = true;
 
-  # eanble steam from module
-  steam.enable = true;
-  programs.xfconf.enable = true;
-  programs.thunar = {
-    enable = true;
-    plugins = with pkgs; [
-      xfce.thunar-archive-plugin
-      xfce.thunar-media-tags-plugin
-      xfce.thunar-volman
-    ];
+  steam.enable = true; # enable steam from module
+
+  programs = {
+    # do I need it?
+    dconf.enable = true;
+    xfconf.enable = true;
+    thunar = {
+      enable = true;
+      plugins = with pkgs; [
+        xfce.thunar-archive-plugin
+        xfce.thunar-media-tags-plugin
+        xfce.thunar-volman
+      ];
+    };
+    zsh.enable = true;
+    hyprland.enable = true;
   };
-  services.gvfs.enable = true; # Mount, trash, and other functionalities
-  services.tumbler.enable = true; # Thumbnail support for images
 
-  # use zsh
-  programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
   environment.shells = with pkgs; [zsh];
 
   # control battery, but I think, it does not work with my laptop
   powerManagement.enable = true;
-  services.tlp = {
-    enable = true;
-    settings = {
-      CPU_SCALING_GOVERNOR_ON_AC = "performance";
-      CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
 
-      CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
-      CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
-
-      CPU_MIN_PERF_ON_AC = 0;
-      CPU_MAX_PERF_ON_AC = 100;
-      CPU_MIN_PERF_ON_BAT = 0;
-      CPU_MAX_PERF_ON_BAT = 20;
-
-      #Optional helps save long term battery health
-      START_CHARGE_THRESH_BAT0 = 40; # 40 and below it starts to charge
-      STOP_CHARGE_THRESH_BAT0 = 80; # 80 and above it stops charging
+  virtualisation = {
+    docker = {
+      enable = true;
     };
-  };
-
-  # enable ports used by tailscale
-  networking.firewall = rec {
-    allowedTCPPortRanges = [
-      {
-        from = 1714;
-        to = 1764;
-      }
-    ];
-    allowedUDPPortRanges = allowedTCPPortRanges;
-  };
-
-  # Needed kernel modules for Lenovo systems
-  boot.kernelModules = ["acpi_call" "tp_smapi" "i2c-dev" "rts5139" "rts_u" "rts_bio" "rtsx_usb"];
-  boot.extraModprobeConfig = ''
-    options rts5139 device_table=0x5812
-    options rts_u device_table=0x5812
-    options rts_bio device_table=0x5812
-    options rtsx_usb device_table=0x5812
-  '';
-  virtualisation.docker = {
-    enable = true;
-  };
-
-  virtualisation.libvirtd.enable = true;
-
-  virtualisation.vmVariant = {
-    # following configuration is added only when building VM with build-vm
-    virtualisation = {
-      memorySize = 2048; # Use 2048MiB memory.
-      cores = 3;
+    libvirtd.enable = true;
+    vmVariant = {
+      # following configuration is added only when building VM with build-vm
+      virtualisation = {
+        memorySize = 2048; # Use 2048MiB memory.
+        cores = 3;
+      };
     };
   };
 

@@ -7,6 +7,10 @@
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nur = {
+      url = "github:nix-community/NUR";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     aw-watcher-hyprland = {
       url = "github:bobvanderlinden/aw-watcher-window-hyprland";
       inputs.nixpkgs.follows = "nixpkgs";

@@ -142,5 +142,6 @@
     brave
 
     comma
+    libinput
   ];
 }
