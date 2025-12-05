@@ -15,65 +15,60 @@
       url = "github:NotAShelf/nvf";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    zen-browser-flake = {
+      url = "github:0xc000022070/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "";
+    };
+    watt = {
+      url = "github:notashelf/watt";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    agenix-rekey = {
+      url = "github:oddlama/agenix-rekey";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    zedless.url = "github:zedless-editor/zed";
+    #TODO: impermanence.url = "github:nix-community/impermanence";
   };
 
-  outputs = {
-    nixpkgs,
-    home-manager,
-    ...
-  } @ inputs: let
-    inherit (nixpkgs) lib;
-    inherit (builtins) filter map toString;
+  outputs = inputs: let
+    inherit (inputs.nixpkgs) lib;
+    inherit (builtins) map toString;
+
+    mkSystem = system: hostname:
+      inputs.nixpkgs.lib.nixosSystem {
+        specialArgs = {inherit inputs;};
+        system = system;
+
+        modules =
+          [
+            ./hosts/${hostname}/configuration.nix
+
+            inputs.home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.extraSpecialArgs = {inherit inputs;};
+
+              home-manager.users.bq.imports =
+                [
+                  ./hosts/${hostname}/home.nix
+                  inputs.nvf.homeManagerModules.default
+                ]
+                ++ lib.filter (lib.hasSuffix ".mod.nix") (map toString (lib.filesystem.listFilesRecursive ./modules/home));
+            }
+          ]
+          ++ lib.filter (lib.hasSuffix ".mod.nix") (map toString (lib.filesystem.listFilesRecursive ./modules/system));
+      };
   in {
-    nixosConfigurations.yoga = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      specialArgs = {
-        inherit inputs;
-      };
-      modules = [
-        ./hosts/yoga/configuration.nix
-
-        home-manager.nixosModules.home-manager
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = {
-            inherit inputs;
-          };
-
-          home-manager.users.bq.imports =
-            [
-              ./hosts/yoga/home.nix
-              inputs.nvf.homeManagerModules.default
-            ]
-            ++ lib.filter (lib.hasSuffix ".mod.nix") (map toString (lib.filesystem.listFilesRecursive ./modules));
-
-          #++ import ./modules/all-home-modules.nix; # modules for home manager
-        }
-      ];
-    };
-    nixosConfigurations.g7 = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      specialArgs = {
-        inherit inputs;
-      };
-      modules = [
-        ./hosts/g7/configuration.nix
-
-        home-manager.nixosModules.home-manager
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-
-          home-manager.users.bq.imports =
-            [
-              ./hosts/g7/home.nix
-              inputs.nvf.homeManagerModules.default
-            ]
-            ++ lib.filter (lib.hasSuffix ".mod.nix") (map toString (lib.filesystem.listFilesRecursive ./modules));
-          #++ import ./modules/all-home-modules.nix; # modules for home manager
-        }
-      ];
+    nixosConfigurations = {
+      yoga = mkSystem "x86_64-linux" "yoga";
+      g7 = mkSystem "x86_64-linux" "g7";
     };
   };
 }

@@ -10,7 +10,6 @@
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
-    ../../modules/steam.nix # steam config, avaliable only systemwide
   ];
 
   # Enable flakes, because they are amazing
