@@ -141,5 +141,7 @@
 
     freecad
     brave
+
+    comma
   ];
 }

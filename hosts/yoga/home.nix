@@ -206,10 +206,15 @@
       aw-watcher-afk = {
         package = pkgs.aw-watcher-afk;
         settings = {
-          poll_time = 2;
+          poll_time = 1;
           timeout = 60;
-          log_level = "debug";
-          testing_backend = "wayland";
+          TimeoutStartSec = 120;
+          #log_level = "debug";
+          #testing_backend = "wayland";
+          Service = {
+            "Environment=WAYLAND_DISPLAY" = "wayland-1";
+            "Environment=XDG_RUNTIME_DIR" = "/run/user/1000";
+          };
         };
       };
       #aw-watcher-window = {
@@ -233,8 +238,9 @@
           poll_time = 1;
           exclude_title = false;
           timeout = 60;
+          TimeoutStartSec = 120;
           Service = {
-            "Environment=WAYLAND_DISPLAY" = "wayland-0";
+            "Environment=WAYLAND_DISPLAY" = "wayland-1";
             "Environment=XDG_RUNTIME_DIR" = "/run/user/1000";
           };
         };
@@ -325,6 +331,7 @@
       bindkey "^R" history-incremental-search-backward;
       export PATH="''${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
       export KUBECONFIG=/home/bq/.kube/vis-config
+      source ${pkgs.nix-index}/etc/profile.d/command-not-found.sh
     '';
   };
 
@@ -422,6 +429,8 @@
     enable = true;
     profiles = {};
   };
+  programs.command-not-found.enable = false;
+  programs.nix-index.enable = true;
 
   # do I need it?
   fonts.fontconfig.enable = true;
