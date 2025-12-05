@@ -115,7 +115,6 @@
       ];
     })
 
-    zoom-us
     trilium-desktop
     element-desktop
     vscodium

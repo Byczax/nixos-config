@@ -15,10 +15,10 @@
       url = "github:NotAShelf/nvf";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    zen-browser-flake = {
+    zen-browser = {
       url = "github:0xc000022070/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.home-manager.follows = "";
+      inputs.home-manager.follows = "home-manager";
     };
     watt = {
       url = "github:notashelf/watt";
@@ -33,7 +33,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     zedless.url = "github:zedless-editor/zed";
-    #TODO: impermanence.url = "github:nix-community/impermanence";
+    impermanence.url = "github:nix-community/impermanence";
+    stylix = {
+      url = "github:nix-community/stylix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs: let
@@ -59,6 +63,7 @@
                 [
                   ./hosts/${hostname}/home.nix
                   inputs.nvf.homeManagerModules.default
+                  inputs.zen-browser.homeModules.twilight
                 ]
                 ++ lib.filter (lib.hasSuffix ".mod.nix") (map toString (lib.filesystem.listFilesRecursive ./modules/home));
             }
