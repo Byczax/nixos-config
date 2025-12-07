@@ -1,6 +1,5 @@
 {
   config,
-  lib,
   pkgs,
   inputs,
   ...
@@ -8,21 +7,23 @@
   imports = [
     ./programs.nix
   ];
-  # Home Manager needs a bit of information about you and the
-  # paths it should manage.
-  home.username = "bq";
-  home.homeDirectory = "/home/bq";
 
-  # This value determines the Home Manager release that your
-  # configuration is compatible with. This helps avoid breakage
-  # when a new Home Manager release introduces backwards
-  # incompatible changes.
-  #
-  # You can update Home Manager without changing this value. See
-  # the Home Manager release notes for a list of state version
-  # changes in each release.
-  home.stateVersion = "25.05";
+  home = {
+    # Home Manager needs a bit of information about you and the
+    # paths it should manage.
+    username = "bq";
+    homeDirectory = "/home/bq";
 
+    # This value determines the Home Manager release that your
+    # configuration is compatible with. This helps avoid breakage
+    # when a new Home Manager release introduces backwards
+    # incompatible changes.
+    #
+    # You can update Home Manager without changing this value. See
+    # the Home Manager release notes for a list of state version
+    # changes in each release.
+    stateVersion = "25.05";
+  };
   programs.home-manager.enable = true; # Let Home Manager install and manage itself.
 
   home.sessionVariables = {
@@ -156,13 +157,11 @@
     mpv = {
       enable = true;
 
-      package = (
-        pkgs.mpv-unwrapped.wrapper {
-          mpv = pkgs.mpv-unwrapped.override {
-            waylandSupport = true;
-          };
-        }
-      );
+      package = pkgs.mpv-unwrapped.wrapper {
+        mpv = pkgs.mpv-unwrapped.override {
+          waylandSupport = true;
+        };
+      };
       config = {
         profile = "high-quality";
         ytdl-format = "bestvideo+bestaudio";
@@ -183,6 +182,10 @@
     };
     command-not-found.enable = false;
     nix-index.enable = true;
+    fzf = {
+      enable = true;
+      enableZshIntegration = true;
+    };
   };
 
   # terminal
@@ -190,64 +193,115 @@
     --enable-features=WaylandWindowDecorations
     --ozone-platform-hint=auto
   '';
-
-  # sync between phone and pc
-  services.kdeconnect = {
-    enable = true;
-    indicator = true;
-  };
-  # local telemetry on yourslef
-  services.activitywatch = {
-    enable = true;
-    package = pkgs.aw-server-rust;
-    settings = {
-      port = 5600;
+  services = {
+    # sync between phone and pc
+    kdeconnect = {
+      enable = true;
+      indicator = true;
     };
-    watchers = {
-      aw-watcher-afk = {
-        package = pkgs.aw-watcher-afk;
-        settings = {
-          poll_time = 1;
-          timeout = 60;
-          TimeoutStartSec = 60;
-          log_level = "debug";
-          #testing_backend = "wayland";
-          backend = "libinput";
-          Service = {
-            "Environment=WAYLAND_DISPLAY" = "wayland-1";
-            "Environment=XDG_RUNTIME_DIR" = "/run/user/1000";
+    # local telemetry on yourslef
+    activitywatch = {
+      enable = true;
+      package = pkgs.aw-server-rust;
+      settings = {
+        port = 5600;
+      };
+      watchers = {
+        aw-watcher-afk = {
+          package = pkgs.aw-watcher-afk;
+          settings = {
+            poll_time = 1;
+            timeout = 60;
+            TimeoutStartSec = 60;
+            log_level = "debug";
+            #testing_backend = "wayland";
+            backend = "libinput";
+            Service = {
+              "Environment=WAYLAND_DISPLAY" = "wayland-1";
+              "Environment=XDG_RUNTIME_DIR" = "/run/user/1000";
+            };
+          };
+        };
+        aw-awatcher = {
+          package = pkgs.awatcher;
+          executable = "awatcher";
+          settings = {
+            idle-timeout-seconds = 180;
+            poll-time-idle-seconds = 10;
+            poll-time-window-seconds = 5;
+          };
+        };
+        #aw-watcher-window-wayland = {
+        #  package = pkgs.aw-watcher-window-wayland;
+        #  settings = {
+        #    poll_time = 1;
+        #    exclude_title = false;
+        #  };
+        #};
+        aw-watcher-window-hyprland = {
+          package = inputs.aw-watcher-hyprland.packages.${pkgs.stdenv.system}.aw-watcher-window-hyprland;
+          settings = {
+            poll_time = 1;
+            exclude_title = false;
+            timeout = 60;
+            TimeoutStartSec = 120;
+            Service = {
+              "Environment=WAYLAND_DISPLAY" = "wayland-1";
+              "Environment=XDG_RUNTIME_DIR" = "/run/user/1000";
+            };
           };
         };
       };
-      aw-awatcher = {
-        package = pkgs.awatcher;
-        executable = "awatcher";
-        settings = {
-          idle-timeout-seconds = 180;
-          poll-time-idle-seconds = 10;
-          poll-time-window-seconds = 5;
-        };
-      };
-      #aw-watcher-window-wayland = {
-      #  package = pkgs.aw-watcher-window-wayland;
-      #  settings = {
-      #    poll_time = 1;
-      #    exclude_title = false;
-      #  };
-      #};
-      aw-watcher-window-hyprland = {
-        package = inputs.aw-watcher-hyprland.packages.${pkgs.stdenv.system}.aw-watcher-window-hyprland;
-        settings = {
-          poll_time = 1;
-          exclude_title = false;
-          timeout = 60;
-          TimeoutStartSec = 120;
-          Service = {
-            "Environment=WAYLAND_DISPLAY" = "wayland-1";
-            "Environment=XDG_RUNTIME_DIR" = "/run/user/1000";
+    };
+
+    kanshi = {
+      enable = true;
+      systemdTarget = "hyprland-session.target";
+      settings = [
+        {
+          profile = {
+            name = "undocked";
+            outputs = [
+              {
+                criteria = "eDP-1";
+                status = "enable";
+              }
+            ];
           };
-        };
-      };
+        }
+        {
+          profile = {
+            name = "home_office";
+            outputs = [
+              {
+                criteria = "Optronics";
+                position = "1920,120";
+                mode = "1920x1080@60.05Hz";
+                status = "enable";
+              }
+              {
+                criteria = "XL2420T";
+                position = "5760,0";
+                mode = "1920x1080@60.0Hz";
+                transform = "90";
+                status = "enable";
+              }
+              {
+                criteria = "U2415";
+                position = "0,0";
+                mode = "1920x1200@59.95Hz";
+                status = "enable";
+              }
+              {
+                criteria = "VG248";
+                position = "3840,120";
+                mode = "1920x1080@60.0Hz";
+                status = "enable";
+              }
+            ];
+          };
+        }
+      ];
     };
   };
 
@@ -314,11 +368,13 @@
 
   # modules
   #nvim.enable = true;
-  module.hyprland.enable = true;
-  module.helix.enable = true;
-  module.nvf.enable = true;
-  module.waybar.enable = true;
-  module.zen.enable = true;
-  module.zoom.enable = true;
-  #catppuccin.enable = true;
+  module = {
+    hyprland.enable = true;
+    helix.enable = true;
+    nvf.enable = true;
+    waybar.enable = true;
+    zen.enable = true;
+    zoom.enable = true;
+    #catppuccin.enable = true;
+  };
 }
