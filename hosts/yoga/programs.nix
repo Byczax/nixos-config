@@ -121,7 +121,7 @@
     gimp
     typst
     pdf2svg
-    python3
+    #python3
     dig
     whois
     nmap
