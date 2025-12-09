@@ -79,6 +79,46 @@ in {
             installation_mode = "force_installed";
             updates_disabled = true;
           };
+          "languagetool-webextension@languagetool.org" = {
+            install_url = moz "languagetool";
+            installation_mode = "force_installed";
+            updates_disabled = true;
+          };
+          "addon@darkreader.org" = {
+            install_url = moz "darkreader";
+            installation_mode = "force_installed";
+            updates_disabled = true;
+          };
+          "@contain-facebook" = {
+            install_url = moz "facebook-container";
+            installation_mode = "force_installed";
+            updates_disabled = true;
+          };
+          "foxyproxy@eric.h.jung" = {
+            install_url = moz "foxyproxy-standard";
+            installation_mode = "force_installed";
+            updates_disabled = true;
+          };
+          "tab-stash@condordes.net" = {
+            install_url = moz "tab-stash";
+            installation_mode = "force_installed";
+            updates_disabled = true;
+          };
+          #"{aecec67f-0d10-4fa7-b7c7-609a2db280cf}" = {
+          #  install_url = moz "violentmonkey";
+          #  installation_mode = "force_installed";
+          #  updates_disabled = true;
+          #};
+          "markdown-viewer@outofindex.com" = {
+            install_url = moz "markdown-viewer-chrome";
+            installation_mode = "force_installed";
+            updates_disabled = true;
+          };
+          "easyscreenshot@mozillaonline.com" = {
+            install_url = moz "easyscreenshot";
+            installation_mode = "force_installed";
+            updates_disabled = true;
+          };
         };
         SearchEngines = {
           Remove = [
