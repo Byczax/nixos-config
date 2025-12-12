@@ -366,7 +366,7 @@
     hyprsunset # need to install manually
 
     iperf
-    bitwarden
+    bitwarden-desktop
 
     pavucontrol # add audio control alongside helvum
     adwaita-icon-theme # icons for gnome apps
