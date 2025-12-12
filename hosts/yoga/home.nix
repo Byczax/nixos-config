@@ -108,7 +108,7 @@
         bat_protect_off = "sudo echo 0 > /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode";
       };
       history.size = 100000;
-      history.ignorePatterns = ["rm *" "pkill *" "cp *" "la*" ".." "l*" "la*" "./rsync_local.sh" "update" "git *"];
+      history.ignorePatterns = ["rm *" "pkill *" "cp *" "la*" ".." "l*" "la*" "./rsync_local.sh" "update" "git *" "nvim"];
       oh-my-zsh = {
         enable = true;
         plugins = ["git"];
@@ -148,26 +148,6 @@
         obs-vkcapture
       ];
     };
-    firefox = {
-      enable = true;
-      languagePacks = ["en-US" "pl" "de" "ja" "ru"];
-      policies = {
-        #BlockAboutConfig = true;
-        DefaultDownloadDirectory = "\${home}/Downloads";
-        #ExtensionSettings = {
-        #  "uBlock0@raymondhill.net" = {
-        #    default_area = "menupanel";
-        #    install_url = "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi";
-        #    installation_mode = "force_installed";
-        #    private_browsing = true;
-        #  };
-        #};
-      };
-      #profiles.default = {
-      #    bookmarks = [];
-      #    settings = {};
-      #  };
-    };
     nh = {
       enable = true;
       clean.enable = true;
@@ -199,11 +179,6 @@
       winePackages = [
         pkgs.wineWow64Packages.full
       ];
-    };
-    # mail client
-    thunderbird = {
-      enable = true;
-      profiles = {};
     };
     command-not-found.enable = false;
     nix-index.enable = true;
@@ -401,6 +376,8 @@
     waybar.enable = true;
     zen.enable = true;
     zoom.enable = true;
+    thunderbird.enable = true;
+    firefox.enable = true;
     #catppuccin.enable = true;
   };
 }
