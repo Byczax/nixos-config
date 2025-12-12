@@ -143,5 +143,6 @@
 
     comma
     libinput
+    gcr
   ];
 }

@@ -120,6 +120,18 @@
         export KUBECONFIG=/home/bq/.kube/vis-config
         source ${pkgs.nix-index}/etc/profile.d/command-not-found.sh
       '';
+      plugins = [
+        {
+          name = "zsh-nix-shell";
+          file = "nix-shell.plugin.zsh";
+          src = pkgs.fetchFromGitHub {
+            owner = "chisui";
+            repo = "zsh-nix-shell";
+            rev = "v0.8.0";
+            sha256 = "1lzrn0n4fxfcgg65v0qhnj7wnybybqzs4adz7xsrkgmcsr0ii8b7";
+          };
+        }
+      ];
     };
 
     # app menu
@@ -138,6 +150,19 @@
     };
     firefox = {
       enable = true;
+      languagePacks = ["en-US" "pl" "de" "ja" "ru"];
+      policies = {
+        #BlockAboutConfig = true;
+        DefaultDownloadDirectory = "\${home}/Downloads";
+        #ExtensionSettings = {
+        #  "uBlock0@raymondhill.net" = {
+        #    default_area = "menupanel";
+        #    install_url = "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi";
+        #    installation_mode = "force_installed";
+        #    private_browsing = true;
+        #  };
+        #};
+      };
       #profiles.default = {
       #    bookmarks = [];
       #    settings = {};
@@ -194,6 +219,7 @@
     --ozone-platform-hint=auto
   '';
   services = {
+    gnome-keyring.enable = true;
     # sync between phone and pc
     kdeconnect = {
       enable = true;
@@ -274,26 +300,26 @@
             name = "home_office";
             outputs = [
               {
-                criteria = "Optronics";
+                criteria = "eDP-1";
                 position = "1920,120";
                 mode = "1920x1080@60.05Hz";
                 status = "enable";
               }
               {
-                criteria = "XL2420T";
+                criteria = "DP-5";
                 position = "5760,0";
                 mode = "1920x1080@60.0Hz";
                 transform = "90";
                 status = "enable";
               }
               {
-                criteria = "U2415";
+                criteria = "DP-6";
                 position = "0,0";
                 mode = "1920x1200@59.95Hz";
                 status = "enable";
               }
               {
-                criteria = "VG248";
+                criteria = "DP-7";
                 position = "3840,120";
                 mode = "1920x1080@60.0Hz";
                 status = "enable";

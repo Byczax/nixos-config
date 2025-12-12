@@ -118,6 +118,13 @@ in {
           ", XF86AudioPrev, exec, playerctl previous"
         ];
         source = ["~/.config/hypr/monitors.conf"];
+        #monitor = [
+        #  "desc:AU Optronics 0x258C,1920x1080@60.05,1920x120,1.0"
+        #  "desc:BNQ BenQ XL2420T P7C01529SL0,1920x1080@60.0,5760x0,1.0"
+        #  "desc:BNQ BenQ XL2420T P7C01529SL0,transform,1"
+        #  "desc:Dell Inc. DELL U2415 08DXD5C422HS,1920x1200@59.95,0x0,1.0"
+        #  "desc:Ancor Communications Inc VG248 F7LMQS100286,1920x1080@60.0,3840x120,1.0"
+        #];
 
         windowrulev2 = [
           # Ignore maximize requests from apps. You'll probably like this.

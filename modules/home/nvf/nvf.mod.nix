@@ -49,11 +49,12 @@ in {
             enableFormat = true;
             enableTreesitter = true;
             assembly.enable = false;
-            astro = {
-              enable = true;
-              lsp.enable = true;
-              format.package = pkgs.nodePackages.prettier;
-            };
+            #astro = {
+            #  enable = true;
+            #  lsp.enable = true;
+            #
+            #  #  format.package = pkgs.nodePackages.prettier;
+            #};
             bash = {
               enable = true;
               lsp.enable = true;
@@ -61,11 +62,10 @@ in {
             clang.enable = false;
             csharp.enable = false;
 
-            css = {
-              enable = true;
-              lsp.enable = true;
-              format.package = pkgs.nodePackages.prettier;
-            };
+            #css = {
+            #  enable = true;
+            #  lsp.enable = true;
+            #};
             dart = {
               enable = false;
               lsp.enable = false;
@@ -130,11 +130,10 @@ in {
               enable = true;
               lsp.enable = true;
             };
-            ts = {
-              enable = true;
-              lsp.enable = true;
-              format.package = pkgs.nodePackages.prettier;
-            };
+            #ts = {
+            #  enable = true;
+            #  lsp.enable = true;
+            #};
             typst = {
               enable = true;
               lsp.enable = true;
@@ -172,6 +171,7 @@ in {
             blink-cmp = {
               enable = true; # Modern completion plugin alternative to nvim-cmp
               friendly-snippets.enable = true; # Predefined code snippets
+              setupOpts.fuzzy.implementation = "lua";
             };
           };
 
@@ -180,11 +180,11 @@ in {
             languages = ["en" "pl" "de" "ru"];
           };
 
-          diagnostics = {
-            nvim-lint = {
-              enable = true; # Linter integration for real-time feedback
-            };
-          };
+          #diagnostics = {
+          #  nvim-lint = {
+          #    enable = true; # Linter integration for real-time feedback
+          #  };
+          #};
 
           utility = {
             vim-wakatime.enable = true; # Track coding activity
@@ -234,7 +234,7 @@ in {
             formatOnSave = true; # Format files when saving
             inlayHints.enable = true;
             lightbulb.enable = false; #  Code action lightbulb
-            lspsaga.enable = true; #  UI for LSP interactions
+            #lspsaga.enable = true; #  UI for LSP interactions
             trouble.enable = false; #  LSP diagnostics viewer
             lspSignature.enable = false; #  Show function signature help
             lspconfig.enable = true; # Basic LSP configuration

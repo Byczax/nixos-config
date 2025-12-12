@@ -37,7 +37,7 @@
 
       # printer driver for lenovo
       "libfprint-2-tod1-goodix"
-      "python3.12-youtube-dl-2021.12.17"
+      #"python3.12-youtube-dl-2021.12.17"
 
       # Intel Wi-Fi firmware
       "linux-firmware"
@@ -128,7 +128,7 @@
   services = {
     connman.wifi.backend = "iwd";
     dbus.enable = true;
-    gnome.gnome-keyring.enable = true;
+
     # for multimedia
     pipewire = {
       enable = true; # if not already enabled
