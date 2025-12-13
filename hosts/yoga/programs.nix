@@ -9,7 +9,7 @@
     signal-desktop
     git
     traceroute
-    (flameshot.override {enableWlrSupport = true;}) # slow screenshot with drawings
+    #(flameshot.override {enableWlrSupport = true;}) # slow screenshot with drawings
     grimblast # fast screenshot
     xorg.xlsclients # check if app is running under X11
     inkscape-with-extensions

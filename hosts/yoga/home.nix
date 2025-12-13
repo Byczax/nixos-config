@@ -95,44 +95,6 @@
       };
     };
     hyprlock.enable = true;
-    zsh = {
-      enable = true;
-      enableCompletion = true;
-      autosuggestion.enable = true;
-      syntaxHighlighting.enable = true;
-      shellAliases = {
-        update = "nh os switch /home/bq/nixos-config -H yoga --ask";
-        test_vm = "sudo nixos-rebuild build-vm --flake /home/bq/nixos-config/#default";
-        calc = "qalc";
-        bat_protect_on = "sudo echo 1 > /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode";
-        bat_protect_off = "sudo echo 0 > /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode";
-      };
-      history.size = 100000;
-      history.ignorePatterns = ["rm *" "pkill *" "cp *" "la*" ".." "l*" "la*" "./rsync_local.sh" "update" "git *" "nvim"];
-      oh-my-zsh = {
-        enable = true;
-        plugins = ["git"];
-        theme = "robbyrussell";
-      };
-      initContent = ''
-        bindkey "^R" history-incremental-search-backward;
-        export PATH="''${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
-        export KUBECONFIG=/home/bq/.kube/vis-config
-        source ${pkgs.nix-index}/etc/profile.d/command-not-found.sh
-      '';
-      plugins = [
-        {
-          name = "zsh-nix-shell";
-          file = "nix-shell.plugin.zsh";
-          src = pkgs.fetchFromGitHub {
-            owner = "chisui";
-            repo = "zsh-nix-shell";
-            rev = "v0.8.0";
-            sha256 = "1lzrn0n4fxfcgg65v0qhnj7wnybybqzs4adz7xsrkgmcsr0ii8b7";
-          };
-        }
-      ];
-    };
 
     # app menu
     wofi = {
@@ -193,6 +155,12 @@
     --enable-features=WaylandWindowDecorations
     --ozone-platform-hint=auto
   '';
+
+  # make sure that user have polish layout
+  home.keyboard = {
+    layout = "pl";
+  };
+
   services = {
     gnome-keyring.enable = true;
     # sync between phone and pc
@@ -200,167 +168,53 @@
       enable = true;
       indicator = true;
     };
-    # local telemetry on yourslef
-    activitywatch = {
+    swayidle.enable = true;
+    syncthing = {
       enable = true;
-      package = pkgs.aw-server-rust;
+    };
+    hypridle = {
+      enable = true;
       settings = {
-        port = 5600;
-      };
-      watchers = {
-        aw-watcher-afk = {
-          package = pkgs.aw-watcher-afk;
-          settings = {
-            poll_time = 1;
-            timeout = 60;
-            TimeoutStartSec = 60;
-            log_level = "debug";
-            #testing_backend = "wayland";
-            backend = "libinput";
-            Service = {
-              "Environment=WAYLAND_DISPLAY" = "wayland-1";
-              "Environment=XDG_RUNTIME_DIR" = "/run/user/1000";
-            };
-          };
-        };
-        aw-awatcher = {
-          package = pkgs.awatcher;
-          executable = "awatcher";
-          settings = {
-            idle-timeout-seconds = 180;
-            poll-time-idle-seconds = 10;
-            poll-time-window-seconds = 5;
-          };
-        };
-        #aw-watcher-window-wayland = {
-        #  package = pkgs.aw-watcher-window-wayland;
-        #  settings = {
-        #    poll_time = 1;
-        #    exclude_title = false;
-        #  };
-        #};
-        aw-watcher-window-hyprland = {
-          package = inputs.aw-watcher-hyprland.packages.${pkgs.stdenv.system}.aw-watcher-window-hyprland;
-          settings = {
-            poll_time = 1;
-            exclude_title = false;
-            timeout = 60;
-            TimeoutStartSec = 120;
-            Service = {
-              "Environment=WAYLAND_DISPLAY" = "wayland-1";
-              "Environment=XDG_RUNTIME_DIR" = "/run/user/1000";
-            };
-          };
-        };
+        listener = [
+          {
+            timeout = 300;
+            on-timeout = "hyprlock";
+          }
+          {
+            timeout = 600;
+            on-timeout = "hyprctl dispatch dpms off";
+            on-resume = "hyprctl dispatch dpms on";
+          }
+        ];
       };
     };
-
-    kanshi = {
+    hyprpolkitagent.enable = true;
+    # notifications
+    mako = {
       enable = true;
-      systemdTarget = "hyprland-session.target";
-      settings = [
-        {
-          profile = {
-            name = "undocked";
-            outputs = [
-              {
-                criteria = "eDP-1";
-                status = "enable";
-              }
-            ];
-          };
-        }
-        {
-          profile = {
-            name = "home_office";
-            outputs = [
-              {
-                criteria = "eDP-1";
-                position = "1920,120";
-                mode = "1920x1080@60.05Hz";
-                status = "enable";
-              }
-              {
-                criteria = "DP-5";
-                position = "5760,0";
-                mode = "1920x1080@60.0Hz";
-                transform = "90";
-                status = "enable";
-              }
-              {
-                criteria = "DP-6";
-                position = "0,0";
-                mode = "1920x1200@59.95Hz";
-                status = "enable";
-              }
-              {
-                criteria = "DP-7";
-                position = "3840,120";
-                mode = "1920x1080@60.0Hz";
-                status = "enable";
-              }
-            ];
-          };
-        }
-      ];
-    };
-  };
-
-  #systemd.user.services.activitywatch-watcher-aw-watcher-afk = {
-  #  Service = {
-  #    ExecStartPre = "${pkgs.bash}/bin/sh -c \"while [ -z $DISPLAY ]; do ${pkgs.coreutils}/bin/sleep 5; done\"";
-  #  };
-  #};
-  #
-  #systemd.user.services.activitywatch-watcher-aw-watcher-window = {
-  #  Service = {
-  #    ExecStartPre = "${pkgs.bash}/bin/sh -c \"while [ -z $DISPLAY ]; do ${pkgs.coreutils}/bin/sleep 5; done\"";
-  #  };
-  #};
-
-  # make sure that user have polish layout
-  home.keyboard = {
-    layout = "pl";
-  };
-
-  services.swayidle.enable = true;
-  services.syncthing = {
-    enable = true;
-  };
-  services.hypridle = {
-    enable = true;
-    settings = {
-      listener = [
-        {
-          timeout = 300;
-          on-timeout = "hyprlock";
-        }
-        {
-          timeout = 600;
-          on-timeout = "hyprctl dispatch dpms off";
-          on-resume = "hyprctl dispatch dpms on";
-        }
-      ];
-    };
-  };
-  services.hyprpolkitagent.enable = true;
-  # notifications
-  services.mako = {
-    enable = true;
-    settings = {
-      default-timeout = 4000;
-      "urgency=low" = {
-        "border-color" = "#313244";
-        "default-timeout" = "2000";
+      settings = {
+        default-timeout = 4000;
+        "urgency=low" = {
+          "border-color" = "#313244";
+          "default-timeout" = "2000";
+        };
+        "urgency=normal" = {
+          "border-color" = "#313244";
+          "default-timeout" = "5000";
+        };
+        "urgency=high" = {
+          "border-color" = "#f38ba8";
+          "text-color" = "#f38ba8";
+          "default-timeout" = "0";
+        };
       };
-      "urgency=normal" = {
-        "border-color" = "#313244";
-        "default-timeout" = "5000";
-      };
-      "urgency=high" = {
-        "border-color" = "#f38ba8";
-        "text-color" = "#f38ba8";
-        "default-timeout" = "0";
+    };
+    flameshot = {
+      enable = true;
+      settings = {
+        General = {
+          useGrimAdapter = true;
+        };
       };
     };
   };
@@ -378,6 +232,9 @@
     zoom.enable = true;
     thunderbird.enable = true;
     firefox.enable = true;
+    zsh.enable = true;
+    activitywatch.enable = true;
+    kanshi.enable = true;
     #catppuccin.enable = true;
   };
 }
