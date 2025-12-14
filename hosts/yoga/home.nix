@@ -44,6 +44,7 @@
     XDG_CURRENT_DESKTOP = "Hyprland";
     XDG_SESSION_TYPE = "wayland";
     MOZ_ENABLE_WAYLAND = "1";
+    QT_QPA_PLATFORM = "xcb";
   };
 
   qt = {
@@ -51,7 +52,7 @@
     platformTheme.name = "qtct";
     style = {
       name = "adwaita-dark";
-      package = pkgs.adwaita-qt;
+      package = pkgs.adwaita-qt6;
     };
   };
   dconf = {
@@ -148,6 +149,20 @@
       enable = true;
       enableZshIntegration = true;
     };
+    satty = {
+      enable = true;
+      settings = {
+        general = {
+          fullscreen = true;
+          corner-roundness = 12;
+          initial-tool = "brush";
+          output-filename = "/tmp/test-%Y-%m-%d_%H:%M:%S.png";
+        };
+        color-palette = {
+          palette = ["#00ffff" "#a52a2a" "#dc143c" "#ff1493" "#ffd700" "#008000"];
+        };
+      };
+    };
   };
 
   # terminal
@@ -211,13 +226,19 @@
     };
     flameshot = {
       enable = true;
+      package = pkgs.flameshot.override {
+        enableWlrSupport = true;
+      };
       settings = {
         General = {
           useGrimAdapter = true;
+          disabledGrimWarning = true;
         };
       };
     };
   };
+
+  #xdg.configFile."flameshot.ini".force = true;
   # do I need it?
   fonts.fontconfig.enable = true;
 

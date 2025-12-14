@@ -21,7 +21,7 @@ in {
         exec-once = [
           "$terminal &"
           "waybar &"
-          "flameshot &"
+          #"flameshot &"
           "kdeconnectd &"
         ];
         exec = [
