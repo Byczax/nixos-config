@@ -5,6 +5,9 @@
   inputs,
   ...
 }: {
+  imports = [
+    ./programs.nix
+  ];
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
   home.username = "bq";
@@ -63,97 +66,6 @@
       #};
     };
   };
-
-  home.file.".config/zoomus.conf".text = ''
-    [General]
-    %2B8gcPZIuASRcihpYJW6UA83rPnH%2B7ifu11s9xp3p8Rc%23=1756246768
-    63tJmSFEpYg9dR34FZPBHK8VKGPcUT1yDVJWSS9UTuU%23=1756246768
-    GeoLocale=system
-    KXhiCZ2HpmjrAEVlAVyB4VHAVsfnyTQR06weNL9BKYY%23=1756246768
-    SensitiveInfoMaskOn=true
-    ShowBiDirecSyncNoti=true
-    UeJ7AgrtBappnQjaaFui4jk8yVCY2K4zE14gyE34Rzo%23=1756246768
-    autoPlayGif=false
-    autoScale=true
-    bForceMaximizeWM=false
-    captureHDCamera=true
-    cefInstanceCountLimit=-1
-    cefRefreshTime=0
-    chatListPanelLastWidth=230
-    com.zoom.client.langid=0
-    conf.webserver=https://eu01web.zoom.us
-    conf.webserver.vendor.default=https://ethz.zoom.us
-    currentMeetingId=66118033985
-    deviceID=F4:A4:75:47:60:85
-    disableCef=false
-    enable.host.auto.grab=true
-    enableAlphaBuffer=true
-    enableCefGpu=false
-    enableCefLog=false
-    enableCefTa=false
-    enableCloudSwitch=true
-    enableLog=true
-    enableMiniWindow=true
-    enableQmlCache=true
-    enableScreenSaveGuard=false
-    enableStartMeetingWithRoomSystem=false
-    enableTestMode=false
-    enablegpucomputeutilization=false
-    fake.version=
-    flashChatTime=0
-    forceEnableTrayIcon=true
-    forceSSOURL=
-    hideCrashReport=false
-    host.auto.grab.interval=10
-    isTransCoding=false
-    jK9BkbV8zNjw7whdX9AnddbmbOu4N8hVKwVt8iDnC38%23=1756246768
-    logLevel=info
-    newMeetingWithVideo=true
-    noSandbox=false
-    pOoALJyX%2BqjXWD3Cr1Q4lH5ZpVshFjYob0SH3xBr2jQ%23=1756246768
-    playSoundForNewMessage=false
-    shareBarTopMargin=0
-    showOneTimePTAICTipHubble=false
-    showOneTimeQAMostUpvoteHubble=true
-    showOneTimeQueriesOptionTip=true
-    showOneTimeTranslationUpSellTip=false
-    showSystemTitlebar=false
-    speaker_volume=255
-    sso_domain=.zoom.us
-    sso_gov_domain=.zoomgov.com
-    system.audio.type=default
-    systemDockMargin=0
-    timeFormat12HoursEnable=true
-    translationFreeTrialTipShowTime=0
-    upcoming_meeting_header_image=
-    useSystemTheme=false
-    userEmailAddress=mbyczko@ethz.ch
-    webview.debug.enable=false
-    xwayland=false
-
-    [1VGa6fEsTQYEquYOdMv]
-    j1V5NQSTWNQPlSB8TSaIgvM%23=1756246768
-
-    [AS]
-    showframewindow=true
-
-    [chat.recent]
-    recentlast.session=
-
-    [e2oewir4]
-    zlsEjhEtnrfV\1\RNfupD3GFHXnLPoOTzI%23=1756246768
-
-    [p2j01nOS5WVbsNRvQFnMTmH5SbwLdPoVQxAt]
-    B0jJHc%23=1756246768
-
-    [pvKc9SrvNy]
-    UrM6djKC7sBYYhjF2xNCSHVpXDpFealQ%23=1756246768
-
-    [zoom_new_im]
-    is_landscape_mode=true
-    main_frame_pixel_pos_narrow="376,600"
-    main_frame_pixel_pos_wide="1920,1034"
-  '';
   home.file.".config/electron-flags.conf".text = ''
     --enable-features=WaylandWindowDecorations
     --ozone-platform-hint=auto
@@ -163,43 +75,6 @@
   services.kdeconnect = {
     enable = true;
     indicator = true;
-  };
-  # local telemetry on yourslef
-  services.activitywatch = {
-    enable = true;
-    package = pkgs.aw-server-rust;
-    settings = {
-      port = 5600;
-    };
-    watchers = {
-      aw-watcher-afk = {
-        package = pkgs.aw-watcher-afk;
-        settings = {
-          timeout = 300;
-          poll_time = 2;
-        };
-      };
-      aw-watcher-window = {
-        package = pkgs.aw-watcher-window;
-        #package = awHyprland;
-        settings = {
-          poll_time = 1;
-          exclude_title = false;
-        };
-      };
-    };
-  };
-
-  systemd.user.services.activitywatch-watcher-aw-watcher-afk = {
-    Service = {
-      ExecStartPre = "${pkgs.bash}/bin/sh -c \"while [ -z $DISPLAY ]; do ${pkgs.coreutils}/bin/sleep 5; done\"";
-    };
-  };
-
-  systemd.user.services.activitywatch-watcher-aw-watcher-window = {
-    Service = {
-      ExecStartPre = "${pkgs.bash}/bin/sh -c \"while [ -z $DISPLAY ]; do ${pkgs.coreutils}/bin/sleep 5; done\"";
-    };
   };
 
   # make sure that user have polish layout
@@ -228,56 +103,33 @@
       ];
     };
   };
-  services.hyprsunset = {
-    enable = true;
-    transitions = {
-      sunrise = {
-        calendar = "*-*-* 06:00:00";
-        requests = [
-          ["temperature" "6500"]
-          ["gamma 100"]
-        ];
-      };
-      sunset = {
-        calendar = "*-*-* 19:00:00";
-        requests = [
-          ["temperature" "2500"]
-        ];
-      };
-    };
-  };
+  #services.hyprsunset = {
+  #  enable = true;
+  #  transitions = {
+  #    sunrise = {
+  #      calendar = "*-*-* 06:00:00";
+  #      requests = [
+  #        ["temperature" "6500"]
+  #        ["gamma 100"]
+  #      ];
+  #    };
+  #    sunset = {
+  #      calendar = "*-*-* 19:00:00";
+  #      requests = [
+  #        ["temperature" "2500"]
+  #      ];
+  #    };
+  #  };
+  #};
   services.hyprpolkitagent.enable = true;
   #services.hyprpaper.enable = true;
 
-  # more zsh stuff
-  programs.zsh = {
-    enable = true;
-    enableCompletion = true;
-    autosuggestion.enable = true;
-    syntaxHighlighting.enable = true;
-    shellAliases = {
-      update = "sudo nixos-rebuild switch --flake /home/bq/nixos-config/#g7";
-      test_vm = "sudo nixos-rebuild build-vm --flake /home/bq/nixos-config/#default";
-      calc = "qalc";
-      bat_protect_on = "sudo echo 1 > /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode";
-      bat_protect_off = "sudo echo 0 > /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode";
-    };
-    history.size = 100000;
-    history.ignorePatterns = ["rm *" "pkill *" "cp *" "ls" ".." "l" "la"];
-    oh-my-zsh = {
-      enable = true;
-      plugins = ["git"];
-      theme = "robbyrussell";
-    };
-    initContent = ''
-      bindkey "^R" history-incremental-search-backward;
-      export PATH="''${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
-      export KUBECONFIG=/home/bq/.kube/vis-config
-    '';
-  };
-
   # app menu
   programs.wofi = {
+    enable = true;
+  };
+
+  programs.nh = {
     enable = true;
   };
 
@@ -301,122 +153,121 @@
     #  };
   };
 
-  home.packages = with pkgs; [
-    fira-code #font for terminal
-    prismlauncher # minecraft
-    vim # as a backup
-    brightnessctl # ability to change screen brightness
-    font-awesome # fancy icons
-    xournalpp # notes app
-    signal-desktop
-    git
-    traceroute
-    (flameshot.override {enableWlrSupport = true;}) # slow screenshot with drawings
-    grimblast # fast screenshot
-    xorg.xlsclients # check if app is running under X11
-    inkscape-with-extensions
-    btop
-    libreoffice-qt6-fresh
-    wl-clipboard #clipboard
-    helvum # audio configuration
-    qbittorrent
-    unzip
-    gdu # disk analyzer, better than ncdu
-    logseq
-    hyprshade
-    #lm_sensors #maybe I don't need it
-    libqalculate #calculator
-    popsicle # os burner
-    opentofu
-
-    direnv #why I have that?
-    libnotify # what is this for?
-    gcc # C++ let's go
-
-    # to fulfill lazyvim plugins
-    luarocks
-    lazygit
-    fd
-    lua
-    fzf
-
-    #zathura #pdf viewer
-    quickemu # virtual machines
-    qemu
-    virt-manager
-
-    simple-scan # scanner
-
-    #(pkgs.texlive.combine {
-    #  inherit (pkgs.texlive)
-    #    scheme-medium  # base minimal setup
-    #    latex         # core LaTeX support
-    #    geometry      # example extra packages
-    #    xcolor
-    #    amsmath
-    #    fontspec
-    #    hyperref
-    #    moderncv
-    #    polski
-    #    latexmk
-    #    enumitem
-    #    pgf;
-    #})
-
-    hyprsunset # need to install manually
-
-    iperf
-    bitwarden-desktop
-
-    pavucontrol # add audio control alongside helvum
-    adwaita-icon-theme # icons for gnome apps
-
-    feh
-    tmux
-    blender
-    krita
-    #vscodium
-    #atom
-    #freecad
-    #wireshark
-    joplin
-    vlc
-    nodejs
-    tree-sitter
-    imagemagick # convert images
-    ripgrep
-    xdotool
-    hugo
-    go
-    notesnook
-
-    nwg-displays
-    lm_sensors
-    adwaita-icon-theme
-    dysk
-
-    k9s
-    kubectl
-    krew
-    tanka
-    jsonnet-bundler
-    gnumake
-    kubeseal
-
-    vesktop
-
-    (wrapHelm kubernetes-helm {
-      plugins = with pkgs.kubernetes-helmPlugins; [
-        helm-secrets
-        helm-diff
-        helm-s3
-        helm-git
-      ];
-    })
-
-    zoom-us
-    trilium-desktop
-  ];
+  #home.packages = with pkgs; [
+  #  fira-code #font for terminal
+  #  prismlauncher # minecraft
+  #  vim # as a backup
+  #  brightnessctl # ability to change screen brightness
+  #  font-awesome # fancy icons
+  #  xournalpp # notes app
+  #  signal-desktop
+  #  git
+  #  traceroute
+  #  (flameshot.override {enableWlrSupport = true;}) # slow screenshot with drawings
+  #  grimblast # fast screenshot
+  #  xorg.xlsclients # check if app is running under X11
+  #  inkscape-with-extensions
+  #  btop
+  #  libreoffice-qt6-fresh
+  #  wl-clipboard #clipboard
+  #  helvum # audio configuration
+  #  qbittorrent
+  #  unzip
+  #  gdu # disk analyzer, better than ncdu
+  #  logseq
+  #  hyprshade
+  #  #lm_sensors #maybe I don't need it
+  #  libqalculate #calculator
+  #  popsicle # os burner
+  #  opentofu
+  #
+  #  direnv #why I have that?
+  #  libnotify # what is this for?
+  #  gcc # C++ let's go
+  #
+  #  # to fulfill lazyvim plugins
+  #  luarocks
+  #  lazygit
+  #  fd
+  #  lua
+  #  fzf
+  #
+  #  #zathura #pdf viewer
+  #  quickemu # virtual machines
+  #  qemu
+  #  virt-manager
+  #
+  #  simple-scan # scanner
+  #
+  #  #(pkgs.texlive.combine {
+  #  #  inherit (pkgs.texlive)
+  #  #    scheme-medium  # base minimal setup
+  #  #    latex         # core LaTeX support
+  #  #    geometry      # example extra packages
+  #  #    xcolor
+  #  #    amsmath
+  #  #    fontspec
+  #  #    hyperref
+  #  #    moderncv
+  #  #    polski
+  #  #    latexmk
+  #  #    enumitem
+  #  #    pgf;
+  #  #})
+  #
+  #  hyprsunset # need to install manually
+  #
+  #  iperf
+  #  bitwarden-desktop
+  #
+  #  pavucontrol # add audio control alongside helvum
+  #  adwaita-icon-theme # icons for gnome apps
+  #
+  #  feh
+  #  tmux
+  #  blender
+  #  krita
+  #  #vscodium
+  #  #atom
+  #  #freecad
+  #  #wireshark
+  #  joplin
+  #  vlc
+  #  nodejs
+  #  tree-sitter
+  #  imagemagick # convert images
+  #  ripgrep
+  #  xdotool
+  #  hugo
+  #  go
+  #  notesnook
+  #
+  #  nwg-displays
+  #  lm_sensors
+  #  adwaita-icon-theme
+  #  dysk
+  #
+  #  k9s
+  #  kubectl
+  #  krew
+  #  tanka
+  #  jsonnet-bundler
+  #  gnumake
+  #  kubeseal
+  #
+  #  vesktop
+  #
+  #  (wrapHelm kubernetes-helm {
+  #    plugins = with pkgs.kubernetes-helmPlugins; [
+  #      helm-secrets
+  #      helm-diff
+  #      helm-s3
+  #      helm-git
+  #    ];
+  #  })
+  #
+  #  trilium-desktop
+  #];
 
   services.syncthing = {
     enable = true;
@@ -481,6 +332,33 @@
     profiles = {};
   };
 
+  #programs.zsh = {
+  #  enable = true;
+  #  enableCompletion = true;
+  #  autosuggestion.enable = true;
+  #  syntaxHighlighting.enable = true;
+  #  shellAliases = {
+  #    update = "nh os switch $HOME/nixos-config -H g7 --ask";
+  #    test_vm = "sudo nixos-rebuild build-vm --flake $HOME/nixos-config/#default";
+  #    calc = "qalc";
+  #    bat_protect_on = "sudo echo 1 > /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode";
+  #    bat_protect_off = "sudo echo 0 > /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode";
+  #  };
+  #  history.size = 100000;
+  #  history.ignorePatterns = ["rm *" "pkill *" "cp *" "la*" ".." "l*" "la*" "./rsync_local.sh" "update" "git *" "nvim *"];
+  #  oh-my-zsh = {
+  #    enable = true;
+  #    plugins = ["git"];
+  #    theme = "robbyrussell";
+  #  };
+  #  initContent = ''
+  #    bindkey "^R" history-incremental-search-backward;
+  #    export PATH="''${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+  #    export KUBECONFIG=$HOME/.kube/vis-config
+  #    source ${pkgs.nix-index}/etc/profile.d/command-not-found.sh
+  #  '';
+  #};
+
   # do I need it?
   fonts.fontconfig.enable = true;
 
@@ -491,6 +369,15 @@
   module.nvf.enable = true;
 
   module.waybar.enable = true;
+
+  module.zoom.enable = true;
+
+  module.zsh = {
+    enable = true;
+    host = "g7";
+  };
+
+  module.activitywatch.enable = true;
 
   #catppuccin.enable = true;
 }
