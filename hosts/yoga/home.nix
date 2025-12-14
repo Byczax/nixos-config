@@ -253,7 +253,10 @@
     zoom.enable = true;
     thunderbird.enable = true;
     firefox.enable = true;
-    zsh.enable = true;
+    zsh = {
+      enable = true;
+      host = "yoga";
+    };
     activitywatch.enable = true;
     kanshi.enable = true;
     #catppuccin.enable = true;

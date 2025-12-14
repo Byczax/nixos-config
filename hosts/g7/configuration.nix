@@ -295,7 +295,7 @@
   };
 
   # Needed kernel modules for Lenovo systems
-  boot.kernelModules = ["acpi_call" "tp_smapi" "i2c-dev"];
+  boot.kernelModules = ["acpi_call" "tp_smapi" "i2c-dev" "alienware-wmi"];
   virtualisation.docker = {
     enable = true;
   };
