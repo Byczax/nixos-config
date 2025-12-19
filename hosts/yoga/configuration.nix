@@ -56,6 +56,7 @@
       efi.canTouchEfiVariables = true; # allow to register boots in boot
     };
     kernelParams = ["i915.force_probe=9a49"];
+    kernelPackages = pkgs.linuxPackages_latest;
 
     # Needed kernel modules for Lenovo systems
     kernelModules = ["acpi_call" "tp_smapi" "i2c-dev" "rts5139" "rts_u" "rts_bio" "rtsx_usb"];
@@ -64,6 +65,7 @@
       options rts_u device_table=0x5812
       options rts_bio device_table=0x5812
       options rtsx_usb device_table=0x5812
+      options snd-hda-intel dmic_detect=0
     '';
   };
 
@@ -111,6 +113,8 @@
         }
       ];
       allowedUDPPortRanges = allowedTCPPortRanges;
+      allowedUDPPorts = [41641];
+      checkReversePath = "loose";
     };
   };
 
@@ -129,6 +133,7 @@
   services = {
     connman.wifi.backend = "iwd";
     dbus.enable = true;
+    ratbagd.enable = true;
 
     # for multimedia
     pipewire = {
@@ -186,6 +191,15 @@
     };
     gvfs.enable = true; # Mount, trash, and other functionalities
     tumbler.enable = true; # Thumbnail support for images
+
+    tor = {
+      enable = true;
+      openFirewall = true;
+      relay = {
+        enable = true;
+        role = "relay";
+      };
+    };
   };
 
   time.timeZone = "Europe/Zurich"; # timezone, to not be confused

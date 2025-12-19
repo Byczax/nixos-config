@@ -138,6 +138,7 @@ window#waybar.firefox {
 #mode,
 #idle_inhibitor,
 #language,
+#custom-awatcher,
 #mpd {
     border-radius: 2rem;
     padding-left: 8px;
@@ -225,6 +226,9 @@ label:focus {
 #wireplumber.muted {
     background-color: #90b1b1;
 }
+/*#wireplumber:empty {
+  display: none;
+}*/
 
 #network {
     background-color: @sapphire;
@@ -251,6 +255,8 @@ label:focus {
 #custom-temperature.critical {
     background-color: #eb4d4b;
 }
+
+
 
 #tray {
     /* background-color: #a6e3a1; */
@@ -314,5 +320,15 @@ label:focus {
 
 #keyboard-state>label.locked {
     background: rgba(0, 0, 0, 0.2);
+}
+
+#custom-awatcher {
+  background-color: @gray
+}
+#custom-awatcher.active {
+    color: #0f0;
+}
+#custom-awatcher.inactive {
+    color: #f00;
 }
 

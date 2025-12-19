@@ -9,6 +9,11 @@ in
         python-pkgs.faker
         python-pkgs.beautifulsoup4
         python-pkgs.flask
+        python-pkgs.pyyaml
       ]))
     ];
+    shell = pkgs.zsh;
+    shellHook = ''
+      exec zsh
+    '';
   }

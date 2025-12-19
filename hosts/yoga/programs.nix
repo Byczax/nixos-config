@@ -144,5 +144,9 @@
     comma
     libinput
     gcr
+    lmms
+    alsa-utils
+    libgig
+    rpi-imager
   ];
 }

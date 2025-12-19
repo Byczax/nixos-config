@@ -23,8 +23,10 @@ in {
           modules-center = [];
           modules-right = [
             "tray"
+            "custom-awatcher"
             "network"
             "wireplumber"
+            "wireplumber#mic"
             "bluetooth"
             "cpu"
             "memory"
@@ -130,8 +132,24 @@ in {
                 "󰕾"
               ];
             };
-            "on-click-right" = "exec pwvucontrol";
+
+            "on-click-right" = "pwvucontrol";
             "on-click" = "wpctl set-mute @DEFAULT_SINK@ toggle";
+          };
+          "wireplumber#mic" = {
+            "node-type" = "Audio/Source";
+            "format" = "󰍬";
+            "format-muted" = "󰍭";
+            #"tooltip-format" = "{node_name}\nVolume: {volume}%";
+            "on-click" = "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle";
+            "on-click-right" = "pavucontrol";
+            "scroll-step" = 5;
+          };
+          "custom/awatcher" = {
+            "exec" = "systemctl --user is-active activitywatch-watcher-aw-awatcher.service";
+            "interval" = 5;
+            "format" = "{output}";
+            "return-type" = "json";
           };
         }
       ];
