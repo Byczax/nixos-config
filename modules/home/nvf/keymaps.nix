@@ -163,8 +163,8 @@
   }
   #{
   #  key = "<esc>";
-  #  mode = [ "i" "n" "s" ];
-  #  action = "function() vim.cmd('noh'); return '<esc>'; end";
+  #  mode = ["i" "n" "s"];
+  #  action = ":lua (function() vim.cmd('noh'); return '<esc>' end)()<CR>";
   #  expr = true;
   #  desc = "Escape and Clear hlsearch";
   #}
@@ -512,19 +512,19 @@
   {
     key = "<leader>us";
     mode = ["n"];
-    action = "function() Snacks.toggle.option('spell', { name = 'Spelling' })() end";
+    action = ":lua vim.opt.spell = not vim.opt.spell:get()<CR>";
     desc = "Toggle Spelling";
   }
   {
     key = "<leader>uw";
     mode = ["n"];
-    action = "function() Snacks.toggle.option('wrap', { name = 'Wrap' })() end";
+    action = ":lua vim.opt.wrap = not vim.opt.wrap:get()<CR>";
     desc = "Toggle Wrap";
   }
   {
     key = "<leader>uL";
     mode = ["n"];
-    action = "function() Snacks.toggle.option('relativenumber', { name = 'Relative Number' })() end";
+    action = ":lua vim.opt.relativenumber = not vim.opt.relativenumber:get()<CR>";
     desc = "Toggle Relative Number";
   }
   {
