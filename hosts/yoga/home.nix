@@ -163,6 +163,21 @@
         };
       };
     };
+
+    borgmatic = {
+      enable = true;
+      backups = {
+        synology = {
+          location = {
+            sourceDirectories = ["/home/bq"];
+            repositories = ["ssh://maciej_byczko@byczkosynology/var/services/homes/maciej_byczko/Backup/nixos"];
+          };
+        };
+      };
+    };
+    nix-init = {
+      enable = true;
+    };
   };
 
   # terminal
@@ -236,6 +251,11 @@
         };
       };
     };
+
+    #borgmatic = {
+    #  enable = true;
+    #  frequency = "daily";
+    #};
   };
 
   #xdg.configFile."flameshot.ini".force = true;
