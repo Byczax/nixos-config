@@ -55,7 +55,7 @@
       timeout = 3; # time before it will start booting most recent build
       efi.canTouchEfiVariables = true; # allow to register boots in boot
     };
-    kernelParams = ["i915.force_probe=9a49"];
+    kernelParams = ["i915.force_probe=9a49" "i915.enable_psr=0"];
     kernelPackages = pkgs.linuxPackages_latest;
 
     # Needed kernel modules for Lenovo systems
@@ -111,9 +111,16 @@
           from = 1714;
           to = 1764;
         }
+        {
+          from = 5201;
+          to = 5201;
+        }
+        {
+          from = 41641;
+          to = 41641;
+        }
       ];
       allowedUDPPortRanges = allowedTCPPortRanges;
-      allowedUDPPorts = [41641];
       checkReversePath = "loose";
     };
   };
