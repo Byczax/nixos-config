@@ -148,5 +148,6 @@
     alsa-utils
     libgig
     rpi-imager
+    anki
   ];
 }
