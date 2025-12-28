@@ -87,6 +87,25 @@ in {
             ];
           };
         }
+        {
+          profile = {
+            name = "home_office3";
+            outputs = [
+              {
+                criteria = "eDP-1";
+                position = "1920,0";
+                mode = "1920x1080@60.05Hz";
+                status = "enable";
+              }
+              {
+                criteria = "Dell Inc. DELL U2913WM 5YD8C2C8187L";
+                position = "3840,0";
+                mode = "2560x1080@60.0Hz";
+                status = "enable";
+              }
+            ];
+          };
+        }
       ];
     };
   };
