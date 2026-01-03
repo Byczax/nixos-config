@@ -18,9 +18,10 @@ in {
           keymaps = import ./keymaps.nix;
           options = import ./options.nix;
 
-          startPlugins = [
-            "snacks-nvim"
-            "plenary-nvim" # Dependency for many Lua plugins
+          startPlugins = with pkgs.vimPlugins; [
+            vimtex
+            vim-jsonnet
+            vim-smali
           ];
 
           globals = {
@@ -156,12 +157,10 @@ in {
             enableFormat = true;
             enableTreesitter = true;
             assembly.enable = false;
-            #astro = {
-            #  enable = true;
-            #  lsp.enable = true;
-            #
-            #  #  format.package = pkgs.nodePackages.prettier;
-            #};
+            astro = {
+              enable = true;
+              lsp.enable = true;
+            };
             bash = {
               enable = true;
               lsp.enable = true;
@@ -169,10 +168,10 @@ in {
             clang.enable = false;
             csharp.enable = false;
 
-            #css = {
-            #  enable = true;
-            #  lsp.enable = true;
-            #};
+            css = {
+              enable = true;
+              lsp.enable = true;
+            };
             dart = {
               enable = false;
               lsp.enable = false;
@@ -237,10 +236,10 @@ in {
               enable = true;
               lsp.enable = true;
             };
-            #ts = {
-            #  enable = true;
-            #  lsp.enable = true;
-            #};
+            ts = {
+              enable = true;
+              lsp.enable = true;
+            };
             typst = {
               enable = true;
               lsp.enable = true;
@@ -295,7 +294,8 @@ in {
           };
 
           extraPlugins = {
-            #vimtex = { # latex support in nvim
+            #vimtex = {
+            #  # latex support in nvim
             #  package = pkgs.vimUtils.buildVimPlugin {
             #    pname = "vimtex";
             #    version = "master";
@@ -303,12 +303,13 @@ in {
             #      owner = "lervag";
             #      repo = "vimtex";
             #      rev = "master";
-            #      sha256 = "sha256-Tx4HQmwM2bRx2e/3vuEsKAYMcLbKYr9tELWjipehxew=";
+            #      sha256 = "sha256-jwW4Ljp8wxy/lE7Xh3Fhi8XaVDLtgpD4XyA78Xa+DT4=";
             #    };
             #  };
             #  setup = ''
             #    vim.g.vimtex_view_method = 'zathura'
             #    vim.g.vimtex_compiler_method = 'latexmk'
+            #    vim.g.vimtex_fzf_lua_enabled = false
             #  '';
             #};
             #typst = {
@@ -323,21 +324,21 @@ in {
             #    };
             #  };
             #};
-            vimjsonnet = {
-              package = pkgs.vimUtils.buildVimPlugin {
-                pname = "vim-jsonnet";
-                version = "master";
-                src = pkgs.fetchFromGitHub {
-                  owner = "google";
-                  repo = "vim-jsonnet";
-                  rev = "master";
-                  sha256 = "sha256-ChgUGTrLthuGSws/UpF71JYI/c2QqItax6hsh7mYX/w="; # replace with actual
-                };
-              };
-            };
+            #vimjsonnet = {
+            #  package = pkgs.vimUtils.buildVimPlugin {
+            #    pname = "vim-jsonnet";
+            #    version = "master";
+            #    src = pkgs.fetchFromGitHub {
+            #      owner = "google";
+            #      repo = "vim-jsonnet";
+            #      rev = "master";
+            #      sha256 = "sha256-ChgUGTrLthuGSws/UpF71JYI/c2QqItax6hsh7mYX/w="; # replace with actual
+            #    };
+            #  };
+            #};
             vimtanka = {
               package = pkgs.vimUtils.buildVimPlugin {
-                pname = "vim-jsonnet";
+                pname = "vim-tanka";
                 version = "master";
                 src = pkgs.fetchFromGitHub {
                   owner = "dsabsay";
@@ -347,18 +348,18 @@ in {
                 };
               };
             };
-            vimsmali = {
-              package = pkgs.vimUtils.buildVimPlugin {
-                pname = "vim-smali";
-                version = "master";
-                src = pkgs.fetchFromGitHub {
-                  owner = "kelwin";
-                  repo = "vim-smali";
-                  rev = "master";
-                  sha256 = "sha256-2arBJ4sY+QbqkSG02bibMX22Dcr7m9Eiv3dpw5+tPb4="; # replace with actual
-                };
-              };
-            };
+            #vimsmali = {
+            #  package = pkgs.vimUtils.buildVimPlugin {
+            #    pname = "vim-smali";
+            #    version = "master";
+            #    src = pkgs.fetchFromGitHub {
+            #      owner = "kelwin";
+            #      repo = "vim-smali";
+            #      rev = "master";
+            #      sha256 = "sha256-2arBJ4sY+QbqkSG02bibMX22Dcr7m9Eiv3dpw5+tPb4="; # replace with actual
+            #    };
+            #  };
+            #};
           };
         };
       };
