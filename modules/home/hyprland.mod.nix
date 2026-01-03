@@ -39,6 +39,7 @@ in {
         };
         input = {
           "kb_layout" = "pl";
+          "kb_options" = "grp:alt_shift_toggle";
         };
         bind =
           [
