@@ -151,6 +151,10 @@ in {
             "format" = "{output}";
             "return-type" = "json";
           };
+          #"hyprland/language" = {
+          #  "format" = "{}";
+          #  "format-pl" = "PL";
+          #};
         }
       ];
     };
