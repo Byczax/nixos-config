@@ -48,14 +48,14 @@
     inherit (inputs.nixpkgs) lib;
     inherit (builtins) map toString;
 
-    mkSystem = system: hostname:
+    mkSystem = system: hostname: conf-name:
       inputs.nixpkgs.lib.nixosSystem {
         specialArgs = {inherit inputs;};
         system = system;
 
         modules =
           [
-            ./hosts/${hostname}/configuration.nix
+            ./hosts/${conf-name}/configuration.nix
 
             inputs.home-manager.nixosModules.home-manager
             {
@@ -65,7 +65,7 @@
 
               home-manager.users.bq.imports =
                 [
-                  ./hosts/${hostname}/home.nix
+                  ./hosts/${conf-name}/home.nix
                   inputs.nvf.homeManagerModules.default
                   inputs.zen-browser.homeModules.twilight
                 ]
@@ -76,8 +76,8 @@
       };
   in {
     nixosConfigurations = {
-      yoga = mkSystem "x86_64-linux" "yoga";
-      g7 = mkSystem "x86_64-linux" "g7";
+      yoga = mkSystem "x86_64-linux" "yoga" "yoga";
+      g7 = mkSystem "x86_64-linux" "g7" "g7";
     };
   };
 }
