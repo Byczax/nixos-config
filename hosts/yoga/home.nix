@@ -23,29 +23,38 @@
     # the Home Manager release notes for a list of state version
     # changes in each release.
     stateVersion = "25.05";
+    sessionVariables = {
+      # info where to save config files
+      XDG_CONFIG_HOME = "${config.home.homeDirectory}/.config";
+      EDITOR = "nvim";
+
+      # inform apps that we use wayland
+      NIXOS_OZONE_WL = "1";
+      OZONE_PLATFORM = "wayland";
+
+      # suggests electron apps to use the wayland backend
+      ELECTRON_OZONE_PLATFORM_HINT = "wayland";
+
+      FONTCONFIG_FILE = "${pkgs.fontconfig.out}/etc/fonts/fonts.conf";
+
+      # inform that we use hyprland
+      XDG_CURRENT_DESKTOP = "Hyprland";
+      XDG_SESSION_TYPE = "wayland";
+      MOZ_ENABLE_WAYLAND = "1";
+      QT_QPA_PLATFORM = "xcb";
+      GTK_IM_MODULE = "fcitx";
+      QT_IM_MODULE = "fcitx";
+      XMODIFIERS = "@im=fcitx";
+    };
+    # make sure that user have polish layout
+    #keyboard = {
+    #  layout = "pl,us";
+    #  options = [
+    #    "grp:alt_shift_toggle"
+    #  ];
+    #};
   };
   programs.home-manager.enable = true; # Let Home Manager install and manage itself.
-
-  home.sessionVariables = {
-    # info where to save config files
-    XDG_CONFIG_HOME = "${config.home.homeDirectory}/.config";
-    EDITOR = "nvim";
-
-    # inform apps that we use wayland
-    NIXOS_OZONE_WL = "1";
-    OZONE_PLATFORM = "wayland";
-
-    # suggests electron apps to use the wayland backend
-    ELECTRON_OZONE_PLATFORM_HINT = "wayland";
-
-    FONTCONFIG_FILE = "${pkgs.fontconfig.out}/etc/fonts/fonts.conf";
-
-    # inform that we use hyprland
-    XDG_CURRENT_DESKTOP = "Hyprland";
-    XDG_SESSION_TYPE = "wayland";
-    MOZ_ENABLE_WAYLAND = "1";
-    QT_QPA_PLATFORM = "xcb";
-  };
 
   qt = {
     enable = true;
@@ -168,9 +177,45 @@
       enable = true;
       backups = {
         synology = {
+          consistency = {
+            checks = [
+              {
+                name = "repository";
+                frequency = "2 weeks";
+              }
+              {
+                name = "archives";
+                frequency = "4 weeks";
+              }
+              {
+                name = "data";
+                frequency = "6 weeks";
+              }
+              {
+                name = "extract";
+                frequency = "6 weeks";
+              }
+            ];
+          };
           location = {
-            sourceDirectories = ["/home/bq"];
             repositories = ["ssh://maciej_byczko@byczkosynology/var/services/homes/maciej_byczko/Backup/nixos"];
+            extraConfig = {
+              remote_path = "/usr/local/bin/borg";
+              encryption_passphrase = "repokey";
+            };
+            patterns = [
+              "R /home/bq"
+              "- /home/bq/.cache"
+              "- /home/bq/.config"
+              "- /home/bq/.local"
+              "- /home/bq/Media"
+            ];
+          };
+          retention = {
+            keepDaily = 7; # last week
+            keepWeekly = 4; # last month
+            keepMonthly = 12; # last year
+            keepYearly = 3; # long-term
           };
         };
       };
@@ -185,11 +230,6 @@
     --enable-features=WaylandWindowDecorations
     --ozone-platform-hint=auto
   '';
-
-  # make sure that user have polish layout
-  home.keyboard = {
-    layout = "pl";
-  };
 
   services = {
     gnome-keyring.enable = true;
@@ -252,10 +292,10 @@
       };
     };
 
-    #borgmatic = {
-    #  enable = true;
-    #  frequency = "daily";
-    #};
+    borgmatic = {
+      enable = true;
+      frequency = "daily";
+    };
   };
 
   #xdg.configFile."flameshot.ini".force = true;
@@ -281,4 +321,29 @@
     kanshi.enable = true;
     #catppuccin.enable = true;
   };
+
+  #i18n.inputMethod = {
+  #  # Available since NixOS 24.11
+  #  enable = true;
+  #  type = "fcitx5";
+  #  fcitx5 = {
+  #    waylandFrontend = true;
+  #    ignoreUserConfig = true; # Use settings below, ignore user config
+  #    addons = with pkgs; [
+  #      fcitx5-mozc # Japanese input method
+  #    ];
+  #    settings = {
+  #      inputMethod = {
+  #        GroupOrder."0" = "Default";
+  #        "Groups/0" = {
+  #          Name = "Default";
+  #          "Default Layout" = "keyboard-pl";
+  #          DefaultIM = "mozc";
+  #        };
+  #        "Groups/0/Items/0".Name = "keyboard-pl";
+  #        "Groups/0/Items/1".Name = "mozc";
+  #      };
+  #    };
+  #  };
+  #};
 }

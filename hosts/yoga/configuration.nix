@@ -80,6 +80,7 @@
 
   networking = {
     hostName = "nixos";
+    nftables.enable = true;
     networkmanager = {
       enable = true;
       wifi = {
@@ -160,11 +161,6 @@
         };
       };
     };
-    # enable polish as keyboard layout
-    xserver.xkb = {
-      layout = "pl";
-      variant = "";
-    };
 
     tailscale.enable = true; # tailscale, no option for home yet
     thermald.enable = true; # proactively protect CPU overheating
@@ -199,13 +195,17 @@
     gvfs.enable = true; # Mount, trash, and other functionalities
     tumbler.enable = true; # Thumbnail support for images
 
-    tor = {
+    #tor = {
+    #  enable = true;
+    #  openFirewall = true;
+    #  relay = {
+    #    enable = true;
+    #    role = "relay";
+    #  };
+    #};
+
+    resolved = {
       enable = true;
-      openFirewall = true;
-      relay = {
-        enable = true;
-        role = "relay";
-      };
     };
   };
 
@@ -215,7 +215,8 @@
 
   # language of the system with some of the formats
   i18n.defaultLocale = "en_US.UTF-8";
-  i18n.supportedLocales = ["en_US.UTF-8/UTF-8" "ja_JP.UTF-8/UTF-8"];
+  i18n.supportedLocales = ["en_US.UTF-8/UTF-8" "pl_PL.UTF-8/UTF-8" "ja_JP.UTF-8/UTF-8"];
+  #i18n.supportedLocales = ["en_US.UTF-8" "pl_PL.UTF-8" "ja_JP.UTF-8" "ru_RU.UTF-8"];
 
   # Required for printer to work
   services.printing.enable = true;
@@ -254,7 +255,6 @@
     initialPassword = "changeme";
     extraGroups = ["networkmanager" "wheel" "docker" "libvirtd" "video" "i2c" "input"];
     shell = pkgs.zsh;
-    packages = with pkgs; [];
   };
 
   environment.systemPackages = with pkgs; [
