@@ -27,8 +27,14 @@ in {
         bat_protect_on = "sudo echo 1 > /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode";
         bat_protect_off = "sudo echo 0 > /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode";
       };
-      history.size = 100000;
-      history.ignorePatterns = ["rm *" "pkill *" "cp *" "la*" ".." "l*" "la*" "./rsync_local.sh" "update" "git *" "nvim *"];
+      history = {
+        extended = true;
+        size = 100000;
+        append = true;
+        share = true;
+        #ignoreDups = true;
+        #ignorePatterns = ["rm *" "pkill *" "cp *" "la*" ".." "l*" "la*" "./rsync_local.sh" "update" "git *" "nvim *"];
+      };
       oh-my-zsh = {
         enable = true;
         plugins = ["git"];
