@@ -157,10 +157,10 @@ in {
             enableFormat = true;
             enableTreesitter = true;
             assembly.enable = false;
-            astro = {
-              enable = true;
-              lsp.enable = true;
-            };
+            #astro = {
+            #  enable = true;
+            #  lsp.enable = true;
+            #};
             bash = {
               enable = true;
               lsp.enable = true;
