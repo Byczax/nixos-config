@@ -35,7 +35,7 @@
       # suggests electron apps to use the wayland backend
       ELECTRON_OZONE_PLATFORM_HINT = "wayland";
 
-      FONTCONFIG_FILE = "${pkgs.fontconfig.out}/etc/fonts/fonts.conf";
+      #FONTCONFIG_FILE = "${pkgs.fontconfig.out}/etc/fonts/fonts.conf";
 
       # inform that we use hyprland
       XDG_CURRENT_DESKTOP = "Hyprland";
@@ -424,7 +424,7 @@
 
   #xdg.configFile."flameshot.ini".force = true;
   # do I need it?
-  fonts.fontconfig.enable = true;
+  #fonts.fontconfig.enable = true;
 
   # modules
   #nvim.enable = true;
