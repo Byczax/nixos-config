@@ -55,7 +55,8 @@ in {
             "$mod, D, exec, vesktop"
             "$mod, Return, exec, $terminal"
             "$mod, $print, exec, grimblast copy area"
-            ", $print, exec, flameshot gui 2>/dev/null"
+            ", $print, exec, XDG_CURRENT_DESKTOP=sway flameshot gui"
+            #", $print, exec, flameshot gui 2>/dev/null"
             #"$mod, F, exec, firefox"
 
             "$mod, F, fullscreen"
@@ -126,23 +127,34 @@ in {
         #  "desc:Dell Inc. DELL U2415 08DXD5C422HS,1920x1200@59.95,0x0,1.0"
         #  "desc:Ancor Communications Inc VG248 F7LMQS100286,1920x1080@60.0,3840x120,1.0"
         #];
-
         windowrulev2 = [
-          # Ignore maximize requests from apps. You'll probably like this.
-          "suppressevent maximize, class:.*"
-
-          # Fix some dragging issues with XWayland
-          "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
-
-          # moves the window to x0, y0 on the screen
-          "move 0 0,class:(flameshot),title:(flameshot)"
-          # shows the window on all workspaces
-          "pin,class:(flameshot),title:(flameshot)"
-          # tell the application it's in fullscreen mode
-          "fullscreenstate,class:(flameshot),title:(flameshot)"
-          # force the window to be floating ( not in a tiled pane )
-          "float,class:(flameshot),title:(flameshot)"
+          "noanim, class:flameshot"
+          "float, class:flameshot"
+          "move 0 0, class:flameshot"
+          "pin, class:flameshot"
+          "noinitialfocus, class:flameshot"
+          "monitor 1, class:flameshot"
+          "float, title:flameshot"
+          "move 0 0, title:flameshot"
+          "suppressevent fullscreen, title:flameshot"
         ];
+
+        # windowrulev2 = [
+        #   # Ignore maximize requests from apps. You'll probably like this.
+        #   "suppressevent maximize, class:.*"
+        #
+        #   # Fix some dragging issues with XWayland
+        #   "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
+        #
+        #   # moves the window to x0, y0 on the screen
+        #   "move 0 0,class:(flameshot),title:(flameshot)"
+        #   # shows the window on all workspaces
+        #   "pin,class:(flameshot),title:(flameshot)"
+        #   # tell the application it's in fullscreen mode
+        #   "fullscreenstate,class:(flameshot),title:(flameshot)"
+        #   # force the window to be floating ( not in a tiled pane )
+        #   "float,class:(flameshot),title:(flameshot)"
+        # ];
       };
     };
 
