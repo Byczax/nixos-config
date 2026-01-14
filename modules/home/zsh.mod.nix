@@ -22,7 +22,7 @@ in {
       syntaxHighlighting.enable = true;
       shellAliases = {
         update = "nh os switch $HOME/nixos-config -H ${cfg.host} --ask";
-        test_vm = "sudo nixos-rebuild build-vm --flake $HOME/nixos-config/#default";
+        test_vm = "sudo nixos-rebuild build-vm --flake $HOME/nixos-config#${cfg.host}";
         calc = "qalc";
         bat_protect_on = "sudo echo 1 > /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode";
         bat_protect_off = "sudo echo 0 > /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode";
