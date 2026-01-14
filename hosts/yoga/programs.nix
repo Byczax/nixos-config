@@ -10,6 +10,7 @@
     git
     traceroute
     #(flameshot.override {enableWlrSupport = true;}) # slow screenshot with drawings
+    grim
     grimblast # fast screenshot
     xorg.xlsclients # check if app is running under X11
     inkscape-with-extensions
@@ -25,7 +26,7 @@
     #lm_sensors #maybe I don't need it
     libqalculate #calculator
     popsicle # os burner
-    opentofu
+    #opentofu
 
     direnv #why I have that?
     libnotify # what is this for?
@@ -149,5 +150,8 @@
     libgig
     rpi-imager
     anki
+    tenv
+    jellyfin-media-player
+    memento
   ];
 }
