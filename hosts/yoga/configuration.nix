@@ -4,6 +4,7 @@
 {
   lib,
   pkgs,
+  config,
   ...
 }: {
   imports = [
@@ -120,8 +121,17 @@
           from = 41641;
           to = 41641;
         }
+        # {
+        #   from = 50000;
+        #   to = 65535;
+        # }
       ];
       allowedUDPPortRanges = allowedTCPPortRanges;
+
+      allowedUDPPorts = [config.services.tailscale.port];
+
+      # Tailscale interface
+      trustedInterfaces = ["tailscale0"];
       checkReversePath = "loose";
     };
   };
@@ -162,7 +172,14 @@
       };
     };
 
-    tailscale.enable = true; # tailscale, no option for home yet
+    tailscale = {
+      enable = true; # tailscale, no option for home yet
+      extraDaemonFlags = [
+        "--no-logs-no-support"
+        #"--accept-dns=false"
+      ];
+      #extraSetFlags = ["--netfilter-mode=nodivert"];
+    };
     thermald.enable = true; # proactively protect CPU overheating
     auto-cpufreq.enable = true; # Show data about CPU
     upower.enable = true;
@@ -206,8 +223,27 @@
 
     resolved = {
       enable = true;
+      dnssec = "allow-downgrade";
+      dnsovertls = "opportunistic";
+      #fallbackDns = ["100.100.100.100"];
     };
+
+    # scion = {
+    #   enable = true;
+    #   bypassBootstrapWarning = true;
+    # };
   };
+
+  # 2. Force tailscaled to use nftables (Critical for clean nftables-only systems)
+  # This avoids the "iptables-compat" translation layer issues.
+  systemd.services.tailscaled.serviceConfig.Environment = [
+    "TS_DEBUG_FIREWALL_MODE=nftables"
+  ];
+
+  # 3. Optimization: Prevent systemd from waiting for network online
+  # (Optional but recommended for faster boot with VPNs)
+  systemd.network.wait-online.enable = false;
+  boot.initrd.systemd.network.wait-online.enable = false;
 
   time.timeZone = "Europe/Zurich"; # timezone, to not be confused
 
@@ -253,7 +289,7 @@
     isNormalUser = true;
     description = "bq";
     initialPassword = "changeme";
-    extraGroups = ["networkmanager" "wheel" "docker" "libvirtd" "video" "i2c" "input"];
+    extraGroups = ["networkmanager" "wheel" "docker" "libvirtd" "video" "i2c" "input" "scion"];
     shell = pkgs.zsh;
   };
 
