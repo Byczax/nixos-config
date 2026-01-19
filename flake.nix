@@ -11,10 +11,10 @@
     #   url = "github:nix-community/NUR";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
-    aw-watcher-hyprland = {
-      url = "github:bobvanderlinden/aw-watcher-window-hyprland";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # aw-watcher-hyprland = {
+    #   url = "github:bobvanderlinden/aw-watcher-window-hyprland";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
     nvf = {
       url = "github:NotAShelf/nvf";
       inputs.nixpkgs.follows = "nixpkgs";
