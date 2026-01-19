@@ -27,5 +27,13 @@ in {
         };
       };
     };
+    systemd.user.services = {
+      "activitywatch-watcher-aw-awatcher" = {
+        Service = {
+          Restart = "on-failure";
+          RestartSec = "5s";
+        };
+      };
+    };
   };
 }
