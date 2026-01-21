@@ -153,5 +153,6 @@
     tenv
     jellyfin-media-player
     memento
+    nicotine-plus
   ];
 }
