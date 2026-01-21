@@ -8,7 +8,6 @@
   ...
 }: {
   imports = [
-    # Include the results of the hardware scan.
     ./hardware-configuration.nix
   ];
 
@@ -44,6 +43,7 @@
       # Intel Wi-Fi firmware
       "linux-firmware"
 
+      # sad but needed
       "zoom"
     ];
 
@@ -106,28 +106,27 @@
       127.0.0.1 keycloak
     '';
 
-    # enable ports used by tailscale
     firewall = rec {
       allowedTCPPortRanges = [
+        # KDE Connect
         {
           from = 1714;
           to = 1764;
         }
+        # iperf
         {
           from = 5201;
           to = 5201;
         }
+        # Tailscale
         {
           from = 41641;
           to = 41641;
         }
-        # {
-        #   from = 50000;
-        #   to = 65535;
-        # }
       ];
       allowedUDPPortRanges = allowedTCPPortRanges;
 
+      # add on top tailscale ports
       allowedUDPPorts = [config.services.tailscale.port];
 
       # Tailscale interface
@@ -141,9 +140,6 @@
     i2c.enable = true;
     graphics = {
       enable = true;
-      #extraPackages = with pkgs; [
-      #  intel-media-sdk
-      #];
     };
     enableRedistributableFirmware = true;
   };
@@ -153,9 +149,8 @@
     dbus.enable = true;
     ratbagd.enable = true;
 
-    # for multimedia
     pipewire = {
-      enable = true; # if not already enabled
+      enable = true;
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
@@ -233,16 +228,24 @@
     #   bypassBootstrapWarning = true;
     # };
   };
+  ### === END OF SERVICES === ###
 
-  # 2. Force tailscaled to use nftables (Critical for clean nftables-only systems)
-  # This avoids the "iptables-compat" translation layer issues.
-  systemd.services.tailscaled.serviceConfig.Environment = [
-    "TS_DEBUG_FIREWALL_MODE=nftables"
-  ];
+  systemd = {
+    # 2. Force tailscaled to use nftables (Critical for clean nftables-only systems)
+    # This avoids the "iptables-compat" translation layer issues.
+    services.tailscaled.serviceConfig.Environment = [
+      "TS_DEBUG_FIREWALL_MODE=nftables"
+    ];
 
-  # 3. Optimization: Prevent systemd from waiting for network online
-  # (Optional but recommended for faster boot with VPNs)
-  systemd.network.wait-online.enable = false;
+    # 3. Optimization: Prevent systemd from waiting for network online
+    # (Optional but recommended for faster boot with VPNs)
+    network.wait-online.enable = false;
+
+    services.fprintd = {
+      wantedBy = ["multi-user.target"];
+      serviceConfig.Type = "simple";
+    };
+  };
   boot.initrd.systemd.network.wait-online.enable = false;
 
   time.timeZone = "Europe/Zurich"; # timezone, to not be confused
@@ -252,24 +255,18 @@
   # language of the system with some of the formats
   i18n.defaultLocale = "en_US.UTF-8";
   i18n.supportedLocales = ["en_US.UTF-8/UTF-8" "pl_PL.UTF-8/UTF-8" "ja_JP.UTF-8/UTF-8"];
-  #i18n.supportedLocales = ["en_US.UTF-8" "pl_PL.UTF-8" "ja_JP.UTF-8" "ru_RU.UTF-8"];
 
   # Required for printer to work
   services.printing.enable = true;
   hardware.sane.enable = true; # enables support for SANE scanners
   services.colord.enable = true;
 
-  systemd.services.fprintd = {
-    wantedBy = ["multi-user.target"];
-    serviceConfig.Type = "simple";
-  };
   services.fprintd.enable = true;
   #services.fprintd.tod.enable = true;
   #services.fprintd.tod.driver = pkgs.libfprint-2-tod1-goodix;
 
   fonts = {
     enableDefaultPackages = true;
-    #fontDir.enable = true;
     packages = with pkgs; [
       noto-fonts
       noto-fonts-cjk-sans
