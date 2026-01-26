@@ -30,8 +30,9 @@ in {
     systemd.user.services = {
       "activitywatch-watcher-aw-awatcher" = {
         Service = {
-          Restart = "on-failure";
+          Restart = "always";
           RestartSec = "5s";
+          Type = "simple";
         };
       };
     };

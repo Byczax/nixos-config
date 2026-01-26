@@ -418,6 +418,8 @@
         "use_web_seek" = false;
         "write_logs" = false;
         "mpv_path" = "/etc/profiles/per-user/bq/bin/memento";
+        "no-idle" = true;
+        "stop-screensaver" = "yes";
       };
     };
   };
