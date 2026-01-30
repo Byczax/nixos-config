@@ -22,6 +22,7 @@ in {
             vimtex
             vim-jsonnet
             vim-smali
+            aw-watcher-nvim
           ];
 
           globals = {
