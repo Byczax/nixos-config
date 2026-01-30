@@ -220,7 +220,12 @@
       enable = true;
       dnssec = "allow-downgrade";
       dnsovertls = "opportunistic";
-      #fallbackDns = ["100.100.100.100"];
+      fallbackDns = [
+        "9.9.9.9"
+        "1.1.1.1"
+        "2620:fe::fe"
+        "tls://dns.quad9.net"
+      ];
     };
 
     # scion = {
