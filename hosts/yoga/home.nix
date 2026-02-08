@@ -149,7 +149,6 @@
         gpu-api = "auto";
         gpu-context = "wayland";
         tone-mapping = "clip";
-        idle-inhibit = "playing";
       };
     };
     # other games that are not on steam
@@ -230,6 +229,13 @@
     nix-init = {
       enable = true;
     };
+    bat.enable = true;
+
+    direnv = {
+      enable = true;
+      enableZshIntegration = true; # see note on other shells below
+      nix-direnv.enable = true;
+    };
   };
 
   # terminal
@@ -247,7 +253,7 @@
     };
     swayidle.enable = true;
     syncthing = {
-      enable = true;
+      enable = false;
     };
     hypridle = {
       enable = true;
