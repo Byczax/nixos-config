@@ -45,6 +45,7 @@
 
       # sad but needed
       "zoom"
+      "vagrant"
     ];
 
   boot = {
@@ -86,7 +87,7 @@
       enable = true;
       wifi = {
         backend = "iwd";
-        powersave = true;
+        powersave = false;
       };
     };
     wireless.iwd = {
@@ -218,13 +219,12 @@
 
     resolved = {
       enable = true;
-      dnssec = "allow-downgrade";
-      dnsovertls = "opportunistic";
+      #dnssec = "allow-downgrade";
+      #dnsovertls = "opportunistic";
       fallbackDns = [
         "9.9.9.9"
         "1.1.1.1"
         "2620:fe::fe"
-        "tls://dns.quad9.net"
       ];
     };
 
@@ -232,6 +232,7 @@
     #   enable = true;
     #   bypassBootstrapWarning = true;
     # };
+    #envfs.enable = true;
   };
   ### === END OF SERVICES === ###
 
@@ -330,6 +331,7 @@
       enable = true;
     };
     libvirtd.enable = true;
+    virtualbox.host.enable = true;
     vmVariant = {
       # following configuration is added only when building VM with build-vm
       virtualisation = {
