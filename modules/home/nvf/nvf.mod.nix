@@ -23,6 +23,7 @@ in {
             vim-jsonnet
             vim-smali
             aw-watcher-nvim
+            vim-vagrant
           ];
 
           globals = {
@@ -246,6 +247,10 @@ in {
               lsp.enable = true;
             };
             yaml = {
+              enable = true;
+              lsp.enable = true;
+            };
+            ruby = {
               enable = true;
               lsp.enable = true;
             };
