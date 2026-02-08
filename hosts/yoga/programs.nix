@@ -62,6 +62,33 @@
         enumitem
         pgf
         titlesec
+        # koma-script
+        # scrhack
+        # mathtools
+        # newpx
+        # float
+        # booktabs
+        # siunitx
+        # pgfplots
+        # xkeyval
+        # xstring
+        # fontaxes
+        # #binhex
+        # floatbytocbasic
+        # csquotes
+        # wrapfig
+        # subfig
+        # #nicefrac
+        # pdfpages
+        # cleveref
+        # listings
+        # kastrup
+        # xfrac
+        # caption
+        # pdflscape
+        # units
+        # lscapeenhanced
+        # newtx
         ;
     })
 
@@ -154,5 +181,7 @@
     jellyfin-media-player
     memento
     nicotine-plus
+    vagrant
+    rubocop
   ];
 }
