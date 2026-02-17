@@ -131,7 +131,7 @@
       allowedUDPPorts = [config.services.tailscale.port];
 
       # Tailscale interface
-      trustedInterfaces = ["tailscale0"];
+      trustedInterfaces = ["tailscale0" "virbr0"];
       checkReversePath = "loose";
     };
   };
@@ -232,7 +232,7 @@
     #   enable = true;
     #   bypassBootstrapWarning = true;
     # };
-    #envfs.enable = true;
+    envfs.enable = true;
   };
   ### === END OF SERVICES === ###
 
@@ -295,6 +295,7 @@
     extraGroups = ["networkmanager" "wheel" "docker" "libvirtd" "video" "i2c" "input" "scion"];
     shell = pkgs.zsh;
   };
+  users.extraGroups.vboxusers.members = ["bq"];
 
   environment.systemPackages = with pkgs; [
     bash
@@ -318,6 +319,18 @@
     };
     zsh.enable = true;
     hyprland.enable = true;
+
+    nix-ld = {
+      enable = true;
+      libraries = with pkgs; [
+        ## Put here any library that is required when running a package
+        ## ...
+        ## Uncomment if you want to use the libraries provided by default in the steam distribution
+        ## but this is quite far from being exhaustive
+        ## https://github.com/NixOS/nixpkgs/issues/354513
+        # (pkgs.runCommand "steamrun-lib" {} "mkdir $out; ln -s ${pkgs.steam-run.fhsenv}/usr/lib64 $out/lib")
+      ];
+    };
   };
 
   users.defaultUserShell = pkgs.zsh;
@@ -330,8 +343,13 @@
     docker = {
       enable = true;
     };
-    libvirtd.enable = true;
-    virtualbox.host.enable = true;
+    libvirtd = {
+      enable = true;
+      qemu = {
+        runAsRoot = true;
+      };
+    };
+    #virtualbox.host.enable = true;
     vmVariant = {
       # following configuration is added only when building VM with build-vm
       virtualisation = {

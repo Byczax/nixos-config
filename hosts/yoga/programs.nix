@@ -41,7 +41,6 @@
 
     #zathura #pdf viewer
     quickemu # virtual machines
-    qemu
     virt-manager
 
     simple-scan # scanner
@@ -183,5 +182,6 @@
     nicotine-plus
     vagrant
     rubocop
+    ansible
   ];
 }
