@@ -10,9 +10,170 @@ in {
   config = lib.mkIf cfg.enable {
     programs.zen-browser = {
       enable = true;
+
+      profiles.default = {
+        settings = {
+          "zen.workspaces.continue-where-left-off" = true;
+          "zen.workspaces.natural-scroll" = true;
+          "zen.view.compact.hide-tabbar" = true;
+          "zen.view.compact.hide-toolbar" = true;
+          "zen.view.compact.animate-sidebar" = false;
+          "zen.welcome-screen.seen" = true;
+          "zen.urlbar.behavior" = "float";
+        };
+        sine = {
+          enable = true;
+          mods = [
+            "253a3a74-0cc4-47b7-8b82-996a64f030d5" # Floating History
+            "4ab93b88-151c-451b-a1b7-a1e0e28fa7f8" # No Sidebar Scrollbar
+            "7190e4e9-bead-4b40-8f57-95d852ddc941" # Tab title fixes
+            "803c7895-b39b-458e-84f8-a521f4d7a064" # Hide Inactive Workspaces
+            "906c6915-5677-48ff-9bfc-096a02a72379" # Floating Status Bar
+            "a6335949-4465-4b71-926c-4a52d34bc9c0" # Better Find Bar
+            "c6813222-6571-4ba6-8faf-58f3343324f6" # Disable Rounded Corners
+            "c8d9e6e6-e702-4e15-8972-3596e57cf398" # Zen Back Forward
+            "cb15abdb-0514-4e09-8ce5-722cf1f4a20f" # Hide Extension Name
+            "d8b79d4a-6cba-4495-9ff6-d6d30b0e94fe" # Better Active Tab
+            "e122b5d9-d385-4bf8-9971-e137809097d0" # No Top Sites
+            "f7c71d9a-bce2-420f-ae44-a64bd92975ab" # Better Unloaded Tabs
+            "fd24f832-a2e6-4ce9-8b19-7aa888eb7f8e" # Quietify
+          ];
+        };
+        pinsForce = true;
+        pins = {
+          "GitHub" = {
+            id = "48e8a119-5a14-4826-9545-91c8e8dd3bf6";
+            workspace = spaces."Rendezvous".id;
+            url = "https://github.com";
+            position = 101;
+            isEssential = false;
+          };
+          "WhatsApp Web" = {
+            id = "1eabb6a3-911b-4fa9-9eaf-232a3703db19";
+            workspace = spaces."Rendezvous".id;
+            url = "https://web.whatsapp.com/";
+            position = 102;
+            isEssential = false;
+          };
+          "Telegram Web" = {
+            id = "5065293b-1c04-40ee-ba1d-99a231873864";
+            url = "https://web.telegram.org/k/";
+            position = 103;
+            isEssential = true;
+          };
+          "PairDrop" = {
+            id = "c70a0cd7-6ee8-470f-85c6-85a73a7a6196";
+            url = "https://pairdrop.net/";
+            position = 104;
+            isEssential = true;
+          };
+        };
+
+        containersForce = true;
+        containers = {
+          Shopping = {
+            color = "yellow";
+            icon = "dollar";
+            id = 2;
+          };
+        };
+
+        spacesForce = true;
+        spaces = {
+          "Rendezvous" = {
+            id = "572910e1-4468-4832-a869-0b3a93e2f165";
+            icon = "🎭";
+            position = 1000;
+            theme = {
+              type = "gradient";
+              colors = [
+                {
+                  red = 123;
+                  green = 56;
+                  blue = 58;
+                  algorithm = "analogous";
+                  type = "explicit-lightness";
+                  lightness = 35;
+                  position.x = 301;
+                  position.y = 176;
+                  primary = true;
+                  custom = false;
+                }
+                {
+                  red = 123;
+                  green = 110;
+                  blue = 55;
+                  algorithm = "analogous";
+                  type = "explicit-lightness";
+                  lightness = 35;
+                  position.x = 260;
+                  position.y = 271;
+                  primary = false;
+                  custom = false;
+                }
+                {
+                  red = 122;
+                  green = 56;
+                  blue = 114;
+                  algorithm = "analogous";
+                  type = "explicit-lightness";
+                  lightness = 35;
+                  position.x = 255;
+                  position.y = 84;
+                  primary = false;
+                  custom = false;
+                }
+              ];
+              opacity = 0.8;
+              texture = 0.5;
+            };
+          };
+          "Research" = {
+            id = "ec287d7f-d910-4860-b400-513f269dee77";
+            icon = "💌";
+            position = 1001;
+            theme = {
+              type = "gradient";
+              colors = [
+                {
+                  red = 171;
+                  green = 219;
+                  blue = 227;
+                  algorithm = "floating";
+                  type = "explicit-lightness";
+                }
+              ];
+              opacity = 0.2;
+              texture = 0.5;
+            };
+          };
+          "Shopping" = {
+            id = "2441acc9-79b1-4afb-b582-ee88ce554ec0";
+            icon = "💸";
+            container = containers."Shopping".id;
+            position = 1002;
+          };
+        };
+      };
+
       policies = {
         # Updates & Background Services
+        AllowFileSelectionDialogs = true;
         AppAutoUpdate = false;
+        AutofillAddressEnabled = true;
+        AutofillCreditCardEnabled = false;
+        # AutoLaunchProtocolsFromOrigins
+
+        # Access limits
+        BlockAboutAddons = false;
+        BlockAboutConfig = false;
+        BlockAboutProfiles = false;
+        BlockAboutSupport = false;
+
+        # BrowserDataBackup
+
+        # Bookmarks - do it later, maybe some secure way for that?
+
         BackgroundAppUpdate = false;
 
         # Feature Disabling
@@ -29,11 +190,6 @@ in {
         DisableTelemetry = true;
         DisableFormHistory = true;
         DisablePasswordReveal = true;
-
-        # Access Restrictions
-        BlockAboutConfig = false;
-        BlockAboutProfiles = false;
-        BlockAboutSupport = false;
 
         # UI and Behavior
         #DisplayMenuBar = "never";
@@ -52,23 +208,29 @@ in {
           # Block all extensions by default.
           "*".installation_mode = "blocked";
 
-          "uBlock0@raymondhill.net" = {
-            install_url = moz "ublock-origin";
+          # If you have already firefox instance where you can install stuff, you can check extension id here:
+          # about:debugging#/runtime/this-firefox
+
+          "languagetool-webextension@languagetool.org" = {
+            install_url = moz "languagetool";
             installation_mode = "force_installed";
             updates_disabled = true;
           };
-
           "{446900e4-71c2-419f-a6a7-df9c091e268b}" = {
             install_url = moz "bitwarden-password-manager";
             installation_mode = "force_installed";
             updates_disabled = true;
           };
-
-          #"{73a6fe31-595d-460b-a920-fcc0f8843232}" = {
-          #  install_url = moz "noscript";
-          #  installation_mode = "force_installed";
-          #  updates_disabled = true;
-          #};
+          # "easyscreenshot@mozillaonline.com" = {
+          #   install_url = moz "easyscreenshot";
+          #   installation_mode = "force_installed";
+          #   updates_disabled = true;
+          # };
+          "@contain-facebook" = {
+            install_url = moz "facebook-container";
+            installation_mode = "force_installed";
+            updates_disabled = true;
+          };
           "@testpilot-containers" = {
             install_url = moz "multi-account-containers";
             installation_mode = "force_installed";
@@ -79,23 +241,18 @@ in {
             installation_mode = "force_installed";
             updates_disabled = true;
           };
-          "languagetool-webextension@languagetool.org" = {
-            install_url = moz "languagetool";
-            installation_mode = "force_installed";
-            updates_disabled = true;
-          };
-          "addon@darkreader.org" = {
-            install_url = moz "darkreader";
-            installation_mode = "force_installed";
-            updates_disabled = true;
-          };
-          "@contain-facebook" = {
-            install_url = moz "facebook-container";
-            installation_mode = "force_installed";
-            updates_disabled = true;
-          };
           "foxyproxy@eric.h.jung" = {
             install_url = moz "foxyproxy-standard";
+            installation_mode = "force_installed";
+            updates_disabled = true;
+          };
+          "markdown-viewer@outofindex.com" = {
+            install_url = moz "markdown-viewer-chrome";
+            installation_mode = "force_installed";
+            updates_disabled = true;
+          };
+          "{73a6fe31-595d-460b-a920-fcc0f8843232}" = {
+            install_url = moz "noscript";
             installation_mode = "force_installed";
             updates_disabled = true;
           };
@@ -104,27 +261,37 @@ in {
             installation_mode = "force_installed";
             updates_disabled = true;
           };
+          "uBlock0@raymondhill.net" = {
+            install_url = moz "ublock-origin";
+            installation_mode = "force_installed";
+            updates_disabled = true;
+          };
           #"{aecec67f-0d10-4fa7-b7c7-609a2db280cf}" = {
           #  install_url = moz "violentmonkey";
           #  installation_mode = "force_installed";
           #  updates_disabled = true;
           #};
-          "markdown-viewer@outofindex.com" = {
-            install_url = moz "markdown-viewer-chrome";
+          "{6b733b82-9261-47ee-a595-2dda294a4d08}" = {
+            install_url = moz "yomitan";
             installation_mode = "force_installed";
             updates_disabled = true;
           };
-          "easyscreenshot@mozillaonline.com" = {
-            install_url = moz "easyscreenshot";
+          "{0d7cafdd-501c-49ca-8ebb-e3341caaa55e}" = {
+            install_url = moz "youtube-nonstop";
             installation_mode = "force_installed";
             updates_disabled = true;
           };
+          # "addon@darkreader.org" = {
+          #   install_url = moz "darkreader";
+          #   installation_mode = "force_installed";
+          #   updates_disabled = true;
+          # };
         };
         SearchEngines = {
           Remove = [
             "Amazon.com"
             "Bing"
-            "DuckDuckGo"
+            #"DuckDuckGo"
             "Google"
             "LibRedirect"
             "Twitter"
