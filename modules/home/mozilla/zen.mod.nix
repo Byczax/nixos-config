@@ -40,34 +40,34 @@ in {
           ];
         };
         pinsForce = true;
-        pins = {
-          "GitHub" = {
-            id = "48e8a119-5a14-4826-9545-91c8e8dd3bf6";
-            workspace = spaces."Rendezvous".id;
-            url = "https://github.com";
-            position = 101;
-            isEssential = false;
-          };
-          "WhatsApp Web" = {
-            id = "1eabb6a3-911b-4fa9-9eaf-232a3703db19";
-            workspace = spaces."Rendezvous".id;
-            url = "https://web.whatsapp.com/";
-            position = 102;
-            isEssential = false;
-          };
-          "Telegram Web" = {
-            id = "5065293b-1c04-40ee-ba1d-99a231873864";
-            url = "https://web.telegram.org/k/";
-            position = 103;
-            isEssential = true;
-          };
-          "PairDrop" = {
-            id = "c70a0cd7-6ee8-470f-85c6-85a73a7a6196";
-            url = "https://pairdrop.net/";
-            position = 104;
-            isEssential = true;
-          };
-        };
+        # pins = {
+        #   "GitHub" = {
+        #     id = "48e8a119-5a14-4826-9545-91c8e8dd3bf6";
+        #     workspace = spaces."Rendezvous".id;
+        #     url = "https://github.com";
+        #     position = 101;
+        #     isEssential = false;
+        #   };
+        #   "WhatsApp Web" = {
+        #     id = "1eabb6a3-911b-4fa9-9eaf-232a3703db19";
+        #     workspace = spaces."Rendezvous".id;
+        #     url = "https://web.whatsapp.com/";
+        #     position = 102;
+        #     isEssential = false;
+        #   };
+        #   "Telegram Web" = {
+        #     id = "5065293b-1c04-40ee-ba1d-99a231873864";
+        #     url = "https://web.telegram.org/k/";
+        #     position = 103;
+        #     isEssential = true;
+        #   };
+        #   "PairDrop" = {
+        #     id = "c70a0cd7-6ee8-470f-85c6-85a73a7a6196";
+        #     url = "https://pairdrop.net/";
+        #     position = 104;
+        #     isEssential = true;
+        #   };
+        # };
 
         containersForce = true;
         containers = {
@@ -147,12 +147,12 @@ in {
               texture = 0.5;
             };
           };
-          "Shopping" = {
-            id = "2441acc9-79b1-4afb-b582-ee88ce554ec0";
-            icon = "💸";
-            container = containers."Shopping".id;
-            position = 1002;
-          };
+          # "Shopping" = {
+          #   id = "2441acc9-79b1-4afb-b582-ee88ce554ec0";
+          #   icon = "💸";
+          #   container = containers."Shopping".id;
+          #   position = 1002;
+          # };
         };
       };
 
