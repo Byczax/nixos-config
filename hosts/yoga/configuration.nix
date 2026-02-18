@@ -58,7 +58,7 @@
       efi.canTouchEfiVariables = true; # allow to register boots in boot
     };
     kernelParams = ["i915.force_probe=9a49" "i915.enable_psr=0"];
-    kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = pkgs.linuxPackages_6_1;
 
     # Needed kernel modules for Lenovo systems
     kernelModules = ["acpi_call" "tp_smapi" "i2c-dev" "rts5139" "rts_u" "rts_bio" "rtsx_usb"];
@@ -288,14 +288,17 @@
     ];
   };
   # system user
-  users.users.bq = {
-    isNormalUser = true;
-    description = "bq";
-    initialPassword = "changeme";
-    extraGroups = ["networkmanager" "wheel" "docker" "libvirtd" "video" "i2c" "input" "scion"];
-    shell = pkgs.zsh;
+  users = {
+    users.bq = {
+      isNormalUser = true;
+      description = "bq";
+      initialPassword = "changeme";
+      extraGroups = ["networkmanager" "wheel" "docker" "libvirtd" "video" "i2c" "input" "scion"];
+
+      shell = pkgs.zsh;
+    };
+    extraGroups.vboxusers.members = ["bq"];
   };
-  users.extraGroups.vboxusers.members = ["bq"];
 
   environment.systemPackages = with pkgs; [
     bash
@@ -343,13 +346,16 @@
     docker = {
       enable = true;
     };
-    libvirtd = {
+    # libvirtd = {
+    #   enable = true;
+    #   qemu = {
+    #     runAsRoot = true;
+    #   };
+    # };
+    virtualbox.host = {
       enable = true;
-      qemu = {
-        runAsRoot = true;
-      };
+      #enableExtensionPack = true;
     };
-    #virtualbox.host.enable = true;
     vmVariant = {
       # following configuration is added only when building VM with build-vm
       virtualisation = {
