@@ -346,12 +346,12 @@
     docker = {
       enable = true;
     };
-    # libvirtd = {
-    #   enable = true;
-    #   qemu = {
-    #     runAsRoot = true;
-    #   };
-    # };
+    libvirtd = {
+      enable = true;
+      qemu = {
+        runAsRoot = true;
+      };
+    };
     virtualbox.host = {
       enable = true;
       #enableExtensionPack = true;

@@ -40,8 +40,8 @@
     fzf
 
     #zathura #pdf viewer
-    #quickemu # virtual machines
-    #virt-manager
+    quickemu # virtual machines
+    virt-manager
 
     simple-scan # scanner
 
