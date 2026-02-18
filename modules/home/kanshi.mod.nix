@@ -106,6 +106,31 @@ in {
             ];
           };
         }
+        # {
+        #   profile = {
+        #     name = "vis-office1";
+        #     outputs = [
+        #       {
+        #         criteria = "eDP-1";
+        #         position = "0,0";
+        #         mode = "1920x1080@60.05Hz";
+        #         status = "enable";
+        #       }
+        #       {
+        #         criteria = "DP-6";
+        #         position = "1920,0";
+        #         mode = "2560x1440@59.95100Hz";
+        #         status = "enable";
+        #       }
+        #       {
+        #         criteria = "DP-8";
+        #         position = "4480,0";
+        #         mode = "2560x1440@59.95100Hz";
+        #         status = "enable";
+        #       }
+        #     ];
+        #   };
+        # }
       ];
     };
   };
