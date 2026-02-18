@@ -350,7 +350,19 @@ in {
                   owner = "dsabsay";
                   repo = "vim-tanka";
                   rev = "master";
-                  sha256 = "sha256-ChgUGTrLthuGSws/UpF71JYI/c2QqItax6hsh7mYX/w="; # replace with actual
+                  hash = "sha256-17imEImqE8HzKhSZPL0MExY/ZXZpPTzjVzo5JGSI/0A=";
+                };
+              };
+            };
+            hadolint = {
+              package = pkgs.vimUtils.buildVimPlugin {
+                pname = "hadolint";
+                version = "master";
+                src = pkgs.fetchFromGitHub {
+                  owner = "hadolint";
+                  repo = "hadolint";
+                  rev = "master";
+                  hash = "sha256-17imEImqE8HzKhSZPL0MExY/ZXZpPTzjVzo5JGSI/0A=";
                 };
               };
             };
