@@ -233,6 +233,9 @@
     #   bypassBootstrapWarning = true;
     # };
     envfs.enable = true;
+
+    pcscd.enable = true;
+    udev.packages = [pkgs.yubikey-personalization];
   };
   ### === END OF SERVICES === ###
 
@@ -333,6 +336,11 @@
         ## https://github.com/NixOS/nixpkgs/issues/354513
         # (pkgs.runCommand "steamrun-lib" {} "mkdir $out; ln -s ${pkgs.steam-run.fhsenv}/usr/lib64 $out/lib")
       ];
+    };
+
+    gnupg.agent = {
+      enable = true;
+      enableSSHSupport = true;
     };
   };
 

@@ -183,5 +183,8 @@
     vagrant
     rubocop
     ansible
+
+    yubikey-manager
+    yubioath-flutter
   ];
 }
