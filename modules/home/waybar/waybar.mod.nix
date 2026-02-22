@@ -23,7 +23,6 @@ in {
           modules-center = [];
           modules-right = [
             "tray"
-            "custom-awatcher"
             "network"
             "wireplumber"
             "wireplumber#mic"
@@ -145,16 +144,6 @@ in {
             "on-click-right" = "pavucontrol";
             "scroll-step" = 5;
           };
-          "custom/awatcher" = {
-            "exec" = "systemctl --user is-active activitywatch-watcher-aw-awatcher.service";
-            "interval" = 5;
-            "format" = "{output}";
-            "return-type" = "json";
-          };
-          #"hyprland/language" = {
-          #  "format" = "{}";
-          #  "format-pl" = "PL";
-          #};
         }
       ];
     };
