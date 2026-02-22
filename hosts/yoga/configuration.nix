@@ -57,8 +57,13 @@
       timeout = 3; # time before it will start booting most recent build
       efi.canTouchEfiVariables = true; # allow to register boots in boot
     };
-    kernelParams = ["i915.force_probe=9a49" "i915.enable_psr=0"];
-    kernelPackages = pkgs.linuxPackages_6_1;
+    kernelParams = [
+      "i915.force_probe=9a49"
+      "i915.enable_psr=0"
+      "mem_sleep_default=deep"
+    ];
+    #kernelPackages = pkgs.linuxPackages_6_1;
+    kernelPackages = pkgs.linuxPackages_latest;
 
     # Needed kernel modules for Lenovo systems
     kernelModules = ["acpi_call" "tp_smapi" "i2c-dev" "rts5139" "rts_u" "rts_bio" "rtsx_usb"];
@@ -192,7 +197,13 @@
         CPU_MIN_PERF_ON_AC = 0;
         CPU_MAX_PERF_ON_AC = 100;
         CPU_MIN_PERF_ON_BAT = 0;
-        CPU_MAX_PERF_ON_BAT = 20;
+        CPU_MAX_PERF_ON_BAT = 50;
+        #
+        # RUNTIME_PM_ON_BAT = "auto";
+        # WIFI_PWR_ON_BAT = "on";
+        #
+        # PLATFORM_PROFILE_ON_BAT = "low-power";
+        # PLATFORM_PROFILE_ON_AC = "performance";
 
         #Optional helps save long term battery health
         START_CHARGE_THRESH_BAT0 = 40; # 40 and below it starts to charge
@@ -360,10 +371,10 @@
         runAsRoot = true;
       };
     };
-    virtualbox.host = {
-      enable = true;
-      #enableExtensionPack = true;
-    };
+    # virtualbox.host = {
+    #   enable = true;
+    #   #enableExtensionPack = true;
+    # };
     vmVariant = {
       # following configuration is added only when building VM with build-vm
       virtualisation = {
