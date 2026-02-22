@@ -251,7 +251,7 @@
       enable = true;
       indicator = true;
     };
-    swayidle.enable = true;
+    #swayidle.enable = true;
     syncthing = {
       enable = false;
     };
