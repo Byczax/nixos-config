@@ -9,6 +9,7 @@ in {
 
   config = lib.mkIf cfg.enable {
     programs.zen-browser = {
+      suppressXdgMigrationWarning = true;
       enable = true;
 
       profiles.default = {
@@ -16,144 +17,122 @@ in {
           "zen.workspaces.continue-where-left-off" = true;
           "zen.workspaces.natural-scroll" = true;
           "zen.view.compact.hide-tabbar" = true;
-          "zen.view.compact.hide-toolbar" = true;
+          "zen.view.compact.hide-toolbar" = false;
           "zen.view.compact.animate-sidebar" = false;
           "zen.welcome-screen.seen" = true;
           "zen.urlbar.behavior" = "float";
+          "zen.workspaces.separate-essentials" = false;
+          "browser.ctrlTab.sortByRecentlyUsed" = true;
+          "browser.download.useDownloadDir" = false;
         };
-        # sine = {
-        #   enable = true;
         mods = [
           "253a3a74-0cc4-47b7-8b82-996a64f030d5" # Floating History
           "4ab93b88-151c-451b-a1b7-a1e0e28fa7f8" # No Sidebar Scrollbar
-          "7190e4e9-bead-4b40-8f57-95d852ddc941" # Tab title fixes
+          # "7190e4e9-bead-4b40-8f57-95d852ddc941" # Tab title fixes
           "803c7895-b39b-458e-84f8-a521f4d7a064" # Hide Inactive Workspaces
           "906c6915-5677-48ff-9bfc-096a02a72379" # Floating Status Bar
           "a6335949-4465-4b71-926c-4a52d34bc9c0" # Better Find Bar
-          "c6813222-6571-4ba6-8faf-58f3343324f6" # Disable Rounded Corners
+          # "c6813222-6571-4ba6-8faf-58f3343324f6" # Disable Rounded Corners
           "c8d9e6e6-e702-4e15-8972-3596e57cf398" # Zen Back Forward
-          "cb15abdb-0514-4e09-8ce5-722cf1f4a20f" # Hide Extension Name
-          "d8b79d4a-6cba-4495-9ff6-d6d30b0e94fe" # Better Active Tab
-          "e122b5d9-d385-4bf8-9971-e137809097d0" # No Top Sites
+          # "cb15abdb-0514-4e09-8ce5-722cf1f4a20f" # Hide Extension Name
+          # "d8b79d4a-6cba-4495-9ff6-d6d30b0e94fe" # Better Active Tab - probably breaks firefox container extension marking
+          # "e122b5d9-d385-4bf8-9971-e137809097d0" # No Top Sites
           "f7c71d9a-bce2-420f-ae44-a64bd92975ab" # Better Unloaded Tabs
           "fd24f832-a2e6-4ce9-8b19-7aa888eb7f8e" # Quietify
+          "72f8f48d-86b9-4487-acea-eb4977b18f21" # Better CtrlTab Panel
+          "3ff55ba7-4690-4f74-96a8-9e4416685e4e" # Colored container tab
         ];
-        # };
-        # pinsForce = true;
-        # pins = {
-        #   "GitHub" = {
-        #     id = "48e8a119-5a14-4826-9545-91c8e8dd3bf6";
-        #     workspace = spaces."Rendezvous".id;
-        #     url = "https://github.com";
-        #     position = 101;
-        #     isEssential = false;
-        #   };
-        #   "WhatsApp Web" = {
-        #     id = "1eabb6a3-911b-4fa9-9eaf-232a3703db19";
-        #     workspace = spaces."Rendezvous".id;
-        #     url = "https://web.whatsapp.com/";
-        #     position = 102;
-        #     isEssential = false;
-        #   };
-        #   "Telegram Web" = {
-        #     id = "5065293b-1c04-40ee-ba1d-99a231873864";
-        #     url = "https://web.telegram.org/k/";
-        #     position = 103;
-        #     isEssential = true;
-        #   };
-        #   "PairDrop" = {
-        #     id = "c70a0cd7-6ee8-470f-85c6-85a73a7a6196";
-        #     url = "https://pairdrop.net/";
-        #     position = 104;
-        #     isEssential = true;
-        #   };
-        # };
 
-        # containersForce = true;
-        # containers = {
-        #   Shopping = {
-        #     color = "yellow";
-        #     icon = "dollar";
-        #     id = 2;
-        #   };
-        # };
-        #
-        # spacesForce = true;
-        # spaces = {
-        #   "Rendezvous" = {
-        #     id = "572910e1-4468-4832-a869-0b3a93e2f165";
-        #     icon = "🎭";
-        #     position = 1000;
-        #     theme = {
-        #       type = "gradient";
-        #       colors = [
-        #         {
-        #           red = 123;
-        #           green = 56;
-        #           blue = 58;
-        #           algorithm = "analogous";
-        #           type = "explicit-lightness";
-        #           lightness = 35;
-        #           position.x = 301;
-        #           position.y = 176;
-        #           primary = true;
-        #           custom = false;
-        #         }
-        #         {
-        #           red = 123;
-        #           green = 110;
-        #           blue = 55;
-        #           algorithm = "analogous";
-        #           type = "explicit-lightness";
-        #           lightness = 35;
-        #           position.x = 260;
-        #           position.y = 271;
-        #           primary = false;
-        #           custom = false;
-        #         }
-        #         {
-        #           red = 122;
-        #           green = 56;
-        #           blue = 114;
-        #           algorithm = "analogous";
-        #           type = "explicit-lightness";
-        #           lightness = 35;
-        #           position.x = 255;
-        #           position.y = 84;
-        #           primary = false;
-        #           custom = false;
-        #         }
-        #       ];
-        #       opacity = 0.8;
-        #       texture = 0.5;
-        #     };
-        #   };
-        #   "Research" = {
-        #     id = "ec287d7f-d910-4860-b400-513f269dee77";
-        #     icon = "💌";
-        #     position = 1001;
-        #     theme = {
-        #       type = "gradient";
-        #       colors = [
-        #         {
-        #           red = 171;
-        #           green = 219;
-        #           blue = 227;
-        #           algorithm = "floating";
-        #           type = "explicit-lightness";
-        #         }
-        #       ];
-        #       opacity = 0.2;
-        #       texture = 0.5;
-        #     };
-        #   };
-        #   # "Shopping" = {
-        #   #   id = "2441acc9-79b1-4afb-b582-ee88ce554ec0";
-        #   #   icon = "💸";
-        #   #   container = containers."Shopping".id;
-        #   #   position = 1002;
-        #   # };
-        # };
+        spacesForce = true;
+        spaces = {
+          "Default" = {
+            id = "05636e62-7109-4f89-a2da-ccd5a77759c2";
+            position = 1000;
+          };
+          "Work" = {
+            id = "1774d7fc-788a-40ab-af0b-fba58459b2b8";
+            position = 2000;
+            theme = {
+              type = "gradient";
+              colors = [
+                {
+                  red = 123;
+                  green = 56;
+                  blue = 58;
+                  algorithm = "analogous";
+                  type = "explicit-lightness";
+                  lightness = 35;
+                  position.x = 301;
+                  position.y = 176;
+                  primary = true;
+                  custom = false;
+                }
+                {
+                  red = 123;
+                  green = 110;
+                  blue = 55;
+                  algorithm = "analogous";
+                  type = "explicit-lightness";
+                  lightness = 35;
+                  position.x = 260;
+                  position.y = 271;
+                  primary = false;
+                  custom = false;
+                }
+                {
+                  red = 122;
+                  green = 56;
+                  blue = 114;
+                  algorithm = "analogous";
+                  type = "explicit-lightness";
+                  lightness = 35;
+                  position.x = 255;
+                  position.y = 84;
+                  primary = false;
+                  custom = false;
+                }
+              ];
+              opacity = 0.8;
+              texture = 0.5;
+            };
+          };
+          "Assotiations" = {
+            id = "91ddf7b3-0fdd-4911-a8b9-258fbe9cdb55";
+            position = 3000;
+            theme = {
+              type = "gradient";
+              colors = [
+                {
+                  red = 255;
+                  green = 255;
+                  blue = 0;
+                  algorithm = "floating";
+                  type = "explicit-lightness";
+                }
+              ];
+              opacity = 0.2;
+              texture = 0.5;
+            };
+          };
+          "Research" = {
+            id = "699ef794-ee11-4d66-910e-5e746103e5ec";
+            position = 4000;
+            theme = {
+              type = "gradient";
+              colors = [
+                {
+                  red = 171;
+                  green = 219;
+                  blue = 227;
+                  algorithm = "floating";
+                  type = "explicit-lightness";
+                }
+              ];
+              opacity = 0.2;
+              texture = 0.5;
+            };
+          };
+        };
       };
 
       policies = {
