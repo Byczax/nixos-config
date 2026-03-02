@@ -60,17 +60,14 @@
     kernelParams = [
       "i915.force_probe=9a49"
       "i915.enable_psr=0"
-      "mem_sleep_default=deep"
+      "mem_sleep_default=s2idle"
     ];
     #kernelPackages = pkgs.linuxPackages_6_1;
     kernelPackages = pkgs.linuxPackages_latest;
 
     # Needed kernel modules for Lenovo systems
-    kernelModules = ["acpi_call" "tp_smapi" "i2c-dev" "rts5139" "rts_u" "rts_bio" "rtsx_usb"];
+    kernelModules = ["i2c-dev" "rtsx_usb"];
     extraModprobeConfig = ''
-      options rts5139 device_table=0x5812
-      options rts_u device_table=0x5812
-      options rts_bio device_table=0x5812
       options rtsx_usb device_table=0x5812
       options snd-hda-intel dmic_detect=0
     '';
