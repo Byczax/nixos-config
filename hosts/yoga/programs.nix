@@ -186,5 +186,7 @@
 
     yubikey-manager
     yubioath-flutter
+    wireshark
+    tcpdump
   ];
 }
