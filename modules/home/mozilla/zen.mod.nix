@@ -9,7 +9,6 @@ in {
 
   config = lib.mkIf cfg.enable {
     programs.zen-browser = {
-      suppressXdgMigrationWarning = true;
       enable = true;
 
       profiles.default = {
