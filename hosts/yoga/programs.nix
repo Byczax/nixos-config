@@ -188,5 +188,6 @@
     yubioath-flutter
     wireshark
     tcpdump
+    wakatime-cli
   ];
 }
