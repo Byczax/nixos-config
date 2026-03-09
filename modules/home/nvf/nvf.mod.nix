@@ -98,6 +98,9 @@ in {
           spellcheck = {
             enable = true;
             languages = ["en" "pl" "de" "ru"];
+            # programmingWordlist.enable = true;
+            # vim-dirtytalk.enable = true;
+            # extraSpellWords = {};
           };
 
           mini = {
