@@ -304,7 +304,7 @@
       isNormalUser = true;
       description = "bq";
       initialPassword = "changeme";
-      extraGroups = ["networkmanager" "wheel" "docker" "libvirtd" "video" "i2c" "input" "scion"];
+      extraGroups = ["networkmanager" "wheel" "docker" "libvirtd" "video" "i2c" "input" "scion" "wireshark"];
 
       shell = pkgs.zsh;
     };
@@ -350,6 +350,7 @@
       enable = true;
       enableSSHSupport = true;
     };
+    wireshark.enable = true;
   };
 
   users.defaultUserShell = pkgs.zsh;
