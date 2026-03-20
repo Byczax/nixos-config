@@ -24,6 +24,7 @@ in {
             vim-smali
             aw-watcher-nvim
             vim-vagrant
+            vim-tmux-navigator
           ];
 
           globals = {
@@ -77,7 +78,12 @@ in {
           dashboard.dashboard-nvim.enable = true; # Startup screen/dashboard
           #lazy.enable = true; # Plugin lazy-loading manager
           tabline.nvimBufferline.enable = true; # Tab line with open buffers/tabs
-          treesitter.enable = true; # Syntax highlighting and better parsing
+          treesitter = {
+            enable = true; # Syntax highlighting and better parsing
+            # grammars = [
+            #   pkgs.vimPlugins.nvim-treesitter.allGrammars
+            # ];
+          };
 
           debugger.nvim-dap = {
             enable = true; # Enable Debug Adapter Protocol support
@@ -98,8 +104,8 @@ in {
           spellcheck = {
             enable = true;
             languages = ["en" "pl" "de" "ru"];
-            # programmingWordlist.enable = true;
-            # vim-dirtytalk.enable = true;
+            programmingWordlist.enable = true;
+            #vim-dirtytalk.enable = true;
             # extraSpellWords = {};
           };
 
@@ -160,31 +166,41 @@ in {
           languages = {
             enableExtraDiagnostics = true;
             enableFormat = true;
+            enableDAP = false;
             enableTreesitter = true;
             assembly.enable = false;
-            #astro = {
-            #  enable = true;
-            #  lsp.enable = true;
-            #};
+            astro = {
+              enable = true;
+              lsp.enable = true;
+            };
             bash = {
               enable = true;
               lsp.enable = true;
             };
             clang.enable = false;
+            clojure.enable = false;
             csharp.enable = false;
 
             css = {
               enable = true;
               lsp.enable = true;
             };
+            cue.enable = false;
             dart = {
               enable = false;
               lsp.enable = false;
             };
+            elixir.enable = false;
+            fsharp.enable = false;
+            gleam.enable = false;
             go = {
               enable = true;
+              treesitter.enable = true;
               lsp.enable = true;
+              format.enable = false; # lsp handles formatting
+              dap.enable = true;
             };
+            haskell.enable = false;
             hcl = {
               enable = true;
               lsp.enable = true;
@@ -195,11 +211,19 @@ in {
             };
             html = {
               enable = true;
+              lsp.enable = true;
             };
             java = {
               enable = true;
               lsp.enable = true;
             };
+            json = {
+              enable = true;
+              format.enable = true;
+              lsp.enable = true;
+            };
+            julia.enable = false;
+            just.enable = false;
             kotlin.enable = false;
             lua = {
               enable = true;
@@ -214,20 +238,48 @@ in {
               };
               format.enable = true;
             };
+            nim.enable = false;
             nix = {
               enable = true;
               lsp.enable = true;
               format.enable = true;
+              extraDiagnostics.enable = true;
+              treesitter.enable = true;
             };
+            nu.enable = false;
+            ocaml.enable = false;
+            odin.enable = false;
             php.enable = false;
             python = {
               enable = true;
               lsp.enable = true;
+              dap.enable = true;
+              format.enable = true;
             };
+            qml.enable = false;
+            r.enable = false;
+            ruby.enable = false;
             rust = {
               enable = true;
               lsp.enable = true;
+              dap.enable = true;
+              extensions = {
+                crates-nvim = {
+                  enable = true;
+                  setupOpts = {
+                    completion.crates.enabled = true;
+                    lsp = {
+                      actions = true;
+                      completion = true;
+                      enabled = true;
+                      hover = true;
+                    };
+                  };
+                };
+              };
+              format.enable = true;
             };
+            scala.enable = false;
             sql = {
               enable = true;
               lsp.enable = true;
@@ -240,6 +292,7 @@ in {
             terraform = {
               enable = true;
               lsp.enable = true;
+              treesitter.enable = true;
             };
             ts = {
               enable = true;
@@ -249,14 +302,13 @@ in {
               enable = true;
               lsp.enable = true;
             };
+            vala.enable = false;
+            wgsl.enable = false;
             yaml = {
               enable = true;
               lsp.enable = true;
             };
-            ruby = {
-              enable = true;
-              lsp.enable = true;
-            };
+            zig.enable = false;
           };
 
           utility = {
@@ -300,6 +352,7 @@ in {
                 zen.enable = true; # Distraction-free Zen mode
               };
             };
+            smart-splits.enable = true;
           };
 
           extraPlugins = {
@@ -330,18 +383,6 @@ in {
             #      repo = "typst.vim";
             #      rev = "master";
             #      sha256 = "sha256-2FZnhkp2pN8axzrwsFy0p28vQTmmPs0eyf2j0ojovnk=";
-            #    };
-            #  };
-            #};
-            #vimjsonnet = {
-            #  package = pkgs.vimUtils.buildVimPlugin {
-            #    pname = "vim-jsonnet";
-            #    version = "master";
-            #    src = pkgs.fetchFromGitHub {
-            #      owner = "google";
-            #      repo = "vim-jsonnet";
-            #      rev = "master";
-            #      sha256 = "sha256-ChgUGTrLthuGSws/UpF71JYI/c2QqItax6hsh7mYX/w="; # replace with actual
             #    };
             #  };
             #};
