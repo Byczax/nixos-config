@@ -163,6 +163,7 @@
     fzf = {
       enable = true;
       enableZshIntegration = true;
+      tmux.enableShellIntegration = true;
     };
     satty = {
       enable = true;
@@ -235,6 +236,22 @@
       enable = true;
       enableZshIntegration = true; # see note on other shells below
       nix-direnv.enable = true;
+    };
+    tmux = {
+      enable = true;
+      clock24 = true;
+      historyLimit = 10000;
+      mouse = true;
+      newSession = true;
+      sensibleOnTop = true;
+      baseIndex = 1;
+      shell = "${pkgs.zsh}/bin/zsh";
+      tmuxp.enable = true;
+      plugins = with pkgs.tmuxPlugins; [
+        vim-tmux-navigator
+        tokyo-night-tmux
+        yank
+      ];
     };
   };
 
