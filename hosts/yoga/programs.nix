@@ -100,7 +100,6 @@
     adwaita-icon-theme # icons for gnome apps
 
     feh
-    tmux
     blender
     krita
     #vscodium
@@ -189,5 +188,7 @@
     wireshark
     tcpdump
     wakatime-cli
+
+    jsonnet
   ];
 }
