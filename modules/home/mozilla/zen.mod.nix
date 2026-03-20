@@ -132,6 +132,20 @@ in {
             };
           };
         };
+        keyboardShortcuts = [
+          {
+            id = "zen-compact-mode-toggle";
+            key = "c";
+            modifiers = {
+              control = true;
+              alt = true;
+            };
+          }
+          {
+            id = "key_quitApplication";
+            disabled = true;
+          }
+        ];
       };
 
       policies = {
