@@ -10,6 +10,7 @@ in
         python-pkgs.beautifulsoup4
         python-pkgs.flask
         python-pkgs.pyyaml
+        python-pkgs.matplotlib
       ]))
     ];
     shell = pkgs.zsh;
