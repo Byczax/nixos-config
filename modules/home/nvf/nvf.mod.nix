@@ -18,6 +18,13 @@ in {
           keymaps = import ./keymaps.nix;
           options = import ./options.nix;
 
+          assistant = {
+            copilot = {
+              enable = true;
+              cmp.enable = true;
+            };
+          };
+
           startPlugins = with pkgs.vimPlugins; [
             vimtex
             vim-jsonnet
