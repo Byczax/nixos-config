@@ -7,18 +7,12 @@
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # nur = {
-    #   url = "github:nix-community/NUR";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
-    # aw-watcher-hyprland = {
-    #   url = "github:bobvanderlinden/aw-watcher-window-hyprland";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
+    # Neovim with very nice nix way of configuration
     nvf = {
       url = "github:NotAShelf/nvf";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Fork of Firefox that has much cleaner interface
     zen-browser = {
       url = "github:0xc000022070/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -42,6 +36,22 @@
     #   url = "github:nix-community/stylix";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
+    # Nice clipboard history manager
+    # stash = {
+    #   url = "github:notashelf/stash";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
+    # Check nix files for the dead code
+    deadnix = {
+      url = "github:astro/deadnix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    statix = {
+      url = "github:oppiliappan/statix";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
   };
 
   outputs = inputs: let
