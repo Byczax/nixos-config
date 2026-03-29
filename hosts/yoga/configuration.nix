@@ -5,6 +5,7 @@
   lib,
   pkgs,
   config,
+  compositor,
   ...
 }: {
   imports = [
@@ -24,8 +25,16 @@
 
   xdg.portal = {
     enable = true;
-    extraPortals = with pkgs; [xdg-desktop-portal-hyprland];
-    config.common.default = ["hyprland"];
+    extraPortals = with pkgs; [
+      #xdg-desktop-portal-gnome
+      #xdg-desktop-portal-gtk
+      #xdg-desktop-portal-wlr
+      xdg-desktop-portal-hyprland
+    ];
+    config.common.default = [
+      "hyprland"
+      #"gnome"
+    ];
   };
 
   nixpkgs.config.allowUnfreePredicate = pkg:
@@ -52,7 +61,7 @@
     loader = {
       systemd-boot = {
         enable = true;
-        configurationLimit = 5; # Amounts of build to store
+        configurationLimit = 10; # Amounts of build to store
       };
       timeout = 3; # time before it will start booting most recent build
       efi.canTouchEfiVariables = true; # allow to register boots in boot
@@ -141,9 +150,6 @@
   hardware = {
     bluetooth.enable = true;
     i2c.enable = true;
-    graphics = {
-      enable = true;
-    };
     enableRedistributableFirmware = true;
   };
 
@@ -158,6 +164,7 @@
       alsa.support32Bit = true;
       pulse.enable = true;
       wireplumber.enable = true;
+      jack.enable = true;
     };
 
     greetd = {
@@ -165,6 +172,7 @@
       settings = {
         default_session = {
           command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd 'systemd-cat -t Hyprland Hyprland'";
+          #command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd 'systemd-cat -t niri niri'";
           user = "bq";
         };
       };
@@ -182,31 +190,6 @@
     auto-cpufreq.enable = true; # Show data about CPU
     upower.enable = true;
 
-    tlp = {
-      enable = true;
-      settings = {
-        CPU_SCALING_GOVERNOR_ON_AC = "performance";
-        CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-
-        CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
-        CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
-
-        CPU_MIN_PERF_ON_AC = 0;
-        CPU_MAX_PERF_ON_AC = 100;
-        CPU_MIN_PERF_ON_BAT = 0;
-        CPU_MAX_PERF_ON_BAT = 50;
-        #
-        # RUNTIME_PM_ON_BAT = "auto";
-        # WIFI_PWR_ON_BAT = "on";
-        #
-        # PLATFORM_PROFILE_ON_BAT = "low-power";
-        # PLATFORM_PROFILE_ON_AC = "performance";
-
-        #Optional helps save long term battery health
-        START_CHARGE_THRESH_BAT0 = 40; # 40 and below it starts to charge
-        STOP_CHARGE_THRESH_BAT0 = 80; # 80 and above it stops charging
-      };
-    };
     # service to autodiscover printers in the same network
     avahi = {
       enable = true;
@@ -244,6 +227,8 @@
 
     pcscd.enable = true;
     udev.packages = [pkgs.yubikey-personalization];
+
+    gnome.gnome-keyring.enable = true; # secret service
   };
   ### === END OF SERVICES === ###
 
@@ -259,6 +244,7 @@
     network.wait-online.enable = false;
 
     services.fprintd = {
+      enable = false;
       wantedBy = ["multi-user.target"];
       serviceConfig.Type = "simple";
     };
@@ -277,10 +263,6 @@
   services.printing.enable = true;
   hardware.sane.enable = true; # enables support for SANE scanners
   services.colord.enable = true;
-
-  services.fprintd.enable = true;
-  #services.fprintd.tod.enable = true;
-  #services.fprintd.tod.driver = pkgs.libfprint-2-tod1-goodix;
 
   fonts = {
     enableDefaultPackages = true;
@@ -351,6 +333,8 @@
       enableSSHSupport = true;
     };
     wireshark.enable = true;
+
+    #niri.enable = true;
   };
 
   users.defaultUserShell = pkgs.zsh;

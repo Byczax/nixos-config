@@ -16,6 +16,7 @@ in {
         port = 5600;
       };
       watchers = {
+        # This alone is working good on Hyprland
         aw-awatcher = {
           package = pkgs.awatcher;
           executable = "awatcher";

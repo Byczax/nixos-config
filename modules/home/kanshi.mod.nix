@@ -19,6 +19,7 @@ in {
               {
                 criteria = "eDP-1";
                 status = "enable";
+                scale = 1.0;
               }
             ];
           };
@@ -32,6 +33,7 @@ in {
                 position = "1920,120";
                 mode = "1920x1080@60.05Hz";
                 status = "enable";
+                scale = 1.0;
               }
               {
                 criteria = "DP-5";

@@ -2,6 +2,8 @@
   config,
   pkgs,
   inputs,
+  lib,
+  compositor,
   ...
 }: {
   imports = [
@@ -23,38 +25,42 @@
     # the Home Manager release notes for a list of state version
     # changes in each release.
     stateVersion = "25.05";
-    sessionVariables = {
-      # info where to save config files
-      XDG_CONFIG_HOME = "${config.home.homeDirectory}/.config";
-      EDITOR = "nvim";
+    sessionVariables = lib.mkMerge [
+      {
+        # info where to save config files
+        XDG_CONFIG_HOME = "${config.home.homeDirectory}/.config";
+        EDITOR = "nvim";
 
-      # inform apps that we use wayland
-      NIXOS_OZONE_WL = "1";
-      OZONE_PLATFORM = "wayland";
+        # inform apps that we use wayland
+        NIXOS_OZONE_WL = "1";
+        OZONE_PLATFORM = "wayland";
 
-      # suggests electron apps to use the wayland backend
-      ELECTRON_OZONE_PLATFORM_HINT = "wayland";
+        # suggests electron apps to use the wayland backend
+        ELECTRON_OZONE_PLATFORM_HINT = "wayland";
 
-      #FONTCONFIG_FILE = "${pkgs.fontconfig.out}/etc/fonts/fonts.conf";
+        XDG_SESSION_TYPE = "wayland";
+        MOZ_ENABLE_WAYLAND = "1";
+        QT_SCREEN_SCALE_FACTORS = "1;1";
+        GTK_IM_MODULE = "fcitx";
+        QT_IM_MODULE = "fcitx";
+        XMODIFIERS = "@im=fcitx";
+        TENV_AUTO_INSTALL = "true";
+        WAYLAND_DISPLAY = "wayland-1";
+        QT_WAYLAND_DISABLE_WINDOWDECORATION = 1;
+      }
 
-      # inform that we use hyprland
-      XDG_CURRENT_DESKTOP = "Hyprland";
-      XDG_SESSION_TYPE = "wayland";
-      MOZ_ENABLE_WAYLAND = "1";
-      QT_QPA_PLATFORM = "xcb";
-      QT_SCREEN_SCALE_FACTORS = "1;1";
-      GTK_IM_MODULE = "fcitx";
-      QT_IM_MODULE = "fcitx";
-      XMODIFIERS = "@im=fcitx";
-      TENV_AUTO_INSTALL = "true";
-    };
-    # make sure that user have polish layout
-    #keyboard = {
-    #  layout = "pl,us";
-    #  options = [
-    #    "grp:alt_shift_toggle"
-    #  ];
-    #};
+      (lib.mkIf (compositor == "hyprland") {
+        AAA = "1";
+        XDG_CURRENT_DESKTOP = "Hyprland";
+        QT_QPA_PLATFORM = "xcb";
+      })
+
+      (lib.mkIf (compositor == "niri") {
+        BBB = "1";
+        XDG_CURRENT_DESKTOP = "niri";
+        QT_QPA_PLATFORM = "wayland";
+      })
+    ];
   };
   programs.home-manager.enable = true; # Let Home Manager install and manage itself.
 
@@ -253,6 +259,10 @@
         yank
       ];
     };
+
+    alacritty.enable = true;
+    fuzzel.enable = true;
+    swaylock.enable = true;
   };
 
   # terminal
@@ -268,10 +278,30 @@
       enable = true;
       indicator = true;
     };
-    #swayidle.enable = true;
-    syncthing = {
-      enable = false;
-    };
+
+    # swayidle = {
+    #   enable = true;
+    #
+    #   timeouts = [
+    #     {
+    #       timeout = 300;
+    #       command = "${pkgs.hyprlock}/bin/hyprlock";
+    #     }
+    #     {
+    #       timeout = 600;
+    #       command = "${pkgs.niri}/bin/niri msg action power-off-monitors";
+    #       resumeCommand = "${pkgs.niri}/bin/niri msg action power-on-monitors";
+    #     }
+    #   ];
+    #
+    #   events = [
+    #     {
+    #       event = "before-sleep";
+    #       command = "${pkgs.hyprlock}/bin/hyprlock";
+    #     }
+    #   ];
+    # };
+
     hypridle = {
       enable = true;
       settings = {
@@ -284,9 +314,25 @@
             timeout = 600;
             on-timeout = "hyprctl dispatch dpms off";
             on-resume = "hyprctl dispatch dpms on";
+            #on-timeout = "niri msg action power-off-monitors";
+            #on-resume = "niri msg action power-on-monitors";
           }
         ];
       };
+    };
+
+    wlsunset = {
+      enable = true;
+      latitude = 47.41;
+      longitude = 8.65;
+      temperature = {
+        day = 4200;
+        night = 2000;
+      };
+    };
+
+    syncthing = {
+      enable = false;
     };
     hyprpolkitagent.enable = true;
     # notifications
@@ -326,8 +372,31 @@
       enable = true;
       frequency = "daily";
     };
+
+    polkit-gnome.enable = true; # polkit
+
+    cliphist = {
+      enable = true;
+
+      # A Wayland session
+      systemdTargets = ["config.wayland.systemd.target"];
+
+      # Sway Target
+      # if using make sure that:
+      # "wayland.windowManager.sway.systemd.enable = true;" is set
+      #systemdTargets = ["sway-session.target"];
+
+      extraOptions = [
+        "-max-dedupe-search"
+        "10"
+        "-max-items"
+        "500"
+      ];
+      allowImages = true;
+    };
   };
 
+  xdg.configFile."niri/config.kdl".source = ../../modules/home/niri/niri-config.kdl;
   #xdg.configFile."flameshot.ini".force = true;
   # do I need it?
   #fonts.fontconfig.enable = true;

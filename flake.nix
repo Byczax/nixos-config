@@ -58,9 +58,9 @@
     inherit (inputs.nixpkgs) lib;
     inherit (builtins) map toString;
 
-    mkSystem = system: hostname: conf-name:
+    mkSystem = system: hostname: conf-name: compositor:
       inputs.nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs;};
+        specialArgs = {inherit inputs compositor;};
         system = system;
 
         modules =
@@ -71,7 +71,7 @@
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
-              home-manager.extraSpecialArgs = {inherit inputs;};
+              home-manager.extraSpecialArgs = {inherit inputs compositor;};
 
               home-manager.users.bq.imports =
                 [
@@ -86,8 +86,8 @@
       };
   in {
     nixosConfigurations = {
-      yoga = mkSystem "x86_64-linux" "yoga" "yoga";
-      g7 = mkSystem "x86_64-linux" "g7" "g7";
+      yoga = mkSystem "x86_64-linux" "yoga" "yoga" "hyprland";
+      g7 = mkSystem "x86_64-linux" "g7" "g7" "hyprland";
     };
   };
 }

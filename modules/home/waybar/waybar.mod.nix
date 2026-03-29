@@ -19,6 +19,8 @@ in {
           modules-left = [
             "hyprland/workspaces"
             "hyprland/window"
+            # "niri/workspaces"
+            # "niri/window"
           ];
           modules-center = [];
           modules-right = [

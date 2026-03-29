@@ -190,5 +190,12 @@
     wakatime-cli
 
     jsonnet
+
+    swaybg
+
+    bibata-cursors
+    wdisplays
+
+    libsForQt5.qt5.qtwayland
   ];
 }
