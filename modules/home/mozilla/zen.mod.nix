@@ -40,6 +40,7 @@ in {
           "fd24f832-a2e6-4ce9-8b19-7aa888eb7f8e" # Quietify
           "72f8f48d-86b9-4487-acea-eb4977b18f21" # Better CtrlTab Panel
           "3ff55ba7-4690-4f74-96a8-9e4416685e4e" # Colored container tab
+          "ae7868dc-1fa1-469e-8b89-a5edf7ab1f24" # load bar for the websites
         ];
 
         spacesForce = true;
@@ -278,6 +279,16 @@ in {
           #   installation_mode = "force_installed";
           #   updates_disabled = true;
           # };
+          "gdpr@cavi.au.dk" = {
+            install_url = moz "consent-o-matic";
+            installation_mode = "force_installed";
+            updates_disabled = true;
+          };
+          "firefox@tampermonkey.net" = {
+            install_url = moz "tampermonkey";
+            installation_mode = "force_installed";
+            updates_disabled = true;
+          };
         };
         SearchEngines = {
           Remove = [

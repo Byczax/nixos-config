@@ -2,9 +2,10 @@
   description = "Nixos config flake";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs.url = "https://channels.nixos.org/nixpkgs-unstable/nixexprs.tar.xz";
+
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.11";
+      url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # Neovim with very nice nix way of configuration
@@ -42,16 +43,16 @@
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
     # Check nix files for the dead code
-    deadnix = {
-      url = "github:astro/deadnix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    statix = {
-      url = "github:oppiliappan/statix";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-      };
-    };
+    # deadnix = {
+    #   url = "github:astro/deadnix";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
+    # statix = {
+    #   url = "github:oppiliappan/statix";
+    #   inputs = {
+    #     nixpkgs.follows = "nixpkgs";
+    #   };
+    # };
   };
 
   outputs = inputs: let
@@ -69,17 +70,19 @@
 
             inputs.home-manager.nixosModules.home-manager
             {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.extraSpecialArgs = {inherit inputs compositor;};
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                extraSpecialArgs = {inherit inputs compositor;};
 
-              home-manager.users.bq.imports =
-                [
-                  ./hosts/${conf-name}/home.nix
-                  inputs.nvf.homeManagerModules.default
-                  inputs.zen-browser.homeModules.twilight
-                ]
-                ++ lib.filter (lib.hasSuffix ".mod.nix") (map toString (lib.filesystem.listFilesRecursive ./modules/home));
+                users.bq.imports =
+                  [
+                    ./hosts/${conf-name}/home.nix
+                    inputs.nvf.homeManagerModules.default
+                    inputs.zen-browser.homeModules.twilight
+                  ]
+                  ++ lib.filter (lib.hasSuffix ".mod.nix") (map toString (lib.filesystem.listFilesRecursive ./modules/home));
+              };
             }
           ]
           ++ lib.filter (lib.hasSuffix ".mod.nix") (map toString (lib.filesystem.listFilesRecursive ./modules/system));

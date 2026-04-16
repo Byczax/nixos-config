@@ -21,7 +21,7 @@ in {
       autosuggestion.enable = true;
       syntaxHighlighting.enable = true;
       shellAliases = {
-        update = "nh os switch $HOME/nixos-config -H ${cfg.host} --ask";
+        update = "nh os switch $HOME/nixos-config -H ${cfg.host} --ask --diff always";
         test_vm = "sudo nixos-rebuild build-vm --flake $HOME/nixos-config#${cfg.host}";
         calc = "qalc";
         bat_protect_on = "sudo echo 1 > /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode";
@@ -42,9 +42,10 @@ in {
       };
       initContent = ''
         bindkey "^R" history-incremental-search-backward;
-        export PATH="''${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+        export PATH="''${KREW_ROOT:-$HOME/.krew}/bin:$HOME/.local/bin:$PATH"
         export KUBECONFIG=$HOME/.kube/vis-config
         source ${pkgs.nix-index}/etc/profile.d/command-not-found.sh
+        ZSH_DISABLE_COMPFIX="true"
       '';
     };
   };

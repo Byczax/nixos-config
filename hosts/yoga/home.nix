@@ -62,7 +62,6 @@
       })
     ];
   };
-  programs.home-manager.enable = true; # Let Home Manager install and manage itself.
 
   qt = {
     enable = true;
@@ -82,6 +81,7 @@
   };
 
   gtk = {
+    gtk4.theme = null;
     enable = true;
     theme = {
       name = "Adwaita-dark";
@@ -94,6 +94,15 @@
   };
 
   programs = {
+    home-manager.enable = true; # Let Home Manager install and manage itself.
+    git = {
+      enable = true;
+    };
+    lazygit = {
+      enable = true;
+      enableZshIntegration = true;
+    };
+    # gcc.enable = true;
     foot = {
       enable = true;
       settings = {
@@ -141,13 +150,16 @@
     # media player
     mpv = {
       enable = true;
+      # override = {
+      #   waylandSupport = true;
+      # };
 
       #
-      package = pkgs.mpv-unwrapped.wrapper {
-        mpv = pkgs.mpv-unwrapped.override {
-          waylandSupport = true;
-        };
-      };
+      # package = pkgs.mpv-unwrapped.wrapper {
+      #   mpv = pkgs.mpv-unwrapped.override {
+      #     waylandSupport = true;
+      #   };
+      # };
       config = {
         profile = "high-quality";
         ytdl-format = "bestvideo+bestaudio";
@@ -263,6 +275,33 @@
     alacritty.enable = true;
     fuzzel.enable = true;
     swaylock.enable = true;
+
+    distrobox = {
+      enable = true;
+    };
+    feh = {
+      enable = true;
+    };
+    go = {
+      enable = true;
+    };
+    k9s = {
+      enable = true;
+    };
+    vesktop = {
+      enable = true;
+    };
+    fastfetch = {
+      enable = true;
+    };
+    anki = {
+      enable = true;
+      theme = "dark";
+      minimalistMode = true;
+    };
+    vscode = {
+      enable = true;
+    };
   };
 
   # terminal

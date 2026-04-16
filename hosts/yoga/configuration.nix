@@ -55,6 +55,9 @@
       # sad but needed
       "zoom"
       "vagrant"
+
+      "symbola"
+      "vscode"
     ];
 
   boot = {
@@ -171,7 +174,7 @@
       enable = true;
       settings = {
         default_session = {
-          command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd 'systemd-cat -t Hyprland Hyprland'";
+          command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd 'systemd-cat -t Hyprland start-hyprland'";
           #command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd 'systemd-cat -t niri niri'";
           user = "bq";
         };
@@ -212,7 +215,7 @@
       enable = true;
       #dnssec = "allow-downgrade";
       #dnsovertls = "opportunistic";
-      fallbackDns = [
+      settings.Resolve.FallbackDNS = [
         "9.9.9.9"
         "1.1.1.1"
         "2620:fe::fe"
@@ -229,6 +232,9 @@
     udev.packages = [pkgs.yubikey-personalization];
 
     gnome.gnome-keyring.enable = true; # secret service
+    iperf3 = {
+      enable = true;
+    };
   };
   ### === END OF SERVICES === ###
 
@@ -278,6 +284,11 @@
       proggyfonts
       nerd-fonts.fira-code
       nerd-fonts.droid-sans-mono
+      cardo
+      symbola
+      quivira
+      freefont_ttf
+      font-awesome
     ];
   };
   # system user
@@ -302,15 +313,16 @@
   steam.enable = true; # enable steam from module
 
   programs = {
+    vim.enable = true;
     # do I need it?
     dconf.enable = true;
     xfconf.enable = true;
     thunar = {
       enable = true;
       plugins = with pkgs; [
-        xfce.thunar-archive-plugin
-        xfce.thunar-media-tags-plugin
-        xfce.thunar-volman
+        thunar-archive-plugin
+        thunar-media-tags-plugin
+        thunar-volman
       ];
     };
     zsh.enable = true;
@@ -352,6 +364,10 @@
       qemu = {
         runAsRoot = true;
       };
+    };
+    podman = {
+      enable = true;
+      dockerCompat = false;
     };
     # virtualbox.host = {
     #   enable = true;

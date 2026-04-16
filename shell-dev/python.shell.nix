@@ -11,6 +11,8 @@ in
         python-pkgs.flask
         python-pkgs.pyyaml
         python-pkgs.matplotlib
+        python-pkgs.discordpy
+        python-pkgs.matrix-nio
       ]))
     ];
     shell = pkgs.zsh;

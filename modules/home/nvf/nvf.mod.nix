@@ -20,8 +20,8 @@ in {
 
           assistant = {
             copilot = {
-              enable = true;
-              cmp.enable = true;
+              enable = false;
+              cmp.enable = false;
             };
           };
 
@@ -292,10 +292,10 @@ in {
               lsp.enable = true;
             };
             svelte.enable = false;
-            tailwind = {
-              enable = true;
-              lsp.enable = true;
-            };
+            # tailwind = {
+            # enable = true;
+            # lsp.enable = true;
+            # };
             terraform = {
               enable = true;
               lsp.enable = true;
