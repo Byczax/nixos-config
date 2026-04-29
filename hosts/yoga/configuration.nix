@@ -19,6 +19,9 @@
         "nix-command"
         "flakes"
       ];
+      trusted-users = [
+        "bq"
+      ];
       #auto-optimise-store = true;
     };
   };
@@ -122,6 +125,11 @@
     '';
 
     firewall = rec {
+      allowedTCPPorts = [
+        3000
+        8000
+        config.services.tailscale.port
+      ];
       allowedTCPPortRanges = [
         # KDE Connect
         {
@@ -139,10 +147,11 @@
           to = 41641;
         }
       ];
+      allowedUDPPorts = allowedTCPPorts;
       allowedUDPPortRanges = allowedTCPPortRanges;
 
       # add on top tailscale ports
-      allowedUDPPorts = [config.services.tailscale.port];
+      # allowedUDPPorts = [config.services.tailscale.port];
 
       # Tailscale interface
       trustedInterfaces = ["tailscale0" "virbr0"];
@@ -190,7 +199,19 @@
       #extraSetFlags = ["--netfilter-mode=nodivert"];
     };
     thermald.enable = true; # proactively protect CPU overheating
-    auto-cpufreq.enable = true; # Show data about CPU
+    auto-cpufreq = {
+      enable = true;
+      settings = {
+        battery = {
+          governor = "powersave";
+          turbo = "never";
+        };
+        charger = {
+          governor = "performance";
+          turbo = "auto";
+        };
+      };
+    };
     upower.enable = true;
 
     # service to autodiscover printers in the same network
@@ -234,6 +255,11 @@
     gnome.gnome-keyring.enable = true; # secret service
     iperf3 = {
       enable = true;
+    };
+    logind.settings.Login = {
+      HandleLidSwitch = "suspend";
+      HandleLidSwitchExternalPower = "lock";
+      HandleLidSwitchDocked = "ignore";
     };
   };
   ### === END OF SERVICES === ###
@@ -310,12 +336,12 @@
     vim # optional
   ];
 
-  steam.enable = true; # enable steam from module
+  steam.enable = false; # enable steam from module
 
   programs = {
     vim.enable = true;
     # do I need it?
-    dconf.enable = true;
+    # dconf.enable = true;
     xfconf.enable = true;
     thunar = {
       enable = true;
@@ -347,13 +373,17 @@
     wireshark.enable = true;
 
     #niri.enable = true;
+    virt-manager.enable = true;
   };
 
   users.defaultUserShell = pkgs.zsh;
   environment.shells = with pkgs; [zsh];
 
   # control battery, but I think, it does not work with my laptop
-  powerManagement.enable = true;
+  powerManagement = {
+    enable = true;
+    powertop.enable = true;
+  };
 
   virtualisation = {
     docker = {
@@ -362,12 +392,17 @@
     libvirtd = {
       enable = true;
       qemu = {
-        runAsRoot = true;
+        runAsRoot = false;
+        swtpm.enable = true;
+        vhostUserPackages = with pkgs; [virtiofsd];
       };
     };
     podman = {
       enable = true;
       dockerCompat = false;
+    };
+    incus = {
+      enable = true;
     };
     # virtualbox.host = {
     #   enable = true;

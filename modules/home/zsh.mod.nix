@@ -43,7 +43,7 @@ in {
       initContent = ''
         bindkey "^R" history-incremental-search-backward;
         export PATH="''${KREW_ROOT:-$HOME/.krew}/bin:$HOME/.local/bin:$PATH"
-        export KUBECONFIG=$HOME/.kube/vis-config
+        export KUBECONFIG=$HOME/.kube/config
         source ${pkgs.nix-index}/etc/profile.d/command-not-found.sh
         ZSH_DISABLE_COMPFIX="true"
       '';

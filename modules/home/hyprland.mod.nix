@@ -157,12 +157,14 @@ in {
           "match:class ^(flameshot)$, float true"
           "match:class ^(flameshot)$, move 0 0"
           "match:class ^(flameshot)$, pin true"
+          "match:class ^(flameshot)$, focus_on_activate true"
           #"match:class ^(flameshot)$, focusonactivate true"
           "match:class ^(flameshot)$, monitor 1"
 
           "match:title ^(flameshot)$, float true"
           "match:title ^(flameshot)$, move 0 0"
-          #"match:title ^(flameshot)$, suppressevent fullscreen"
+          "match:title ^(zoom)$, float true"
+          "match:title ^(flameshot)$, suppress_event fullscreen"
         ];
 
         # windowrulev2 = [

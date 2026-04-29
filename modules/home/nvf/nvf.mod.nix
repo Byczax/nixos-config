@@ -18,6 +18,8 @@ in {
           keymaps = import ./keymaps.nix;
           options = import ./options.nix;
 
+          vendoredKeymaps.enable = true;
+
           assistant = {
             copilot = {
               enable = false;
@@ -67,7 +69,7 @@ in {
 
           telescope.enable = true; # Powerful fuzzy finder for files, symbols, etc.
           statusline.lualine.enable = true; # A fast and configurable statusline
-          fzf-lua.enable = true; # Fast fuzzy finder (alternative to Telescope)
+          # fzf-lua.enable = true; # Fast fuzzy finder (alternative to Telescope)
           #languages.lua.lsp.lazydev.enable = true; # Enhanced Lua development experience
           clipboard.providers.wl-copy.enable = true; # Clipboard support for Wayland (wl-copy)
           snippets.luasnip.enable = true; # Snippet engine used by completion tools
@@ -78,7 +80,14 @@ in {
           };
 
           autopairs.nvim-autopairs.enable = true; # Auto-close brackets, quotes, etc.
-          formatter.conform-nvim.enable = true; # Code formatter integration
+          formatter.conform-nvim = {
+            enable = true; # Code formatter integration
+            setupOpts = {
+              formatters_by_ft = {
+                jsonnet = ["jsonnetfmt"];
+              };
+            };
+          };
           filetree.neo-tree.enable = true; # Alternative file tree explorer
           #filetree.nvimTree.enable = true; # File explorer on the left sidebar
           notify.nvim-notify.enable = true; # Better notification system
@@ -110,7 +119,12 @@ in {
 
           spellcheck = {
             enable = true;
-            languages = ["en" "pl" "de" "ru"];
+            languages = [
+              "en"
+              "pl"
+              "de"
+              "ru"
+            ];
             programmingWordlist.enable = true;
             #vim-dirtytalk.enable = true;
             # extraSpellWords = {};
@@ -118,7 +132,45 @@ in {
 
           mini = {
             ai.enable = true; # Text object and surrounding enhancements
+            align.enable = true;
+            # animate.enable = true;
+            basics.enable = true;
+            bracketed.enable = true;
+            bufremove.enable = true;
+            clue.enable = true;
+            colors.enable = true;
+            comment.enable = true;
+            # completion.enable = true;
+            cursorword.enable = true;
+            diff.enable = true;
+            doc.enable = true;
+            extra.enable = true;
+            # files.enable = true;
+            fuzzy.enable = true;
+            git.enable = true;
+            hipatterns.enable = true;
+            # hues.enable = true;
             icons.enable = true; # Display icons using mini.nvim
+            indentscope.enable = true;
+            jump.enable = true;
+            jump2d.enable = true;
+            map.enable = true;
+            misc.enable = true;
+            move.enable = true;
+            # notify.enable = true;
+            operators.enable = true;
+            # pairs.enable = true;
+            pick.enable = true;
+            sessions.enable = true;
+            snippets.enable = true;
+            splitjoin.enable = true;
+            starter.enable = true;
+            # statusline.enable = true;
+            # surround.enable = true;
+            # tabline.enable = true;
+            test.enable = true;
+            trailspace.enable = true;
+            visits.enable = true;
           };
 
           git = {
@@ -139,10 +191,10 @@ in {
             enable = true; # Enable LSP features
             formatOnSave = true; # Format files when saving
             inlayHints.enable = true;
-            lightbulb.enable = false; #  Code action lightbulb
+            lightbulb.enable = false; # Code action lightbulb
             #lspsaga.enable = true; #  UI for LSP interactions
-            trouble.enable = false; #  LSP diagnostics viewer
-            lspSignature.enable = false; #  Show function signature help
+            trouble.enable = false; # LSP diagnostics viewer
+            lspSignature.enable = false; # Show function signature help
             lspconfig.enable = true; # Basic LSP configuration
             lspkind.enable = true; # Icons for LSP kinds (function, var, etc.)
             nvim-docs-view.enable = true; # View LSP docs in a split window
@@ -154,9 +206,9 @@ in {
             # hardtime-nvim.enable = true; # Prevent bad habits by limiting repeated keys
           };
 
-          comments = {
-            comment-nvim.enable = true; # Toggle comments easily with `gc`
-          };
+          # comments = {
+          #   comment-nvim.enable = true; # Toggle comments easily with `gc`
+          # };
           projects = {
             project-nvim.enable = true;
           };
@@ -301,7 +353,7 @@ in {
               lsp.enable = true;
               treesitter.enable = true;
             };
-            ts = {
+            typescript = {
               enable = true;
               lsp.enable = true;
             };
@@ -317,7 +369,6 @@ in {
             };
             zig.enable = false;
           };
-
           utility = {
             vim-wakatime.enable = true; # Track coding activity
             motion.flash-nvim.enable = true; # Enhanced movement/navigation
@@ -342,8 +393,8 @@ in {
                 layout.enable = true; # Window layouts management
                 lazygit.enable = true; # Floating LazyGit integration
                 notifier.enable = true; # Pretty notifications
-                notify.enable = true; # Utilities for vim.notify
-                picker.enable = true; # Item picker UI
+                # notify.enable = true; # Utilities for vim.notify
+                # picker.enable = true; # Item picker UI
                 profiler.enable = true; # Lua/Neovim profiler
                 quickfile.enable = true; # Quick access to files on startup
                 rename.enable = true; # LSP-aware file renaming
@@ -360,6 +411,7 @@ in {
               };
             };
             smart-splits.enable = true;
+            surround.enable = true;
           };
 
           extraPlugins = {
@@ -401,7 +453,7 @@ in {
                   owner = "dsabsay";
                   repo = "vim-tanka";
                   rev = "master";
-                  hash = "sha256-17imEImqE8HzKhSZPL0MExY/ZXZpPTzjVzo5JGSI/0A=";
+                  hash = "sha256-JqNQg7Kxkri92aWx8ceVguvO9j6E8V4PoCKezu0wn6w=";
                 };
               };
             };
@@ -413,10 +465,22 @@ in {
                   owner = "hadolint";
                   repo = "hadolint";
                   rev = "master";
-                  hash = "sha256-17imEImqE8HzKhSZPL0MExY/ZXZpPTzjVzo5JGSI/0A=";
+                  hash = "sha256-JqNQg7Kxkri92aWx8ceVguvO9j6E8V4PoCKezu0wn6w=";
                 };
               };
             };
+            # aw-watcher = {
+            #   package = pkgs.vimUtils.buildVimPlugin {
+            #     pname = "aw-watcher";
+            #     version = "master";
+            #     src = pkgs.fetchFromGitHub {
+            #       owner = "lowitea";
+            #       repo = "aw-watcher.nvim";
+            #       rev = "master";
+            #       hash = "sha256-JqNQg7Kxkri92aWx8ceVguvO9j6E8V4PoCKezu0wn6w=";
+            #     };
+            #   };
+            # };
             #vimsmali = {
             #  package = pkgs.vimUtils.buildVimPlugin {
             #    pname = "vim-smali";

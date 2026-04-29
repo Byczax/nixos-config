@@ -2,14 +2,10 @@
   home.packages = with pkgs; [
     fira-code #font for terminal
     prismlauncher # minecraft
-    # vim # as a backup
     brightnessctl # ability to change screen brightness
-    # font-awesome # fancy icons
     xournalpp # notes app
     signal-desktop
-    # git
     traceroute
-    #(flameshot.override {enableWlrSupport = true;}) # slow screenshot with drawings
     grim
     grimblast # fast screenshot
     xlsclients # check if app is running under X11
@@ -33,14 +29,11 @@
 
     # to fulfill lazyvim plugins
     luarocks
-    # lazygit
     fd
     lua
     fzf
 
-    #zathura #pdf viewer
     quickemu # virtual machines
-    virt-manager
 
     simple-scan # scanner
 
@@ -90,20 +83,15 @@
     #     ;
     # })
 
-    # hyprsunset # need to install manually
-
-    # iperf
     bitwarden-desktop
 
     pavucontrol # add audio control alongside helvum
     adwaita-icon-theme # icons for gnome apps
 
-    # feh
     blender
     krita
     #vscodium
     #atom
-    #freecad
     #wireshark
     # joplin
     vlc
@@ -113,7 +101,6 @@
     ripgrep
     xdotool
     hugo
-    # go
     # notesnook
 
     nwg-displays
@@ -128,8 +115,6 @@
     gnumake
     kubeseal
 
-    # vesktop
-
     (wrapHelm kubernetes-helm {
       plugins = with pkgs.kubernetes-helmPlugins; [
         helm-secrets
@@ -140,16 +125,13 @@
     })
 
     trilium-desktop
-    # element-desktop
     gimp
     typst
     pdf2svg
-    #python3
     dig
     whois
     nmap
     dnslookup
-    # fastfetch
     pdfpc
 
     kdePackages.dolphin
@@ -171,7 +153,6 @@
     # alsa-utils
     # libgig
     rpi-imager
-    # anki
     tenv
     jellyfin-media-player
     memento
@@ -194,11 +175,7 @@
     wdisplays
 
     libsForQt5.qt5.qtwayland
-
     jq
-
-    # vscode
-
     #icu
   ];
 }

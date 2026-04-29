@@ -13,6 +13,8 @@ in
         python-pkgs.matplotlib
         python-pkgs.discordpy
         python-pkgs.matrix-nio
+        python-pkgs.graphviz
+        python-pkgs.pyserial
       ]))
     ];
     shell = pkgs.zsh;
