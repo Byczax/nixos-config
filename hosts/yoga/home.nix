@@ -170,12 +170,12 @@
       };
     };
     # other games that are not on steam
-    lutris = {
-      enable = true;
-      winePackages = [
-        pkgs.wineWow64Packages.full
-      ];
-    };
+    # lutris = {
+    #   enable = true;
+    #   winePackages = [
+    #     pkgs.wineWow64Packages.full
+    #   ];
+    # };
     command-not-found.enable = false;
     nix-index.enable = true;
     fzf = {

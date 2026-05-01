@@ -630,12 +630,12 @@
   #   action = "<cmd>lua require('neo-tree.command').execute({ toggle = true, dir = vim.fn.getcwd() })<CR>";
   #   desc = "Explorer NeoTree (Root Dir)";
   # }
-  # {
-  #   key = "<leader>e";
-  #   mode = ["n"];
-  #   action = "<cmd>lua require('neo-tree.command').execute({ toggle = true, dir = vim.fn.getcwd() })<CR>";
-  #   desc = "Explorer NeoTree (Root Dir)";
-  # }
+  {
+    key = "<leader>e";
+    mode = ["n"];
+    action = "<cmd>lua require('neo-tree.command').execute({ toggle = true, dir = vim.fn.getcwd() })<CR>";
+    desc = "Explorer NeoTree (Root Dir)";
+  }
   # {
   #   key = "<leader>ge";
   #   mode = ["n"];

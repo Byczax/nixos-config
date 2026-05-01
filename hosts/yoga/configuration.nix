@@ -168,7 +168,7 @@
   services = {
     connman.wifi.backend = "iwd";
     dbus.enable = true;
-    ratbagd.enable = true;
+    # ratbagd.enable = true;
 
     pipewire = {
       enable = true;
@@ -249,8 +249,8 @@
     # };
     envfs.enable = true;
 
-    pcscd.enable = true;
-    udev.packages = [pkgs.yubikey-personalization];
+    # pcscd.enable = true;
+    # udev.packages = [pkgs.yubikey-personalization];
 
     gnome.gnome-keyring.enable = true; # secret service
     iperf3 = {
@@ -330,13 +330,19 @@
     extraGroups.vboxusers.members = ["bq"];
   };
 
-  environment.systemPackages = with pkgs; [
-    bash
-    coreutils
-    vim # optional
-  ];
+  environment = {
+    systemPackages = with pkgs; [
+      bash
+      coreutils
+      vim # optional
+    ];
+    extraInit = ''
+      export XDG_DATA_DIRS="$XDG_DATA_DIRS:${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}"
+    '';
+    shells = with pkgs; [bash zsh];
+  };
 
-  steam.enable = false; # enable steam from module
+  steam.enable = true; # enable steam from module
 
   programs = {
     vim.enable = true;
@@ -354,17 +360,17 @@
     zsh.enable = true;
     hyprland.enable = true;
 
-    nix-ld = {
-      enable = true;
-      libraries = with pkgs; [
-        ## Put here any library that is required when running a package
-        ## ...
-        ## Uncomment if you want to use the libraries provided by default in the steam distribution
-        ## but this is quite far from being exhaustive
-        ## https://github.com/NixOS/nixpkgs/issues/354513
-        # (pkgs.runCommand "steamrun-lib" {} "mkdir $out; ln -s ${pkgs.steam-run.fhsenv}/usr/lib64 $out/lib")
-      ];
-    };
+    # nix-ld = {
+    #   enable = true;
+    #   libraries = with pkgs; [
+    #     ## Put here any library that is required when running a package
+    #     ## ...
+    #     ## Uncomment if you want to use the libraries provided by default in the steam distribution
+    #     ## but this is quite far from being exhaustive
+    #     ## https://github.com/NixOS/nixpkgs/issues/354513
+    #     # (pkgs.runCommand "steamrun-lib" {} "mkdir $out; ln -s ${pkgs.steam-run.fhsenv}/usr/lib64 $out/lib")
+    #   ];
+    # };
 
     gnupg.agent = {
       enable = true;
@@ -377,7 +383,6 @@
   };
 
   users.defaultUserShell = pkgs.zsh;
-  environment.shells = with pkgs; [zsh];
 
   # control battery, but I think, it does not work with my laptop
   powerManagement = {
@@ -401,9 +406,9 @@
       enable = true;
       dockerCompat = false;
     };
-    incus = {
-      enable = true;
-    };
+    # incus = {
+    #   enable = true;
+    # };
     # virtualbox.host = {
     #   enable = true;
     #   #enableExtensionPack = true;
