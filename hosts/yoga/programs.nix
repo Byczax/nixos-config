@@ -8,6 +8,7 @@
     traceroute
     grim
     grimblast # fast screenshot
+    slurp
     xlsclients # check if app is running under X11
     inkscape-with-extensions
     btop

@@ -37,6 +37,7 @@ in {
           "kdeconnectd &"
 
           "bash -c 'while true; do ${randomWall}; sleep 600; done'"
+          "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         ];
         # exec = [
         #   "hyprshade auto"

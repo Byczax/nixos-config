@@ -478,6 +478,7 @@
       ];
       allowImages = true;
     };
+    arrpc.enable = true;
   };
 
   xdg.configFile."niri/config.kdl".source = ../../modules/home/niri/niri-config.kdl;

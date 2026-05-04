@@ -30,7 +30,7 @@ in {
           startPlugins = with pkgs.vimPlugins; [
             vimtex
             vim-jsonnet
-            vim-smali
+            # vim-smali
             aw-watcher-nvim
             vim-vagrant
             vim-tmux-navigator
@@ -198,6 +198,9 @@ in {
             lspconfig.enable = true; # Basic LSP configuration
             lspkind.enable = true; # Icons for LSP kinds (function, var, etc.)
             nvim-docs-view.enable = true; # View LSP docs in a split window
+            presets = {
+              deno.enable = false;
+            };
           };
 
           binds = {
