@@ -108,6 +108,31 @@ in {
             ];
           };
         }
+        {
+          profile = {
+            name = "netsec_office";
+            outputs = [
+              {
+                criteria = "AU Optronics";
+                position = "1574,1440";
+                mode = "1920x1080@60.05";
+                status = "enable";
+              }
+              {
+                criteria = "Dell Inc. DELL";
+                position = "0,0";
+                mode = "3840x2160@29.98";
+                status = "enable";
+              }
+              {
+                criteria = "Iiyama North America";
+                position = "2560,360";
+                mode = "1920x1080@60.0";
+                status = "enable";
+              }
+            ];
+          };
+        }
         # {
         #   profile = {
         #     name = "vis-office1";

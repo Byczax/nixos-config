@@ -178,5 +178,11 @@
     libsForQt5.qt5.qtwayland
     jq
     #icu
+    #
+    brlaser
+    brgenml1lpr
+    brgenml1cupswrapper
+
+    openconnect
   ];
 }

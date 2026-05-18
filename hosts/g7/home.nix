@@ -51,6 +51,13 @@
     #QT_QPA_PLATFORMTHEME = "gtk3";                # Make Qt apps follow GTK settings
   };
 
+  home.pointerCursor = {
+    enable = true;
+    name = "Bibata-Modern-Classic";
+    size = 24;
+    package = pkgs.bibata-cursors;
+  };
+
   # the bar on the top
   #programs.waybar = import ../../waybar.nix ../../style.css;
 

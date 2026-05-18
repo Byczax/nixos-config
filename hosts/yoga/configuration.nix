@@ -29,6 +29,7 @@
   xdg.portal = {
     enable = true;
     extraPortals = with pkgs; [
+      xdg-desktop-portal
       #xdg-desktop-portal-gnome
       # xdg-desktop-portal-gtk
       #xdg-desktop-portal-wlr
@@ -61,6 +62,8 @@
 
       "symbola"
       "vscode"
+
+      "brgenml1lpr"
     ];
 
   boot = {
@@ -73,9 +76,14 @@
       efi.canTouchEfiVariables = true; # allow to register boots in boot
     };
     kernelParams = [
-      "i915.force_probe=9a49"
+      # "i915.force_probe=9a49"
       "i915.enable_psr=0"
       "mem_sleep_default=s2idle"
+      "pci=noaer"
+      "acpi_mask_gpe=0x69"
+      "acpi_mask_gpe=69"
+      "usbcore.autosuspend=-1"
+      "pcie_pme=nomsi"
     ];
     #kernelPackages = pkgs.linuxPackages_6_1;
     kernelPackages = pkgs.linuxPackages_latest;
@@ -292,7 +300,12 @@
   i18n.supportedLocales = ["en_US.UTF-8/UTF-8" "pl_PL.UTF-8/UTF-8" "ja_JP.UTF-8/UTF-8"];
 
   # Required for printer to work
-  services.printing.enable = true;
+  services.printing = {
+    enable = true;
+    drivers = with pkgs; [
+      gutenprint
+    ];
+  };
   hardware.sane.enable = true; # enables support for SANE scanners
   services.colord.enable = true;
 

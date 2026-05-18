@@ -347,6 +347,10 @@
     vscode = {
       enable = true;
     };
+    yazi = {
+      enable = true;
+      enableZshIntegration = true;
+    };
   };
 
   # terminal
@@ -444,12 +448,12 @@
       # package = pkgs.flameshot.override {
       #   enableWlrSupport = true;
       # };
-      settings = {
-        General = {
-          useGrimAdapter = true;
-          disabledGrimWarning = true;
-        };
-      };
+      # settings = {
+      #   General = {
+      #     useGrimAdapter = true;
+      #     disabledGrimWarning = true;
+      #   };
+      # };
     };
 
     borgmatic = {
