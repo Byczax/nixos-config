@@ -22,6 +22,7 @@ in {
 
   config = lib.mkIf cfg.enable {
     wayland.windowManager.hyprland = {
+      configType = "hyprlang";
       enable = true;
       systemd.enable = true;
       settings = {
@@ -66,7 +67,7 @@ in {
             "$mod, V, togglefloating,"
             "$mod, R, exec, $menu"
             "$mod, P, pseudo,"
-            "$mod, J, togglesplit,"
+            # "$mod, J, togglesplit,"
             "$mod, L, exec, hyprlock"
             "$mod, D, exec, vesktop"
             "$mod, Return, exec, $terminal"
