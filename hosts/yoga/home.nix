@@ -109,6 +109,7 @@
         main = {
           term = "xterm-256color";
           font = "Fira Code:size=11";
+          # include = "~/.config/foot/theme-active.ini";
           #dpi-aware = "yes";
         };
         cursor = {
@@ -352,12 +353,52 @@
       enableZshIntegration = true;
     };
   };
+  home.file = {
+    # terminal
+    ".config/electron-flags.conf".text = ''
+      --enable-features=WaylandWindowDecorations
+      --ozone-platform-hint=auto
+    '';
 
-  # terminal
-  home.file.".config/electron-flags.conf".text = ''
-    --enable-features=WaylandWindowDecorations
-    --ozone-platform-hint=auto
-  '';
+    # ".config/foot/themes/local.ini".text = ''
+    #   [colors-dark]
+    #   foreground=c0caf5
+    #   background=2e3440
+    #   regular0=3b4252
+    #   regular1=bf616a
+    #   regular2=a3be8c
+    #   regular3=ebcb8b
+    #   regular4=81a1c1
+    #   regular5=b48ead
+    #   regular6=88c0d0
+    #   regular7=e5e9f0
+    # '';
+    #
+    # ".config/foot/themes/local2.ini".text = ''
+    #   [colors-dark]
+    #   foreground=c0caf5
+    #   background=1a1b26
+    #   regular1=f7768e
+    #   regular2=9ece6a
+    #   regular3=e0af68
+    #   regular4=7aa2f7
+    #   regular5=bb9af7
+    #   regular6=7dcfff
+    #   regular7=a9b1d6
+    # '';
+    #
+    # ".config/foot/themes/server1.ini".text = ''
+    #   [colors-dark]
+    #   background=3b1020
+    #   foreground=f5c2e7
+    # '';
+    #
+    # ".config/foot/themes/server2.ini".text = ''
+    #   [colors-dark]
+    #   background=0b1d26
+    #   foreground=89dceb
+    # '';
+  };
 
   services = {
     gnome-keyring.enable = true;
@@ -448,12 +489,12 @@
       # package = pkgs.flameshot.override {
       #   enableWlrSupport = true;
       # };
-      # settings = {
-      #   General = {
-      #     useGrimAdapter = true;
-      #     disabledGrimWarning = true;
-      #   };
-      # };
+      settings = {
+        General = {
+          useGrimAdapter = true;
+          disabledGrimWarning = true;
+        };
+      };
     };
 
     borgmatic = {
@@ -508,6 +549,7 @@
     activitywatch.enable = true;
     kanshi.enable = true;
     jelly-mpv.enable = true;
+    opencode.enable = true;
     #catppuccin.enable = true;
   };
 

@@ -161,13 +161,13 @@
   #   action = "<cmd>:bd<cr>";
   #   desc = "Delete Buffer and Window";
   # }
-  #{
-  #  key = "<esc>";
-  #  mode = ["i" "n" "s"];
-  #  action = ":lua (function() vim.cmd('noh'); return '<esc>' end)()<CR>";
-  #  expr = true;
-  #  desc = "Escape and Clear hlsearch";
-  #}
+  # {
+  #   key = "<esc>";
+  #   mode = ["i" "n" "s"];
+  #   action = ":lua noh; return '<esc>' end<CR>";
+  #   expr = true;
+  #   desc = "Escape and Clear hlsearch";
+  # }
   # {
   #   key = "<leader>ur";
   #   mode = ["n"];

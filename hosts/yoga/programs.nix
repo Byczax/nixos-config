@@ -184,5 +184,8 @@
     brgenml1cupswrapper
 
     openconnect
+
+    aseprite
+    typescript
   ];
 }

@@ -15,6 +15,7 @@ in
         python-pkgs.matrix-nio
         python-pkgs.graphviz
         python-pkgs.pyserial
+        python-pkgs.diagrams
       ]))
     ];
     shell = pkgs.zsh;

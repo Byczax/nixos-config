@@ -83,6 +83,39 @@ in {
               echo "Error: Failed to translate"
           fi
         }
+
+        # # Foot SSH theme switcher
+        # function ssh() {
+        #   local HOST="$1"
+        #
+        #   case "$HOST" in
+        #     server1*)
+        #       ln -sf ~/.config/foot/themes/server1.ini \
+        #         ~/.config/foot/theme-active.ini
+        #       TITLE="server1"
+        #       ;;
+        #
+        #     server2*)
+        #       ln -sf ~/.config/foot/themes/server2.ini \
+        #         ~/.config/foot/theme-active.ini
+        #       TITLE="server2"
+        #       ;;
+        #
+        #     *)
+        #       ln -sf ~/.config/foot/themes/local.ini \
+        #         ~/.config/foot/theme-active.ini
+        #       TITLE="ssh"
+        #       ;;
+        #   esac
+        #
+        #   command foot \
+        #     --title "$TITLE" \
+        #     -e ssh "$@"
+        # }
+        #
+        # # default local theme
+        # ln -sf ~/.config/foot/themes/local.ini \
+        #   ~/.config/foot/theme-active.ini
       '';
     };
   };

@@ -204,7 +204,13 @@ in {
           };
 
           binds = {
-            whichKey.enable = true; # Shows keybindings in popup
+            whichKey = {
+              enable = true; # Shows keybindings in popup
+              setupOpts = {
+                notify = true;
+                preset = "helix";
+              };
+            };
             cheatsheet.enable = true; # In-editor keybinding cheatsheet
             # hardtime-nvim.enable = true; # Prevent bad habits by limiting repeated keys
           };
@@ -234,6 +240,7 @@ in {
             astro = {
               enable = true;
               lsp.enable = true;
+              format.enable = true;
             };
             bash = {
               enable = true;
@@ -359,6 +366,7 @@ in {
             typescript = {
               enable = true;
               lsp.enable = true;
+              format.enable = true;
             };
             typst = {
               enable = true;

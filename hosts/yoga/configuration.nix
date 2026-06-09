@@ -64,6 +64,8 @@
       "vscode"
 
       "brgenml1lpr"
+
+      "aseprite"
     ];
 
   boot = {
@@ -134,6 +136,8 @@
 
     firewall = rec {
       allowedTCPPorts = [
+        465
+        993
         3000
         8000
         config.services.tailscale.port
@@ -185,6 +189,20 @@
       pulse.enable = true;
       wireplumber.enable = true;
       jack.enable = true;
+      extraConfig.pipewire."91-virtual-sink" = {
+        "context.objects" = [
+          {
+            factory = "adapter";
+            args = {
+              "factory.name" = "support.null-audio-sink";
+              "node.name" = "virtual_output";
+              "node.description" = "Virtual Output";
+              "media.class" = "Audio/Sink";
+              "audio.position" = "FL,FR";
+            };
+          }
+        ];
+      };
     };
 
     greetd = {
@@ -393,6 +411,7 @@
 
     #niri.enable = true;
     virt-manager.enable = true;
+    coolercontrol.enable = true;
   };
 
   users.defaultUserShell = pkgs.zsh;
