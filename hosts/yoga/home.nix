@@ -52,7 +52,7 @@
       (lib.mkIf (compositor == "hyprland") {
         AAA = "1";
         XDG_CURRENT_DESKTOP = "Hyprland";
-        QT_QPA_PLATFORM = "xcb";
+        QT_QPA_PLATFORM = "wayland";
       })
 
       (lib.mkIf (compositor == "niri") {
@@ -275,7 +275,7 @@
 
     alacritty.enable = true;
     fuzzel.enable = true;
-    swaylock.enable = true;
+    # swaylock.enable = true;
 
     distrobox = {
       enable = true;
@@ -401,7 +401,6 @@
   };
 
   services = {
-    gnome-keyring.enable = true;
     # sync between phone and pc
     kdeconnect = {
       enable = true;
@@ -434,10 +433,15 @@
     hypridle = {
       enable = true;
       settings = {
+        general = {
+          lock_cmd = "pidof hyprlock || hyprlock";
+          ignore_dbus_inhibit = false;
+        };
         listener = [
           {
             timeout = 300;
-            on-timeout = "hyprlock";
+            # on-timeout = "hyprlock";
+            on-timeout = "loginctl lock-session";
           }
           {
             timeout = 600;
@@ -501,8 +505,6 @@
       enable = true;
       frequency = "daily";
     };
-
-    polkit-gnome.enable = true; # polkit
 
     cliphist = {
       enable = true;

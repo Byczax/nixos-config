@@ -195,7 +195,7 @@ in {
 
     home.sessionVariables = {
       XDG_CURRENT_DESKTOP = "Hyprland";
-      QT_QPA_PLATFORM = "xcb";
+      QT_QPA_PLATFORM = "wayland";
     };
 
     # TODO decoration

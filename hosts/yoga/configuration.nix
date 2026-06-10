@@ -29,15 +29,12 @@
   xdg.portal = {
     enable = true;
     extraPortals = with pkgs; [
-      xdg-desktop-portal
-      #xdg-desktop-portal-gnome
-      # xdg-desktop-portal-gtk
-      #xdg-desktop-portal-wlr
       xdg-desktop-portal-hyprland
+      xdg-desktop-portal-gtk
     ];
     config.common.default = [
       "hyprland"
-      #"gnome"
+      "gtk"
     ];
   };
 
@@ -109,6 +106,7 @@
 
   networking = {
     hostName = "nixos";
+    modemmanager.enable = false;
     nftables.enable = true;
     networkmanager = {
       enable = true;
@@ -139,6 +137,7 @@
         465
         993
         3000
+        4321
         8000
         config.services.tailscale.port
       ];
@@ -358,6 +357,7 @@
 
       shell = pkgs.zsh;
     };
+    groups.netdev = {};
     extraGroups.vboxusers.members = ["bq"];
   };
 
