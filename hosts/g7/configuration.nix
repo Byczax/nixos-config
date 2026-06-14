@@ -23,6 +23,10 @@
     };
   };
 
+  module = {
+    secrets.enable = true;
+  };
+
   xdg.portal = {
     enable = true;
     extraPortals = with pkgs; [xdg-desktop-portal-hyprland];
@@ -85,7 +89,6 @@
 
   # enable internet and wifi support
   networking = {
-    hostName = "nixos";
     networkmanager = {
       enable = true;
       wifi = {

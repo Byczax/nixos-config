@@ -19,16 +19,16 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
+    agenix = {
+      url = "github:yaxitech/ragenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    agenix-rekey = {
+      url = "github:oddlama/agenix-rekey";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     # watt = {
     #   url = "github:notashelf/watt";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
-    # agenix = {
-    #   url = "github:ryantm/agenix";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
-    # agenix-rekey = {
-    #   url = "github:oddlama/agenix-rekey";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
     # zedless.url = "github:zedless-editor/zed";
@@ -55,20 +55,27 @@
     # };
   };
 
-  outputs = inputs: let
+  outputs = {self, ...} @ inputs: let
     inherit (inputs.nixpkgs) lib;
     inherit (builtins) map toString;
 
+    systems = ["x86_64-linux"];
+    eachSystem = lib.genAttrs systems;
+    pkgsFor = inputs.nixpkgs.legacyPackages;
+
     mkSystem = system: hostname: conf-name: compositor:
       inputs.nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs compositor;};
-        system = system;
-
+        specialArgs = {inherit inputs compositor self;};
         modules =
           [
             ./hosts/${conf-name}/configuration.nix
+            ./modules/system/secrets/secrets.mod.nix
 
             inputs.home-manager.nixosModules.home-manager
+            {
+              networking.hostName = hostname;
+              nixpkgs.hostPlatform = system;
+            }
             {
               home-manager = {
                 useGlobalPkgs = true;
@@ -80,6 +87,7 @@
                     ./hosts/${conf-name}/home.nix
                     inputs.nvf.homeManagerModules.default
                     inputs.zen-browser.homeModules.twilight
+                    inputs.agenix.homeManagerModules.default
                   ]
                   ++ lib.filter (lib.hasSuffix ".mod.nix") (map toString (lib.filesystem.listFilesRecursive ./modules/home));
               };
@@ -92,5 +100,25 @@
       yoga = mkSystem "x86_64-linux" "yoga" "yoga" "hyprland";
       g7 = mkSystem "x86_64-linux" "g7" "g7" "hyprland";
     };
+    agenix-rekey = inputs.agenix-rekey.configure {
+      userFlake = self;
+      nixosConfigurations = self.nixosConfigurations;
+    };
+
+    # Your development shell handles importing the binary directly
+    devShells = eachSystem (system: let
+      pkgs = pkgsFor.${system};
+    in {
+      default = pkgs.mkShellNoCC {
+        packages = [
+          inputs.agenix-rekey.packages.${system}.default
+          pkgs.age-plugin-yubikey
+        ];
+        shellHook = ''
+          export AGENIX_REKEY_PRIMARY_IDENTITY=$(age-plugin-yubikey --identity 2>&1 | awk '/^Recipient:/ {key=$2} END {print key}')
+          echo "Agenix environment active. YubiKey Identity loaded."
+        '';
+      };
+    });
   };
 }

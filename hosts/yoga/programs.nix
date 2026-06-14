@@ -187,5 +187,8 @@
 
     aseprite
     typescript
+
+    age-plugin-yubikey
+    git-agecrypt
   ];
 }

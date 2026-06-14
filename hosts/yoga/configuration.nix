@@ -12,18 +12,43 @@
     ./hardware-configuration.nix
   ];
 
+  module = {
+    secrets.enable = true;
+  };
+
   nix = {
     settings = {
       download-buffer-size = 524288000;
       experimental-features = [
-        "nix-command"
+        "auto-allocate-uids"
+        "ca-derivations"
+        "cgroups"
         "flakes"
+        "nix-command"
+        "recursive-nix"
+        "pipe-operators"
+        # "no-url-literals"
       ];
       trusted-users = [
         "bq"
       ];
-      #auto-optimise-store = true;
+      auto-optimise-store = true;
+      warn-dirty = false;
+      keep-going = true;
+      auto-allocate-uids = true;
+      use-cgroups = pkgs.stdenv.isLinux;
+      builders-use-substitutes = true;
+      accept-flake-config = false;
+      # no-url-literals = true;
+      # lint-url-literal = true;
+
+      max-jobs = "auto";
+      cores = 0;
     };
+  };
+
+  meta = {
+    host.hostPubkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK9pMrB6keoXhaYMfRji4uYAuBzyu0NGPHwTSIMtqidZ";
   };
 
   xdg.portal = {
@@ -105,7 +130,6 @@
   };
 
   networking = {
-    hostName = "nixos";
     modemmanager.enable = false;
     nftables.enable = true;
     networkmanager = {
@@ -274,7 +298,7 @@
     # };
     envfs.enable = true;
 
-    # pcscd.enable = true;
+    pcscd.enable = true;
     # udev.packages = [pkgs.yubikey-personalization];
 
     gnome.gnome-keyring.enable = true; # secret service
@@ -295,6 +319,8 @@
     services.tailscaled.serviceConfig.Environment = [
       "TS_DEBUG_FIREWALL_MODE=nftables"
     ];
+
+    services.docker.wantedBy = lib.mkForce ["multi-user.target"];
 
     # 3. Optimization: Prevent systemd from waiting for network online
     # (Optional but recommended for faster boot with VPNs)

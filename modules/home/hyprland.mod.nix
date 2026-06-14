@@ -37,7 +37,7 @@ in {
           #"flameshot &"
           "kdeconnectd &"
 
-          "bash -c 'while true; do ${randomWall}; sleep 600; done'"
+          "bash -c 'while true; do ${randomWall}; sleep 6000; done'"
           "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         ];
         # exec = [
