@@ -96,7 +96,7 @@
         enable = true;
         configurationLimit = 10; # Amounts of build to store
       };
-      timeout = 3; # time before it will start booting most recent build
+      timeout = 2; # time before it will start booting most recent build
       efi.canTouchEfiVariables = true; # allow to register boots in boot
     };
     kernelParams = [
@@ -320,8 +320,9 @@
       "TS_DEBUG_FIREWALL_MODE=nftables"
     ];
 
-    services.docker.wantedBy = lib.mkForce ["multi-user.target"];
-
+    services.Docker.wantedBy = lib.mkForce ["multi-user.target"];
+    services."systemd-backlight@backlight:intel_backlight".enable = false;
+    services.NetworkManager-wait-online.enable = false;
     # 3. Optimization: Prevent systemd from waiting for network online
     # (Optional but recommended for faster boot with VPNs)
     network.wait-online.enable = false;
