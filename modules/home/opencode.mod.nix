@@ -8,7 +8,7 @@ in {
   options.module.opencode.enable = lib.mkEnableOption "Enable custom opencode config";
 
   config = lib.mkIf cfg.enable {
-    age.secrets."opencode-api-key".file = "../system/secrets/opencode-api-key.age";
+    # age.secrets."opencode-api-key".file = "system/secrets/opencode-api-key.age";
     programs.opencode = {
       enable = true;
       settings = {
@@ -17,7 +17,7 @@ in {
           name = "ETHZ LLM";
           options = {
             baseURL = "https://llm.vis.ethz.ch/v1";
-            apiKey = "$(cat ${config.age.secrets."opencode-api-key".path})";
+            apiKey = ""; # "$(cat ${config.age.secrets."opencode-api-key".path})";
           };
           models = {
             "chatgpt/gpt-5.3-codex" = {};
