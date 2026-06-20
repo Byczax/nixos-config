@@ -22,7 +22,6 @@
       #auto-optimise-store = true;
     };
   };
-
   xdg.portal = {
     enable = true;
     extraPortals = with pkgs; [xdg-desktop-portal-hyprland];
@@ -67,6 +66,11 @@
       "i915.enable_psr=0"
       "i915.enable_fbc=0"
       "i915.fastboot=0"
+      "i915.enable_dc=0"
+      "nvidia-drm.modeset=1"
+      "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
+      "nvidia.NVreg_EnableGpuFirmware=0"
+      #"module_blacklist=i915"
     ];
     extraModprobeConfig = ''
       options nvidia NVreg_PreserveVideoMemoryAllocations=1
