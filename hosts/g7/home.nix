@@ -44,7 +44,7 @@
     XDG_CURRENT_DESKTOP = "Hyprland";
     XDG_SESSION_TYPE = "wayland";
     MOZ_ENABLE_WAYLAND = "1";
-    QT_QPA_PLATFORM = "xcb";
+    # QT_QPA_PLATFORM = "xcb";
     QT_SCREEN_SCALE_FACTORS = "1;1";
     GTK_IM_MODULE = "fcitx";
     QT_IM_MODULE = "fcitx";
@@ -175,13 +175,13 @@
   programs.mpv = {
     enable = true;
 
-    package = (
-      pkgs.mpv-unwrapped.wrapper {
-        mpv = pkgs.mpv-unwrapped.override {
-          waylandSupport = true;
-        };
-      }
-    );
+    # package = (
+    #   pkgs.mpv-unwrapped.wrapper {
+    #     mpv = pkgs.mpv-unwrapped.override {
+    #       waylandSupport = true;
+    #     };
+    #   }
+    # );
 
     config = {
       profile = "high-quality";
@@ -191,12 +191,12 @@
   };
 
   # other games that are not on steam
-  programs.lutris = {
-    enable = true;
-    winePackages = [
-      pkgs.wineWow64Packages.full
-    ];
-  };
+  # programs.lutris = {
+  #   enable = true;
+  #   winePackages = [
+  #     pkgs.wineWow64Packages.full
+  #   ];
+  # };
 
   # notifications
   services.mako = {
