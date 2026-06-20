@@ -5,11 +5,24 @@
   ...
 }: let
   cfg = config.module.hyprland;
+
+  randomWall = pkgs.writeShellScript "random-wall" ''
+    DIR="$HOME/nixos-config/assets/"
+    ${pkgs.hyprland}/bin/hyprctl hyprpaper unload all
+
+    for MON in $(${pkgs.hyprland}/bin/hyprctl monitors -j | ${pkgs.jq}/bin/jq -r '.[].name'); do
+      WALL=$(find "$DIR" -type f | shuf -n 1)
+      ${pkgs.hyprland}/bin/hyprctl hyprpaper preload "$WALL"
+      ${pkgs.hyprland}/bin/hyprctl hyprpaper wallpaper "$MON,$WALL"
+      sleep 1
+    done
+  '';
 in {
   options.module.hyprland.enable = lib.mkEnableOption "Enable custom hyprland config";
 
   config = lib.mkIf cfg.enable {
     wayland.windowManager.hyprland = {
+      configType = "hyprlang";
       enable = true;
       systemd.enable = true;
       settings = {
@@ -23,13 +36,17 @@ in {
           "waybar &"
           #"flameshot &"
           "kdeconnectd &"
+
+          "bash -c 'while true; do ${randomWall}; sleep 6000; done'"
+          "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         ];
-        exec = [
-          "hyprshade auto"
-        ];
+        # exec = [
+        #   "hyprshade auto"
+        # ];
         env = [
           "XCURSOR_SIZE,24"
-          "HYPRCURSOR_SIZE,24"
+          # "HYPRCURSOR_SIZE,24"
+          "XCURSOR_THEME,Bibata-Modern-Classic"
         ];
 
         general = {
@@ -50,7 +67,7 @@ in {
             "$mod, V, togglefloating,"
             "$mod, R, exec, $menu"
             "$mod, P, pseudo,"
-            "$mod, J, togglesplit,"
+            # "$mod, J, togglesplit,"
             "$mod, L, exec, hyprlock"
             "$mod, D, exec, vesktop"
             "$mod, Return, exec, $terminal"
@@ -127,16 +144,30 @@ in {
         #  "desc:Dell Inc. DELL U2415 08DXD5C422HS,1920x1200@59.95,0x0,1.0"
         #  "desc:Ancor Communications Inc VG248 F7LMQS100286,1920x1080@60.0,3840x120,1.0"
         #];
-        windowrulev2 = [
-          "noanim, class:flameshot"
-          "float, class:flameshot"
-          "move 0 0, class:flameshot"
-          "pin, class:flameshot"
-          "noinitialfocus, class:flameshot"
-          "monitor 1, class:flameshot"
-          "float, title:flameshot"
-          "move 0 0, title:flameshot"
-          "suppressevent fullscreen, title:flameshot"
+        # windowrule = [
+        #    "noanim, class:flameshot"
+        #   "float, class:flameshot"
+        #   "move 0 0, class:flameshot"
+        #   "pin, class:flameshot"
+        #   "noinitialfocus, class:flameshot"
+        #   "monitor 1, class:flameshot"
+        #   "float, title:flameshot"
+        #   "move 0 0, title:flameshot"
+        #   "suppressevent fullscreen, title:flameshot"
+        # ];
+        windowrule = [
+          "match:class ^(flameshot)$, animation none"
+          "match:class ^(flameshot)$, float true"
+          "match:class ^(flameshot)$, move 0 0"
+          "match:class ^(flameshot)$, pin true"
+          "match:class ^(flameshot)$, focus_on_activate true"
+          #"match:class ^(flameshot)$, focusonactivate true"
+          "match:class ^(flameshot)$, monitor 1"
+
+          "match:title ^(flameshot)$, float true"
+          "match:title ^(flameshot)$, move 0 0"
+          "match:title ^(zoom)$, float true"
+          "match:title ^(flameshot)$, suppress_event fullscreen"
         ];
 
         # windowrulev2 = [
@@ -158,19 +189,28 @@ in {
       };
     };
 
+    services.hyprpaper = {
+      enable = true;
+    };
+
+    home.sessionVariables = {
+      XDG_CURRENT_DESKTOP = "Hyprland";
+      QT_QPA_PLATFORM = "wayland";
+    };
+
     # TODO decoration
     # TODO animations
     #
 
-    home.file.".config/hypr/hyprshade.toml".text = ''
-      [[shades]]
-      name = "vibrance"
-      default = true  # will be activated when no other shader is scheduled
-
-      [[shades]]
-      name = "blue-light-filter"
-      start_time = 19:00:00
-      end_time = 06:00:00   # optional if more than one shader has start_time
-    '';
+    # home.file.".config/hypr/hyprshade.toml".text = ''
+    #   [[shades]]
+    #   name = "vibrance"
+    #   default = true  # will be activated when no other shader is scheduled
+    #
+    #   [[shades]]
+    #   name = "blue-light-filter"
+    #   start_time = 19:00:00
+    #   end_time = 06:00:00   # optional if more than one shader has start_time
+    # '';
   };
 }

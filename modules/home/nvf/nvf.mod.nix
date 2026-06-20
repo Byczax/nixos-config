@@ -18,12 +18,22 @@ in {
           keymaps = import ./keymaps.nix;
           options = import ./options.nix;
 
+          vendoredKeymaps.enable = true;
+
+          assistant = {
+            copilot = {
+              enable = false;
+              cmp.enable = false;
+            };
+          };
+
           startPlugins = with pkgs.vimPlugins; [
             vimtex
             vim-jsonnet
-            vim-smali
+            # vim-smali
             aw-watcher-nvim
             vim-vagrant
+            vim-tmux-navigator
           ];
 
           globals = {
@@ -59,7 +69,7 @@ in {
 
           telescope.enable = true; # Powerful fuzzy finder for files, symbols, etc.
           statusline.lualine.enable = true; # A fast and configurable statusline
-          fzf-lua.enable = true; # Fast fuzzy finder (alternative to Telescope)
+          # fzf-lua.enable = true; # Fast fuzzy finder (alternative to Telescope)
           #languages.lua.lsp.lazydev.enable = true; # Enhanced Lua development experience
           clipboard.providers.wl-copy.enable = true; # Clipboard support for Wayland (wl-copy)
           snippets.luasnip.enable = true; # Snippet engine used by completion tools
@@ -70,14 +80,26 @@ in {
           };
 
           autopairs.nvim-autopairs.enable = true; # Auto-close brackets, quotes, etc.
-          formatter.conform-nvim.enable = true; # Code formatter integration
+          formatter.conform-nvim = {
+            enable = true; # Code formatter integration
+            setupOpts = {
+              formatters_by_ft = {
+                jsonnet = ["jsonnetfmt"];
+              };
+            };
+          };
           filetree.neo-tree.enable = true; # Alternative file tree explorer
           #filetree.nvimTree.enable = true; # File explorer on the left sidebar
           notify.nvim-notify.enable = true; # Better notification system
           dashboard.dashboard-nvim.enable = true; # Startup screen/dashboard
           #lazy.enable = true; # Plugin lazy-loading manager
           tabline.nvimBufferline.enable = true; # Tab line with open buffers/tabs
-          treesitter.enable = true; # Syntax highlighting and better parsing
+          treesitter = {
+            enable = true; # Syntax highlighting and better parsing
+            # grammars = [
+            #   pkgs.vimPlugins.nvim-treesitter.allGrammars
+            # ];
+          };
 
           debugger.nvim-dap = {
             enable = true; # Enable Debug Adapter Protocol support
@@ -97,15 +119,58 @@ in {
 
           spellcheck = {
             enable = true;
-            languages = ["en" "pl" "de" "ru"];
-            # programmingWordlist.enable = true;
-            # vim-dirtytalk.enable = true;
+            languages = [
+              "en"
+              "pl"
+              "de"
+              "ru"
+            ];
+            programmingWordlist.enable = true;
+            #vim-dirtytalk.enable = true;
             # extraSpellWords = {};
           };
 
           mini = {
             ai.enable = true; # Text object and surrounding enhancements
+            align.enable = true;
+            # animate.enable = true;
+            basics.enable = true;
+            bracketed.enable = true;
+            bufremove.enable = true;
+            clue.enable = true;
+            colors.enable = true;
+            comment.enable = true;
+            # completion.enable = true;
+            cursorword.enable = true;
+            diff.enable = true;
+            doc.enable = true;
+            extra.enable = true;
+            # files.enable = true;
+            fuzzy.enable = true;
+            git.enable = true;
+            hipatterns.enable = true;
+            # hues.enable = true;
             icons.enable = true; # Display icons using mini.nvim
+            indentscope.enable = true;
+            jump.enable = true;
+            jump2d.enable = true;
+            map.enable = true;
+            misc.enable = true;
+            move.enable = true;
+            # notify.enable = true;
+            operators.enable = true;
+            # pairs.enable = true;
+            pick.enable = true;
+            sessions.enable = true;
+            snippets.enable = true;
+            splitjoin.enable = true;
+            starter.enable = true;
+            # statusline.enable = true;
+            # surround.enable = true;
+            # tabline.enable = true;
+            test.enable = true;
+            trailspace.enable = true;
+            visits.enable = true;
           };
 
           git = {
@@ -126,24 +191,33 @@ in {
             enable = true; # Enable LSP features
             formatOnSave = true; # Format files when saving
             inlayHints.enable = true;
-            lightbulb.enable = false; #  Code action lightbulb
+            lightbulb.enable = false; # Code action lightbulb
             #lspsaga.enable = true; #  UI for LSP interactions
-            trouble.enable = false; #  LSP diagnostics viewer
-            lspSignature.enable = false; #  Show function signature help
+            trouble.enable = false; # LSP diagnostics viewer
+            lspSignature.enable = false; # Show function signature help
             lspconfig.enable = true; # Basic LSP configuration
             lspkind.enable = true; # Icons for LSP kinds (function, var, etc.)
             nvim-docs-view.enable = true; # View LSP docs in a split window
+            presets = {
+              deno.enable = false;
+            };
           };
 
           binds = {
-            whichKey.enable = true; # Shows keybindings in popup
+            whichKey = {
+              enable = true; # Shows keybindings in popup
+              setupOpts = {
+                notify = true;
+                preset = "helix";
+              };
+            };
             cheatsheet.enable = true; # In-editor keybinding cheatsheet
             # hardtime-nvim.enable = true; # Prevent bad habits by limiting repeated keys
           };
 
-          comments = {
-            comment-nvim.enable = true; # Toggle comments easily with `gc`
-          };
+          # comments = {
+          #   comment-nvim.enable = true; # Toggle comments easily with `gc`
+          # };
           projects = {
             project-nvim.enable = true;
           };
@@ -160,31 +234,42 @@ in {
           languages = {
             enableExtraDiagnostics = true;
             enableFormat = true;
+            enableDAP = false;
             enableTreesitter = true;
             assembly.enable = false;
-            #astro = {
-            #  enable = true;
-            #  lsp.enable = true;
-            #};
+            astro = {
+              enable = true;
+              lsp.enable = true;
+              format.enable = true;
+            };
             bash = {
               enable = true;
               lsp.enable = true;
             };
             clang.enable = false;
+            clojure.enable = false;
             csharp.enable = false;
 
             css = {
               enable = true;
               lsp.enable = true;
             };
+            cue.enable = false;
             dart = {
               enable = false;
               lsp.enable = false;
             };
+            elixir.enable = false;
+            fsharp.enable = false;
+            gleam.enable = false;
             go = {
               enable = true;
+              treesitter.enable = true;
               lsp.enable = true;
+              format.enable = false; # lsp handles formatting
+              dap.enable = true;
             };
+            haskell.enable = false;
             hcl = {
               enable = true;
               lsp.enable = true;
@@ -195,11 +280,19 @@ in {
             };
             html = {
               enable = true;
+              lsp.enable = true;
             };
             java = {
               enable = true;
               lsp.enable = true;
             };
+            json = {
+              enable = true;
+              format.enable = true;
+              lsp.enable = true;
+            };
+            julia.enable = false;
+            just.enable = false;
             kotlin.enable = false;
             lua = {
               enable = true;
@@ -214,51 +307,79 @@ in {
               };
               format.enable = true;
             };
+            nim.enable = false;
             nix = {
               enable = true;
               lsp.enable = true;
               format.enable = true;
+              extraDiagnostics.enable = true;
+              treesitter.enable = true;
             };
+            nu.enable = false;
+            ocaml.enable = false;
+            odin.enable = false;
             php.enable = false;
             python = {
               enable = true;
               lsp.enable = true;
+              dap.enable = true;
+              format.enable = true;
             };
+            qml.enable = false;
+            r.enable = false;
+            ruby.enable = false;
             rust = {
               enable = true;
               lsp.enable = true;
+              dap.enable = true;
+              extensions = {
+                crates-nvim = {
+                  enable = true;
+                  setupOpts = {
+                    completion.crates.enabled = true;
+                    lsp = {
+                      actions = true;
+                      completion = true;
+                      enabled = true;
+                      hover = true;
+                    };
+                  };
+                };
+              };
+              format.enable = true;
             };
+            scala.enable = false;
             sql = {
               enable = true;
               lsp.enable = true;
             };
             svelte.enable = false;
-            tailwind = {
-              enable = true;
-              lsp.enable = true;
-            };
+            # tailwind = {
+            # enable = true;
+            # lsp.enable = true;
+            # };
             terraform = {
               enable = true;
               lsp.enable = true;
+              treesitter.enable = true;
             };
-            ts = {
+            typescript = {
               enable = true;
               lsp.enable = true;
+              format.enable = true;
             };
             typst = {
               enable = true;
               lsp.enable = true;
             };
+            vala.enable = false;
+            wgsl.enable = false;
             yaml = {
               enable = true;
               lsp.enable = true;
             };
-            ruby = {
-              enable = true;
-              lsp.enable = true;
-            };
+            zig.enable = false;
           };
-
           utility = {
             vim-wakatime.enable = true; # Track coding activity
             motion.flash-nvim.enable = true; # Enhanced movement/navigation
@@ -283,8 +404,8 @@ in {
                 layout.enable = true; # Window layouts management
                 lazygit.enable = true; # Floating LazyGit integration
                 notifier.enable = true; # Pretty notifications
-                notify.enable = true; # Utilities for vim.notify
-                picker.enable = true; # Item picker UI
+                # notify.enable = true; # Utilities for vim.notify
+                # picker.enable = true; # Item picker UI
                 profiler.enable = true; # Lua/Neovim profiler
                 quickfile.enable = true; # Quick access to files on startup
                 rename.enable = true; # LSP-aware file renaming
@@ -300,6 +421,8 @@ in {
                 zen.enable = true; # Distraction-free Zen mode
               };
             };
+            smart-splits.enable = true;
+            surround.enable = true;
           };
 
           extraPlugins = {
@@ -333,18 +456,6 @@ in {
             #    };
             #  };
             #};
-            #vimjsonnet = {
-            #  package = pkgs.vimUtils.buildVimPlugin {
-            #    pname = "vim-jsonnet";
-            #    version = "master";
-            #    src = pkgs.fetchFromGitHub {
-            #      owner = "google";
-            #      repo = "vim-jsonnet";
-            #      rev = "master";
-            #      sha256 = "sha256-ChgUGTrLthuGSws/UpF71JYI/c2QqItax6hsh7mYX/w="; # replace with actual
-            #    };
-            #  };
-            #};
             vimtanka = {
               package = pkgs.vimUtils.buildVimPlugin {
                 pname = "vim-tanka";
@@ -369,6 +480,18 @@ in {
                 };
               };
             };
+            # aw-watcher = {
+            #   package = pkgs.vimUtils.buildVimPlugin {
+            #     pname = "aw-watcher";
+            #     version = "master";
+            #     src = pkgs.fetchFromGitHub {
+            #       owner = "lowitea";
+            #       repo = "aw-watcher.nvim";
+            #       rev = "master";
+            #       hash = "sha256-JqNQg7Kxkri92aWx8ceVguvO9j6E8V4PoCKezu0wn6w=";
+            #     };
+            #   };
+            # };
             #vimsmali = {
             #  package = pkgs.vimUtils.buildVimPlugin {
             #    pname = "vim-smali";

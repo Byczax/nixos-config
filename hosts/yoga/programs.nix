@@ -2,112 +2,99 @@
   home.packages = with pkgs; [
     fira-code #font for terminal
     prismlauncher # minecraft
-    vim # as a backup
     brightnessctl # ability to change screen brightness
-    font-awesome # fancy icons
     xournalpp # notes app
     signal-desktop
-    git
     traceroute
-    #(flameshot.override {enableWlrSupport = true;}) # slow screenshot with drawings
     grim
     grimblast # fast screenshot
-    xorg.xlsclients # check if app is running under X11
+    slurp
+    xlsclients # check if app is running under X11
     inkscape-with-extensions
     btop
     libreoffice-qt6-fresh
     wl-clipboard #clipboard
-    helvum # audio configuration
+    #helvum # audio configuration
     qbittorrent
     unzip
     gdu # disk analyzer, better than ncdu
-    logseq
-    hyprshade
+    # logseq
+    #hyprshade
     #lm_sensors #maybe I don't need it
     libqalculate #calculator
     popsicle # os burner
     #opentofu
 
-    direnv #why I have that?
     libnotify # what is this for?
     gcc # C++ let's go
 
     # to fulfill lazyvim plugins
     luarocks
-    lazygit
     fd
     lua
     fzf
 
-    #zathura #pdf viewer
     quickemu # virtual machines
-    virt-manager
 
     simple-scan # scanner
 
-    (pkgs.texlive.combine {
-      inherit
-        (pkgs.texlive)
-        scheme-basic # base minimal setup
-        latex # core LaTeX support
-        geometry # example extra packages
-        xcolor
-        amsmath
-        fontspec
-        hyperref
-        moderncv
-        polski
-        latexmk
-        enumitem
-        pgf
-        titlesec
-        # koma-script
-        # scrhack
-        # mathtools
-        # newpx
-        # float
-        # booktabs
-        # siunitx
-        # pgfplots
-        # xkeyval
-        # xstring
-        # fontaxes
-        # #binhex
-        # floatbytocbasic
-        # csquotes
-        # wrapfig
-        # subfig
-        # #nicefrac
-        # pdfpages
-        # cleveref
-        # listings
-        # kastrup
-        # xfrac
-        # caption
-        # pdflscape
-        # units
-        # lscapeenhanced
-        # newtx
-        ;
-    })
+    # (pkgs.texlive.combine {
+    #   inherit
+    #     (pkgs.texlive)
+    #     scheme-basic # base minimal setup
+    #     latex # core LaTeX support
+    #     geometry # example extra packages
+    #     xcolor
+    #     amsmath
+    #     fontspec
+    #     hyperref
+    #     moderncv
+    #     polski
+    #     latexmk
+    #     enumitem
+    #     pgf
+    #     titlesec
+    # koma-script
+    # scrhack
+    # mathtools
+    # newpx
+    # float
+    # booktabs
+    # siunitx
+    # pgfplots
+    # xkeyval
+    # xstring
+    # fontaxes
+    # #binhex
+    # floatbytocbasic
+    # csquotes
+    # wrapfig
+    # subfig
+    # #nicefrac
+    # pdfpages
+    # cleveref
+    # listings
+    # kastrup
+    # xfrac
+    # caption
+    # pdflscape
+    # units
+    # lscapeenhanced
+    # newtx
+    #     ;
+    # })
 
-    hyprsunset # need to install manually
-
-    iperf
     bitwarden-desktop
 
     pavucontrol # add audio control alongside helvum
     adwaita-icon-theme # icons for gnome apps
 
-    feh
-    tmux
     blender
     krita
     #vscodium
     #atom
-    #freecad
     #wireshark
-    joplin
+    # joplin
     vlc
     nodejs
     tree-sitter
@@ -115,23 +102,19 @@
     ripgrep
     xdotool
     hugo
-    go
-    notesnook
+    # notesnook
 
     nwg-displays
     lm_sensors
-    adwaita-icon-theme
     dysk
 
-    k9s
+    # k9s
     kubectl
     krew
     tanka
     jsonnet-bundler
     gnumake
     kubeseal
-
-    vesktop
 
     (wrapHelm kubernetes-helm {
       plugins = with pkgs.kubernetes-helmPlugins; [
@@ -143,17 +126,13 @@
     })
 
     trilium-desktop
-    element-desktop
-    vscodium
     gimp
     typst
     pdf2svg
-    #python3
     dig
     whois
     nmap
     dnslookup
-    fastfetch
     pdfpc
 
     kdePackages.dolphin
@@ -171,23 +150,45 @@
     comma
     libinput
     gcr
-    lmms
-    alsa-utils
-    libgig
+    # lmms
+    # alsa-utils
+    # libgig
     rpi-imager
-    anki
     tenv
     jellyfin-media-player
     memento
-    nicotine-plus
-    vagrant
+    # nicotine-plus
+    # vagrant
     rubocop
     ansible
 
     yubikey-manager
     yubioath-flutter
-    wireshark
+    # wireshark
     tcpdump
     wakatime-cli
+
+    jsonnet
+
+    # swaybg
+
+    bibata-cursors
+    wdisplays
+
+    libsForQt5.qt5.qtwayland
+    jq
+    #icu
+    #
+    brlaser
+    brgenml1lpr
+    brgenml1cupswrapper
+
+    openconnect
+
+    aseprite
+    typescript
+
+    age-plugin-yubikey
+    git-agecrypt
   ];
 }

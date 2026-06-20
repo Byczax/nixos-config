@@ -5,27 +5,62 @@
   lib,
   pkgs,
   config,
+  compositor,
   ...
 }: {
   imports = [
     ./hardware-configuration.nix
   ];
 
+  module = {
+    secrets.enable = true;
+  };
+
   nix = {
     settings = {
       download-buffer-size = 524288000;
       experimental-features = [
-        "nix-command"
+        "auto-allocate-uids"
+        "ca-derivations"
+        "cgroups"
         "flakes"
+        "nix-command"
+        "recursive-nix"
+        "pipe-operators"
+        # "no-url-literals"
       ];
-      #auto-optimise-store = true;
+      trusted-users = [
+        "bq"
+      ];
+      auto-optimise-store = true;
+      warn-dirty = false;
+      keep-going = true;
+      auto-allocate-uids = true;
+      use-cgroups = pkgs.stdenv.isLinux;
+      builders-use-substitutes = true;
+      accept-flake-config = false;
+      # no-url-literals = true;
+      # lint-url-literal = true;
+
+      max-jobs = "auto";
+      cores = 0;
     };
+  };
+
+  meta = {
+    host.hostPubkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK9pMrB6keoXhaYMfRji4uYAuBzyu0NGPHwTSIMtqidZ";
   };
 
   xdg.portal = {
     enable = true;
-    extraPortals = with pkgs; [xdg-desktop-portal-hyprland];
-    config.common.default = ["hyprland"];
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-hyprland
+      xdg-desktop-portal-gtk
+    ];
+    config.common.default = [
+      "hyprland"
+      "gtk"
+    ];
   };
 
   nixpkgs.config.allowUnfreePredicate = pkg:
@@ -46,21 +81,33 @@
       # sad but needed
       "zoom"
       "vagrant"
+
+      "symbola"
+      "vscode"
+
+      "brgenml1lpr"
+
+      "aseprite"
     ];
 
   boot = {
     loader = {
       systemd-boot = {
         enable = true;
-        configurationLimit = 5; # Amounts of build to store
+        configurationLimit = 10; # Amounts of build to store
       };
       timeout = 3; # time before it will start booting most recent build
       efi.canTouchEfiVariables = true; # allow to register boots in boot
     };
     kernelParams = [
-      "i915.force_probe=9a49"
+      # "i915.force_probe=9a49"
       "i915.enable_psr=0"
       "mem_sleep_default=s2idle"
+      "pci=noaer"
+      "acpi_mask_gpe=0x69"
+      "acpi_mask_gpe=69"
+      "usbcore.autosuspend=-1"
+      "pcie_pme=nomsi"
     ];
     #kernelPackages = pkgs.linuxPackages_6_1;
     kernelPackages = pkgs.linuxPackages_latest;
@@ -83,7 +130,7 @@
   };
 
   networking = {
-    hostName = "nixos";
+    modemmanager.enable = false;
     nftables.enable = true;
     networkmanager = {
       enable = true;
@@ -110,6 +157,14 @@
     '';
 
     firewall = rec {
+      allowedTCPPorts = [
+        465
+        993
+        3000
+        4321
+        8000
+        config.services.tailscale.port
+      ];
       allowedTCPPortRanges = [
         # KDE Connect
         {
@@ -127,10 +182,11 @@
           to = 41641;
         }
       ];
+      allowedUDPPorts = allowedTCPPorts;
       allowedUDPPortRanges = allowedTCPPortRanges;
 
       # add on top tailscale ports
-      allowedUDPPorts = [config.services.tailscale.port];
+      # allowedUDPPorts = [config.services.tailscale.port];
 
       # Tailscale interface
       trustedInterfaces = ["tailscale0" "virbr0"];
@@ -141,16 +197,13 @@
   hardware = {
     bluetooth.enable = true;
     i2c.enable = true;
-    graphics = {
-      enable = true;
-    };
     enableRedistributableFirmware = true;
   };
 
   services = {
     connman.wifi.backend = "iwd";
     dbus.enable = true;
-    ratbagd.enable = true;
+    # ratbagd.enable = true;
 
     pipewire = {
       enable = true;
@@ -158,13 +211,29 @@
       alsa.support32Bit = true;
       pulse.enable = true;
       wireplumber.enable = true;
+      jack.enable = true;
+      extraConfig.pipewire."91-virtual-sink" = {
+        "context.objects" = [
+          {
+            factory = "adapter";
+            args = {
+              "factory.name" = "support.null-audio-sink";
+              "node.name" = "virtual_output";
+              "node.description" = "Virtual Output";
+              "media.class" = "Audio/Sink";
+              "audio.position" = "FL,FR";
+            };
+          }
+        ];
+      };
     };
 
     greetd = {
       enable = true;
       settings = {
         default_session = {
-          command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd 'systemd-cat -t Hyprland Hyprland'";
+          command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd 'systemd-cat -t Hyprland start-hyprland'";
+          #command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd 'systemd-cat -t niri niri'";
           user = "bq";
         };
       };
@@ -179,34 +248,21 @@
       #extraSetFlags = ["--netfilter-mode=nodivert"];
     };
     thermald.enable = true; # proactively protect CPU overheating
-    auto-cpufreq.enable = true; # Show data about CPU
-    upower.enable = true;
-
-    tlp = {
+    auto-cpufreq = {
       enable = true;
       settings = {
-        CPU_SCALING_GOVERNOR_ON_AC = "performance";
-        CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-
-        CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
-        CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
-
-        CPU_MIN_PERF_ON_AC = 0;
-        CPU_MAX_PERF_ON_AC = 100;
-        CPU_MIN_PERF_ON_BAT = 0;
-        CPU_MAX_PERF_ON_BAT = 50;
-        #
-        # RUNTIME_PM_ON_BAT = "auto";
-        # WIFI_PWR_ON_BAT = "on";
-        #
-        # PLATFORM_PROFILE_ON_BAT = "low-power";
-        # PLATFORM_PROFILE_ON_AC = "performance";
-
-        #Optional helps save long term battery health
-        START_CHARGE_THRESH_BAT0 = 40; # 40 and below it starts to charge
-        STOP_CHARGE_THRESH_BAT0 = 80; # 80 and above it stops charging
+        battery = {
+          governor = "powersave";
+          turbo = "never";
+        };
+        charger = {
+          governor = "performance";
+          turbo = "auto";
+        };
       };
     };
+    upower.enable = true;
+
     # service to autodiscover printers in the same network
     avahi = {
       enable = true;
@@ -229,7 +285,7 @@
       enable = true;
       #dnssec = "allow-downgrade";
       #dnsovertls = "opportunistic";
-      fallbackDns = [
+      settings.Resolve.FallbackDNS = [
         "9.9.9.9"
         "1.1.1.1"
         "2620:fe::fe"
@@ -243,7 +299,17 @@
     envfs.enable = true;
 
     pcscd.enable = true;
-    udev.packages = [pkgs.yubikey-personalization];
+    # udev.packages = [pkgs.yubikey-personalization];
+
+    gnome.gnome-keyring.enable = true; # secret service
+    iperf3 = {
+      enable = true;
+    };
+    logind.settings.Login = {
+      HandleLidSwitch = "suspend";
+      HandleLidSwitchExternalPower = "lock";
+      HandleLidSwitchDocked = "ignore";
+    };
   };
   ### === END OF SERVICES === ###
 
@@ -254,11 +320,14 @@
       "TS_DEBUG_FIREWALL_MODE=nftables"
     ];
 
+    services.docker.wantedBy = lib.mkForce ["multi-user.target"];
+
     # 3. Optimization: Prevent systemd from waiting for network online
     # (Optional but recommended for faster boot with VPNs)
     network.wait-online.enable = false;
 
     services.fprintd = {
+      enable = false;
       wantedBy = ["multi-user.target"];
       serviceConfig.Type = "simple";
     };
@@ -274,13 +343,14 @@
   i18n.supportedLocales = ["en_US.UTF-8/UTF-8" "pl_PL.UTF-8/UTF-8" "ja_JP.UTF-8/UTF-8"];
 
   # Required for printer to work
-  services.printing.enable = true;
+  services.printing = {
+    enable = true;
+    drivers = with pkgs; [
+      gutenprint
+    ];
+  };
   hardware.sane.enable = true; # enables support for SANE scanners
   services.colord.enable = true;
-
-  services.fprintd.enable = true;
-  #services.fprintd.tod.enable = true;
-  #services.fprintd.tod.driver = pkgs.libfprint-2-tod1-goodix;
 
   fonts = {
     enableDefaultPackages = true;
@@ -296,6 +366,11 @@
       proggyfonts
       nerd-fonts.fira-code
       nerd-fonts.droid-sans-mono
+      cardo
+      symbola
+      quivira
+      freefont_ttf
+      font-awesome
     ];
   };
   # system user
@@ -308,56 +383,70 @@
 
       shell = pkgs.zsh;
     };
+    groups.netdev = {};
     extraGroups.vboxusers.members = ["bq"];
   };
 
-  environment.systemPackages = with pkgs; [
-    bash
-    coreutils
-    vim # optional
-  ];
+  environment = {
+    systemPackages = with pkgs; [
+      bash
+      coreutils
+      vim # optional
+    ];
+    extraInit = ''
+      export XDG_DATA_DIRS="$XDG_DATA_DIRS:${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}"
+    '';
+    shells = with pkgs; [bash zsh];
+  };
 
   steam.enable = true; # enable steam from module
 
   programs = {
+    vim.enable = true;
     # do I need it?
-    dconf.enable = true;
+    # dconf.enable = true;
     xfconf.enable = true;
     thunar = {
       enable = true;
       plugins = with pkgs; [
-        xfce.thunar-archive-plugin
-        xfce.thunar-media-tags-plugin
-        xfce.thunar-volman
+        thunar-archive-plugin
+        thunar-media-tags-plugin
+        thunar-volman
       ];
     };
     zsh.enable = true;
     hyprland.enable = true;
 
-    nix-ld = {
-      enable = true;
-      libraries = with pkgs; [
-        ## Put here any library that is required when running a package
-        ## ...
-        ## Uncomment if you want to use the libraries provided by default in the steam distribution
-        ## but this is quite far from being exhaustive
-        ## https://github.com/NixOS/nixpkgs/issues/354513
-        # (pkgs.runCommand "steamrun-lib" {} "mkdir $out; ln -s ${pkgs.steam-run.fhsenv}/usr/lib64 $out/lib")
-      ];
-    };
+    # nix-ld = {
+    #   enable = true;
+    #   libraries = with pkgs; [
+    #     ## Put here any library that is required when running a package
+    #     ## ...
+    #     ## Uncomment if you want to use the libraries provided by default in the steam distribution
+    #     ## but this is quite far from being exhaustive
+    #     ## https://github.com/NixOS/nixpkgs/issues/354513
+    #     # (pkgs.runCommand "steamrun-lib" {} "mkdir $out; ln -s ${pkgs.steam-run.fhsenv}/usr/lib64 $out/lib")
+    #   ];
+    # };
 
     gnupg.agent = {
       enable = true;
       enableSSHSupport = true;
     };
     wireshark.enable = true;
+
+    #niri.enable = true;
+    virt-manager.enable = true;
+    coolercontrol.enable = true;
   };
 
   users.defaultUserShell = pkgs.zsh;
-  environment.shells = with pkgs; [zsh];
 
   # control battery, but I think, it does not work with my laptop
-  powerManagement.enable = true;
+  powerManagement = {
+    enable = true;
+    powertop.enable = true;
+  };
 
   virtualisation = {
     docker = {
@@ -366,9 +455,18 @@
     libvirtd = {
       enable = true;
       qemu = {
-        runAsRoot = true;
+        runAsRoot = false;
+        swtpm.enable = true;
+        vhostUserPackages = with pkgs; [virtiofsd];
       };
     };
+    podman = {
+      enable = true;
+      dockerCompat = false;
+    };
+    # incus = {
+    #   enable = true;
+    # };
     # virtualbox.host = {
     #   enable = true;
     #   #enableExtensionPack = true;

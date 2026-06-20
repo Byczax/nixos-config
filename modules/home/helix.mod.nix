@@ -25,7 +25,7 @@ in {
         {
           name = "nix";
           auto-format = true;
-          formatter.command = lib.getExe pkgs.nixfmt-rfc-style;
+          formatter.command = lib.getExe pkgs.nixfmt;
         }
       ];
 

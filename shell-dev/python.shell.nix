@@ -10,6 +10,12 @@ in
         python-pkgs.beautifulsoup4
         python-pkgs.flask
         python-pkgs.pyyaml
+        python-pkgs.matplotlib
+        python-pkgs.discordpy
+        python-pkgs.matrix-nio
+        python-pkgs.graphviz
+        python-pkgs.pyserial
+        python-pkgs.diagrams
       ]))
     ];
     shell = pkgs.zsh;

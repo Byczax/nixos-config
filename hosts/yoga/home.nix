@@ -2,6 +2,8 @@
   config,
   pkgs,
   inputs,
+  lib,
+  compositor,
   ...
 }: {
   imports = [
@@ -22,41 +24,44 @@
     # You can update Home Manager without changing this value. See
     # the Home Manager release notes for a list of state version
     # changes in each release.
-    stateVersion = "25.05";
-    sessionVariables = {
-      # info where to save config files
-      XDG_CONFIG_HOME = "${config.home.homeDirectory}/.config";
-      EDITOR = "nvim";
+    stateVersion = "26.05";
+    sessionVariables = lib.mkMerge [
+      {
+        # info where to save config files
+        XDG_CONFIG_HOME = "${config.home.homeDirectory}/.config";
+        EDITOR = "nvim";
 
-      # inform apps that we use wayland
-      NIXOS_OZONE_WL = "1";
-      OZONE_PLATFORM = "wayland";
+        # inform apps that we use wayland
+        NIXOS_OZONE_WL = "1";
+        OZONE_PLATFORM = "wayland";
 
-      # suggests electron apps to use the wayland backend
-      ELECTRON_OZONE_PLATFORM_HINT = "wayland";
+        # suggests electron apps to use the wayland backend
+        ELECTRON_OZONE_PLATFORM_HINT = "wayland";
 
-      #FONTCONFIG_FILE = "${pkgs.fontconfig.out}/etc/fonts/fonts.conf";
+        XDG_SESSION_TYPE = "wayland";
+        MOZ_ENABLE_WAYLAND = "1";
+        QT_SCREEN_SCALE_FACTORS = "1;1";
+        GTK_IM_MODULE = "fcitx";
+        QT_IM_MODULE = "fcitx";
+        XMODIFIERS = "@im=fcitx";
+        TENV_AUTO_INSTALL = "true";
+        WAYLAND_DISPLAY = "wayland-1";
+        QT_WAYLAND_DISABLE_WINDOWDECORATION = 1;
+      }
 
-      # inform that we use hyprland
-      XDG_CURRENT_DESKTOP = "Hyprland";
-      XDG_SESSION_TYPE = "wayland";
-      MOZ_ENABLE_WAYLAND = "1";
-      QT_QPA_PLATFORM = "xcb";
-      QT_SCREEN_SCALE_FACTORS = "1;1";
-      GTK_IM_MODULE = "fcitx";
-      QT_IM_MODULE = "fcitx";
-      XMODIFIERS = "@im=fcitx";
-      TENV_AUTO_INSTALL = "true";
-    };
-    # make sure that user have polish layout
-    #keyboard = {
-    #  layout = "pl,us";
-    #  options = [
-    #    "grp:alt_shift_toggle"
-    #  ];
-    #};
+      (lib.mkIf (compositor == "hyprland") {
+        AAA = "1";
+        XDG_CURRENT_DESKTOP = "Hyprland";
+        QT_QPA_PLATFORM = "wayland";
+      })
+
+      (lib.mkIf (compositor == "niri") {
+        BBB = "1";
+        XDG_CURRENT_DESKTOP = "niri";
+        QT_QPA_PLATFORM = "wayland";
+      })
+    ];
   };
-  programs.home-manager.enable = true; # Let Home Manager install and manage itself.
 
   qt = {
     enable = true;
@@ -76,6 +81,7 @@
   };
 
   gtk = {
+    gtk4.theme = null;
     enable = true;
     theme = {
       name = "Adwaita-dark";
@@ -88,12 +94,22 @@
   };
 
   programs = {
+    home-manager.enable = true; # Let Home Manager install and manage itself.
+    git = {
+      enable = true;
+    };
+    lazygit = {
+      enable = true;
+      enableZshIntegration = true;
+    };
+    # gcc.enable = true;
     foot = {
       enable = true;
       settings = {
         main = {
           term = "xterm-256color";
           font = "Fira Code:size=11";
+          # include = "~/.config/foot/theme-active.ini";
           #dpi-aware = "yes";
         };
         cursor = {
@@ -135,13 +151,16 @@
     # media player
     mpv = {
       enable = true;
+      # override = {
+      #   waylandSupport = true;
+      # };
 
       #
-      package = pkgs.mpv-unwrapped.wrapper {
-        mpv = pkgs.mpv-unwrapped.override {
-          waylandSupport = true;
-        };
-      };
+      # package = pkgs.mpv-unwrapped.wrapper {
+      #   mpv = pkgs.mpv-unwrapped.override {
+      #     waylandSupport = true;
+      #   };
+      # };
       config = {
         profile = "high-quality";
         ytdl-format = "bestvideo+bestaudio";
@@ -152,17 +171,18 @@
       };
     };
     # other games that are not on steam
-    lutris = {
-      enable = true;
-      winePackages = [
-        pkgs.wineWow64Packages.full
-      ];
-    };
+    # lutris = {
+    #   enable = true;
+    #   winePackages = [
+    #     pkgs.wineWow64Packages.full
+    #   ];
+    # };
     command-not-found.enable = false;
     nix-index.enable = true;
     fzf = {
       enable = true;
       enableZshIntegration = true;
+      tmux.enableShellIntegration = true;
     };
     satty = {
       enable = true;
@@ -236,40 +256,216 @@
       enableZshIntegration = true; # see note on other shells below
       nix-direnv.enable = true;
     };
+    tmux = {
+      enable = true;
+      clock24 = true;
+      historyLimit = 10000;
+      mouse = true;
+      newSession = true;
+      sensibleOnTop = true;
+      baseIndex = 1;
+      shell = "${pkgs.zsh}/bin/zsh";
+      tmuxp.enable = true;
+      plugins = with pkgs.tmuxPlugins; [
+        vim-tmux-navigator
+        tokyo-night-tmux
+        yank
+      ];
+    };
+
+    alacritty.enable = true;
+    fuzzel.enable = true;
+    # swaylock.enable = true;
+
+    distrobox = {
+      enable = true;
+      enableSystemdUnit = true;
+      settings = {
+        container_manager = "podman";
+        container_always_pull = "1";
+        container_generate_entry = 1;
+      };
+      containers = {
+        thesis = {
+          image = "ubuntu:latest";
+          entry = true;
+          additional_packages = [
+            "zsh"
+            "git"
+            "curl"
+            "build-essential"
+            "python3"
+            "python3-pip"
+            "software-properties-common"
+            "golang"
+            "nvim"
+            "vim"
+          ];
+          environment = [
+            "SHELL=zsh"
+          ];
+          # init_hooks = [
+          #   "sudo apt update"
+          #   "sudo apt install -y ca-certificates curl gnupg"
+          #
+          #   "sudo install -m 0755 -d /etc/apt/keyrings"
+          #
+          #   "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg"
+          #
+          #   "echo \"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo $VERSION_CODENAME) stable\" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null"
+          #
+          #   "sudo apt update"
+          #   "sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin"
+          #
+          #   "sudo service docker start"
+          #   "sudo add-apt-repository -y ppa:zhangsongcui3371/fastfetch"
+          #   "sudo apt update"
+          #   "sudo apt install -y fastfetch"
+          # ];
+        };
+      };
+    };
+    feh = {
+      enable = true;
+    };
+    go = {
+      enable = true;
+    };
+    k9s = {
+      enable = true;
+    };
+    vesktop = {
+      enable = true;
+    };
+    fastfetch = {
+      enable = true;
+    };
+    anki = {
+      enable = true;
+      theme = "dark";
+      minimalistMode = true;
+    };
+    vscode = {
+      enable = true;
+    };
+    yazi = {
+      enable = true;
+      enableZshIntegration = true;
+    };
+  };
+  home.file = {
+    # terminal
+    ".config/electron-flags.conf".text = ''
+      --enable-features=WaylandWindowDecorations
+      --ozone-platform-hint=auto
+    '';
+
+    # ".config/foot/themes/local.ini".text = ''
+    #   [colors-dark]
+    #   foreground=c0caf5
+    #   background=2e3440
+    #   regular0=3b4252
+    #   regular1=bf616a
+    #   regular2=a3be8c
+    #   regular3=ebcb8b
+    #   regular4=81a1c1
+    #   regular5=b48ead
+    #   regular6=88c0d0
+    #   regular7=e5e9f0
+    # '';
+    #
+    # ".config/foot/themes/local2.ini".text = ''
+    #   [colors-dark]
+    #   foreground=c0caf5
+    #   background=1a1b26
+    #   regular1=f7768e
+    #   regular2=9ece6a
+    #   regular3=e0af68
+    #   regular4=7aa2f7
+    #   regular5=bb9af7
+    #   regular6=7dcfff
+    #   regular7=a9b1d6
+    # '';
+    #
+    # ".config/foot/themes/server1.ini".text = ''
+    #   [colors-dark]
+    #   background=3b1020
+    #   foreground=f5c2e7
+    # '';
+    #
+    # ".config/foot/themes/server2.ini".text = ''
+    #   [colors-dark]
+    #   background=0b1d26
+    #   foreground=89dceb
+    # '';
   };
 
-  # terminal
-  home.file.".config/electron-flags.conf".text = ''
-    --enable-features=WaylandWindowDecorations
-    --ozone-platform-hint=auto
-  '';
-
   services = {
-    gnome-keyring.enable = true;
     # sync between phone and pc
     kdeconnect = {
       enable = true;
       indicator = true;
     };
-    #swayidle.enable = true;
-    syncthing = {
-      enable = false;
-    };
+
+    # swayidle = {
+    #   enable = true;
+    #
+    #   timeouts = [
+    #     {
+    #       timeout = 300;
+    #       command = "${pkgs.hyprlock}/bin/hyprlock";
+    #     }
+    #     {
+    #       timeout = 600;
+    #       command = "${pkgs.niri}/bin/niri msg action power-off-monitors";
+    #       resumeCommand = "${pkgs.niri}/bin/niri msg action power-on-monitors";
+    #     }
+    #   ];
+    #
+    #   events = [
+    #     {
+    #       event = "before-sleep";
+    #       command = "${pkgs.hyprlock}/bin/hyprlock";
+    #     }
+    #   ];
+    # };
+
     hypridle = {
       enable = true;
       settings = {
+        general = {
+          lock_cmd = "pidof hyprlock || hyprlock";
+          ignore_dbus_inhibit = false;
+        };
         listener = [
           {
             timeout = 300;
-            on-timeout = "hyprlock";
+            # on-timeout = "hyprlock";
+            on-timeout = "loginctl lock-session";
           }
           {
             timeout = 600;
             on-timeout = "hyprctl dispatch dpms off";
             on-resume = "hyprctl dispatch dpms on";
+            #on-timeout = "niri msg action power-off-monitors";
+            #on-resume = "niri msg action power-on-monitors";
           }
         ];
       };
+    };
+
+    wlsunset = {
+      enable = true;
+      latitude = 47.41;
+      longitude = 8.65;
+      temperature = {
+        day = 4200;
+        night = 2000;
+      };
+    };
+
+    syncthing = {
+      enable = false;
     };
     hyprpolkitagent.enable = true;
     # notifications
@@ -309,8 +505,30 @@
       enable = true;
       frequency = "daily";
     };
+
+    cliphist = {
+      enable = true;
+
+      # A Wayland session
+      systemdTargets = ["config.wayland.systemd.target"];
+
+      # Sway Target
+      # if using make sure that:
+      # "wayland.windowManager.sway.systemd.enable = true;" is set
+      #systemdTargets = ["sway-session.target"];
+
+      extraOptions = [
+        "-max-dedupe-search"
+        "10"
+        "-max-items"
+        "500"
+      ];
+      allowImages = true;
+    };
+    arrpc.enable = true;
   };
 
+  xdg.configFile."niri/config.kdl".source = ../../modules/home/niri/niri-config.kdl;
   #xdg.configFile."flameshot.ini".force = true;
   # do I need it?
   #fonts.fontconfig.enable = true;
@@ -333,6 +551,7 @@
     activitywatch.enable = true;
     kanshi.enable = true;
     jelly-mpv.enable = true;
+    opencode.enable = true;
     #catppuccin.enable = true;
   };
 
