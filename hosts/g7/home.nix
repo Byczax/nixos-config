@@ -86,6 +86,20 @@
     indicator = true;
   };
 
+  services = {
+    wlsunset = {
+      enable = true;
+      latitude = 47.41;
+      longitude = 8.65;
+      temperature = {
+        day = 4200;
+        night = 2000;
+      };
+    };
+    # Make sure if you enable it, to configure the fans
+    # dell-bios-fan-control.enable = true;
+  };
+
   # make sure that user have polish layout
   home.keyboard = {
     layout = "pl";
@@ -156,6 +170,8 @@
 
   programs.firefox = {
     enable = true;
+    configPath = "${config.xdg.configHome}/mozilla/firefox";
+
     #profiles.default = {
     #    bookmarks = [];
     #    settings = {};
@@ -191,12 +207,12 @@
   };
 
   # other games that are not on steam
-  # programs.lutris = {
-  #   enable = true;
-  #   winePackages = [
-  #     pkgs.wineWow64Packages.full
-  #   ];
-  # };
+  programs.lutris = {
+    enable = true;
+    winePackages = [
+      pkgs.wineWow64Packages.full
+    ];
+  };
 
   # notifications
   services.mako = {
