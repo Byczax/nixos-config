@@ -175,7 +175,7 @@
     bibata-cursors
     wdisplays
 
-    libsForQt5.qt5.qtwayland
+    qt5.qtwayland
     jq
     #icu
     #

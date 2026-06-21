@@ -63,32 +63,38 @@
     ];
   };
 
-  nixpkgs.config.allowUnfreePredicate = pkg:
-    builtins.elem (lib.getName pkg) [
-      # Those are required to install steam and games
-      "steam"
-      "steam-original"
-      "steam-unwrapped"
-      "steam-run"
+  nixpkgs.config = {
+    allowUnfreePredicate = pkg:
+      builtins.elem (lib.getName pkg) [
+        # Those are required to install steam and games
+        "steam"
+        "steam-original"
+        "steam-unwrapped"
+        "steam-run"
 
-      # printer driver for lenovo
-      "libfprint-2-tod1-goodix"
-      #"python3.12-youtube-dl-2021.12.17"
+        # printer driver for lenovo
+        "libfprint-2-tod1-goodix"
+        #"python3.12-youtube-dl-2021.12.17"
 
-      # Intel Wi-Fi firmware
-      "linux-firmware"
+        # Intel Wi-Fi firmware
+        "linux-firmware"
 
-      # sad but needed
-      "zoom"
-      "vagrant"
+        # sad but needed
+        "zoom"
+        "vagrant"
 
-      "symbola"
-      "vscode"
+        "symbola"
+        "vscode"
 
-      "brgenml1lpr"
+        "brgenml1lpr"
 
-      "aseprite"
-    ];
+        "aseprite"
+      ];
+    allowInsecurePredicate = pkg:
+      builtins.elem (lib.getName pkg) [
+        "electron"
+      ];
+  };
 
   boot = {
     loader = {

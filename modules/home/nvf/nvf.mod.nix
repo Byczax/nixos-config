@@ -200,6 +200,7 @@ in {
             nvim-docs-view.enable = true; # View LSP docs in a split window
             presets = {
               deno.enable = false;
+              astro-language-server.enable = true;
             };
           };
 
@@ -349,6 +350,10 @@ in {
               format.enable = true;
             };
             scala.enable = false;
+            scss = {
+              enable = true;
+              format.enable = true;
+            };
             sql = {
               enable = true;
               lsp.enable = true;
@@ -464,7 +469,7 @@ in {
                   owner = "dsabsay";
                   repo = "vim-tanka";
                   rev = "master";
-                  hash = "sha256-17imEImqE8HzKhSZPL0MExY/ZXZpPTzjVzo5JGSI/0A=";
+                  hash = "sha256-YRdhH4wuOr9mJASBJx7rAsVIoIAg4mCUxgi46M1s5Nw=";
                 };
               };
             };
@@ -476,7 +481,7 @@ in {
                   owner = "hadolint";
                   repo = "hadolint";
                   rev = "master";
-                  hash = "sha256-17imEImqE8HzKhSZPL0MExY/ZXZpPTzjVzo5JGSI/0A=";
+                  hash = "sha256-YRdhH4wuOr9mJASBJx7rAsVIoIAg4mCUxgi46M1s5Nw=";
                 };
               };
             };
