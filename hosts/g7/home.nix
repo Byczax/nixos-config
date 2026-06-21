@@ -28,7 +28,8 @@
 
   home.sessionVariables = {
     # info where to save config files
-    #XDG_CONFIG_HOME = "${config.home.homeDirectory}/.config";
+    XDG_CONFIG_HOME = "${config.home.homeDirectory}/.config";
+    EDITOR = "nvim";
 
     # inform apps that we use wayland
     NIXOS_OZONE_WL = "1";
@@ -37,18 +38,19 @@
     # suggests electron apps to use the wayland backend
     ELECTRON_OZONE_PLATFORM_HINT = "wayland";
 
-    FONTCONFIG_FILE = "${pkgs.fontconfig.out}/etc/fonts/fonts.conf";
+    #FONTCONFIG_FILE = "${pkgs.fontconfig.out}/etc/fonts/fonts.conf";
 
     # inform that we use hyprland
     XDG_CURRENT_DESKTOP = "Hyprland";
     XDG_SESSION_TYPE = "wayland";
-    #XDG_SESSION_DESKTOP = "Hyprland";
-    #PIPEWIRE_ENABLE = "1";
-
-    # dark mode, but does not work :/
-    #GTK_THEME_VARIANT = "dark";                   # For some GTK apps
-    #QT_STYLE_OVERRIDE = "dark";           # Or just "dark" if supported
-    #QT_QPA_PLATFORMTHEME = "gtk3";                # Make Qt apps follow GTK settings
+    MOZ_ENABLE_WAYLAND = "1";
+    # QT_QPA_PLATFORM = "xcb";
+    QT_SCREEN_SCALE_FACTORS = "1;1";
+    GTK_IM_MODULE = "fcitx";
+    QT_IM_MODULE = "fcitx";
+    XMODIFIERS = "@im=fcitx";
+    TENV_AUTO_INSTALL = "true";
+    WLR_NO_HARDWARE_CURSORS = "1";
   };
 
   home.pointerCursor = {
@@ -82,6 +84,20 @@
   services.kdeconnect = {
     enable = true;
     indicator = true;
+  };
+
+  services = {
+    wlsunset = {
+      enable = true;
+      latitude = 47.41;
+      longitude = 8.65;
+      temperature = {
+        day = 4200;
+        night = 2000;
+      };
+    };
+    # Make sure if you enable it, to configure the fans
+    # dell-bios-fan-control.enable = true;
   };
 
   # make sure that user have polish layout
@@ -154,127 +170,13 @@
 
   programs.firefox = {
     enable = true;
+    configPath = "${config.xdg.configHome}/mozilla/firefox";
+
     #profiles.default = {
     #    bookmarks = [];
     #    settings = {};
     #  };
   };
-
-  #home.packages = with pkgs; [
-  #  fira-code #font for terminal
-  #  prismlauncher # minecraft
-  #  vim # as a backup
-  #  brightnessctl # ability to change screen brightness
-  #  font-awesome # fancy icons
-  #  xournalpp # notes app
-  #  signal-desktop
-  #  git
-  #  traceroute
-  #  (flameshot.override {enableWlrSupport = true;}) # slow screenshot with drawings
-  #  grimblast # fast screenshot
-  #  xorg.xlsclients # check if app is running under X11
-  #  inkscape-with-extensions
-  #  btop
-  #  libreoffice-qt6-fresh
-  #  wl-clipboard #clipboard
-  #  helvum # audio configuration
-  #  qbittorrent
-  #  unzip
-  #  gdu # disk analyzer, better than ncdu
-  #  logseq
-  #  hyprshade
-  #  #lm_sensors #maybe I don't need it
-  #  libqalculate #calculator
-  #  popsicle # os burner
-  #  opentofu
-  #
-  #  direnv #why I have that?
-  #  libnotify # what is this for?
-  #  gcc # C++ let's go
-  #
-  #  # to fulfill lazyvim plugins
-  #  luarocks
-  #  lazygit
-  #  fd
-  #  lua
-  #  fzf
-  #
-  #  #zathura #pdf viewer
-  #  quickemu # virtual machines
-  #  qemu
-  #  virt-manager
-  #
-  #  simple-scan # scanner
-  #
-  #  #(pkgs.texlive.combine {
-  #  #  inherit (pkgs.texlive)
-  #  #    scheme-medium  # base minimal setup
-  #  #    latex         # core LaTeX support
-  #  #    geometry      # example extra packages
-  #  #    xcolor
-  #  #    amsmath
-  #  #    fontspec
-  #  #    hyperref
-  #  #    moderncv
-  #  #    polski
-  #  #    latexmk
-  #  #    enumitem
-  #  #    pgf;
-  #  #})
-  #
-  #  hyprsunset # need to install manually
-  #
-  #  iperf
-  #  bitwarden-desktop
-  #
-  #  pavucontrol # add audio control alongside helvum
-  #  adwaita-icon-theme # icons for gnome apps
-  #
-  #  feh
-  #  tmux
-  #  blender
-  #  krita
-  #  #vscodium
-  #  #atom
-  #  #freecad
-  #  #wireshark
-  #  joplin
-  #  vlc
-  #  nodejs
-  #  tree-sitter
-  #  imagemagick # convert images
-  #  ripgrep
-  #  xdotool
-  #  hugo
-  #  go
-  #  notesnook
-  #
-  #  nwg-displays
-  #  lm_sensors
-  #  adwaita-icon-theme
-  #  dysk
-  #
-  #  k9s
-  #  kubectl
-  #  krew
-  #  tanka
-  #  jsonnet-bundler
-  #  gnumake
-  #  kubeseal
-  #
-  #  vesktop
-  #
-  #  (wrapHelm kubernetes-helm {
-  #    plugins = with pkgs.kubernetes-helmPlugins; [
-  #      helm-secrets
-  #      helm-diff
-  #      helm-s3
-  #      helm-git
-  #    ];
-  #  })
-  #
-  #  trilium-desktop
-  #];
 
   services.syncthing = {
     enable = true;
@@ -289,13 +191,13 @@
   programs.mpv = {
     enable = true;
 
-    package = (
-      pkgs.mpv-unwrapped.wrapper {
-        mpv = pkgs.mpv-unwrapped.override {
-          waylandSupport = true;
-        };
-      }
-    );
+    # package = (
+    #   pkgs.mpv-unwrapped.wrapper {
+    #     mpv = pkgs.mpv-unwrapped.override {
+    #       waylandSupport = true;
+    #     };
+    #   }
+    # );
 
     config = {
       profile = "high-quality";
@@ -338,33 +240,6 @@
     enable = true;
     profiles = {};
   };
-
-  #programs.zsh = {
-  #  enable = true;
-  #  enableCompletion = true;
-  #  autosuggestion.enable = true;
-  #  syntaxHighlighting.enable = true;
-  #  shellAliases = {
-  #    update = "nh os switch $HOME/nixos-config -H g7 --ask";
-  #    test_vm = "sudo nixos-rebuild build-vm --flake $HOME/nixos-config/#default";
-  #    calc = "qalc";
-  #    bat_protect_on = "sudo echo 1 > /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode";
-  #    bat_protect_off = "sudo echo 0 > /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode";
-  #  };
-  #  history.size = 100000;
-  #  history.ignorePatterns = ["rm *" "pkill *" "cp *" "la*" ".." "l*" "la*" "./rsync_local.sh" "update" "git *" "nvim *"];
-  #  oh-my-zsh = {
-  #    enable = true;
-  #    plugins = ["git"];
-  #    theme = "robbyrussell";
-  #  };
-  #  initContent = ''
-  #    bindkey "^R" history-incremental-search-backward;
-  #    export PATH="''${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
-  #    export KUBECONFIG=$HOME/.kube/vis-config
-  #    source ${pkgs.nix-index}/etc/profile.d/command-not-found.sh
-  #  '';
-  #};
 
   # do I need it?
   fonts.fontconfig.enable = true;

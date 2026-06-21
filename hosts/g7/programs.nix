@@ -11,12 +11,12 @@
     traceroute
     #(flameshot.override {enableWlrSupport = true;}) # slow screenshot with drawings
     grimblast # fast screenshot
-    xorg.xlsclients # check if app is running under X11
+    xlsclients # check if app is running under X11
     inkscape-with-extensions
     btop
     libreoffice-qt6-fresh
     wl-clipboard #clipboard
-    helvum # audio configuration
+    # helvum # audio configuration
     qbittorrent
     unzip
     gdu # disk analyzer, better than ncdu

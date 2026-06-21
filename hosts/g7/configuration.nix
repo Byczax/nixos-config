@@ -15,13 +15,42 @@
   # Enable flakes, because they are amazing
   nix = {
     settings = {
+      download-buffer-size = 524288000;
       experimental-features = [
-        "nix-command"
+        "auto-allocate-uids"
+        "ca-derivations"
+        "cgroups"
         "flakes"
+        "nix-command"
+        "recursive-nix"
+        "pipe-operators"
+        # "no-url-literals"
       ];
-      #auto-optimise-store = true;
+      trusted-users = [
+        "bq"
+      ];
+      auto-optimise-store = true;
+      warn-dirty = false;
+      keep-going = true;
+      auto-allocate-uids = true;
+      use-cgroups = pkgs.stdenv.isLinux;
+      builders-use-substitutes = true;
+      accept-flake-config = false;
+      # no-url-literals = true;
+      # lint-url-literal = true;
+
+      max-jobs = "auto";
+      cores = 0;
     };
   };
+
+  nixpkgs.overlays = [
+    (final: prev: {
+      openldap = prev.openldap.overrideAttrs (oldAttrs: {
+        doCheck = false;
+      });
+    })
+  ];
 
   module = {
     secrets.enable = true;
@@ -71,10 +100,16 @@
       "i915.enable_psr=0"
       "i915.enable_fbc=0"
       "i915.fastboot=0"
+      "i915.enable_dc=0"
+      "nvidia-drm.modeset=1"
+      "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
+      "nvidia.NVreg_EnableGpuFirmware=0"
+      #"module_blacklist=i915"
     ];
     extraModprobeConfig = ''
       options nvidia NVreg_PreserveVideoMemoryAllocations=1
       options i915 reset=1
+      options i8k force=1
     '';
   };
 
@@ -114,6 +149,8 @@
     enable = true;
     motherboard = "intel";
   };
+
+  services.hardware.dell-bios-fan-control.enable = true;
 
   services.udev.extraRules = ''
     SUBSYSTEM=="usb", ATTRS{idVendor}=="187c", ATTRS{idProduct}=="0550", MODE="0666"
@@ -170,7 +207,7 @@
       enable = true;
       settings = {
         default_session = {
-          command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd 'systemd-cat -t Hyprland Hyprland'";
+          command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd 'systemd-cat -t Hyprland start-hyprland'";
           user = "bq";
         };
       };
@@ -260,6 +297,7 @@
     vim # optional
   ];
   programs.hyprland.enable = true;
+  programs.coolercontrol.enable = true;
 
   # eanble steam from module
   steam.enable = true;
@@ -267,9 +305,9 @@
   programs.thunar = {
     enable = true;
     plugins = with pkgs; [
-      xfce.thunar-archive-plugin
-      xfce.thunar-media-tags-plugin
-      xfce.thunar-volman
+      thunar-archive-plugin
+      thunar-media-tags-plugin
+      thunar-volman
     ];
   };
   services.gvfs.enable = true; # Mount, trash, and other functionalities
