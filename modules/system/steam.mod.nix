@@ -18,6 +18,9 @@ in {
       extraCompatPackages = with pkgs; [
         proton-ge-bin
       ];
+      remotePlay.openFirewall = true; # Opens ports for Remote Play
+      dedicatedServer.openFirewall = true; # Opens ports for Source Dedicated Server
+      localNetworkGameTransfers.openFirewall = true; # Opens ports for local transfers
       #remotePlay.openFirewall = true;
       #dedicatedServer.openFirewall = true;
     };

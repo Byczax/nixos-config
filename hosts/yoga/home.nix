@@ -235,6 +235,7 @@
               "- /home/bq/.config"
               "- /home/bq/.local"
               "- /home/bq/Media"
+              "- /home/bq/.java"
             ];
           };
           retention = {
@@ -356,7 +357,7 @@
   home.file = {
     # terminal
     ".config/electron-flags.conf".text = ''
-      --enable-features=WaylandWindowDecorations
+      --enable-features=WaylandWindowDecorations,WebRTCPipeWireCapturer
       --ozone-platform-hint=auto
     '';
 
@@ -435,6 +436,8 @@
       settings = {
         general = {
           lock_cmd = "pidof hyprlock || hyprlock";
+          before_sleep_cmd = "loginctl lock-session";
+          after_sleep_cmd = "hyprctl dispatch dpms on";
           ignore_dbus_inhibit = false;
         };
         listener = [
@@ -449,6 +452,10 @@
             on-resume = "hyprctl dispatch dpms on";
             #on-timeout = "niri msg action power-off-monitors";
             #on-resume = "niri msg action power-on-monitors";
+          }
+          {
+            timeout = 900; # 15 minutes
+            on-timeout = "systemctl suspend"; # Explicitly suspend the machine
           }
         ];
       };
@@ -488,15 +495,49 @@
         };
       };
     };
+    # flameshot = {
+    #   enable = true;
+    #   # package = pkgs.flameshot.override {
+    #   #   enableWlrSupport = true;
+    #   # };
+    #   # settings = {
+    #   #   General = {
+    #   #     useGrimAdapter = true;
+    #   #     disabledGrimWarning = true;
+    #   #   };
+    #   # };
+    # };
+
     flameshot = {
       enable = true;
-      # package = pkgs.flameshot.override {
-      #   enableWlrSupport = true;
-      # };
+      # Override package to ensure WLR/Wayland support is compiled in
+      package = pkgs.flameshot.override {enableWlrSupport = true;};
+
       settings = {
         General = {
-          useGrimAdapter = true;
-          disabledGrimWarning = true;
+          # Save Path
+          # savePath = "/home/user/Screenshots";
+          # Tray
+          # disabledTrayIcon = true;
+          # Greeting message
+          # showStartupLaunchMessage = false;
+
+          # Default file extension for screenshots (.png by default)
+          saveAsFileExtension = ".png";
+
+          # Desktop notifications
+          showDesktopNotification = true;
+
+          # Whether to show the info panel in the center in GUI mode
+          showHelp = true;
+
+          # Whether to show the left side button in GUI mode
+          showSidePanelButton = true;
+
+          # Color Customization
+          uiColor = "#740096";
+          contrastUiColor = "#270032";
+          drawColor = "#ff0000";
         };
       };
     };
@@ -510,7 +551,9 @@
       enable = true;
 
       # A Wayland session
-      systemdTargets = ["config.wayland.systemd.target"];
+      # systemdTargets = ["config.wayland.systemd.target"];
+      # Hyprland session
+      systemdTargets = ["hyprland-session.target"];
 
       # Sway Target
       # if using make sure that:

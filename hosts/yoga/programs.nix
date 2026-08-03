@@ -7,6 +7,7 @@
     signal-desktop
     traceroute
     grim
+    satty
     grimblast # fast screenshot
     slurp
     xlsclients # check if app is running under X11
@@ -27,12 +28,14 @@
 
     libnotify # what is this for?
     gcc # C++ let's go
-
+    gopls
     # to fulfill lazyvim plugins
+    # ---
     luarocks
     fd
     lua
     fzf
+    # ---
 
     quickemu # virtual machines
 
@@ -84,37 +87,37 @@
     #     ;
     # })
 
-    bitwarden-desktop
+    # bitwarden-desktop
 
     pavucontrol # add audio control alongside helvum
     adwaita-icon-theme # icons for gnome apps
 
-    blender
-    krita
+    blender # 3d object creation
+    krita # drawing tool
     #vscodium
     #atom
     #wireshark
     # joplin
-    vlc
-    nodejs
-    tree-sitter
+    vlc # video player
+    nodejs # node stuff
+    # tree-sitter
     imagemagick # convert images
     ripgrep
-    xdotool
-    hugo
+    # xdotool
+    # hugo
     # notesnook
 
-    nwg-displays
-    lm_sensors
-    dysk
+    nwg-displays # graphical display manager, simple
+    lm_sensors # Read values from all sensors
+    dysk # check how full are partitions
 
     # k9s
-    kubectl
+    kubectl # kubernetes
     krew
-    tanka
-    jsonnet-bundler
-    gnumake
-    kubeseal
+    tanka # grafana tanka
+    jsonnet-bundler # together with jsonnet and grafana tanka
+    gnumake #
+    kubeseal # sealed secrets
 
     (wrapHelm kubernetes-helm {
       plugins = with pkgs.kubernetes-helmPlugins; [
@@ -125,70 +128,72 @@
       ];
     })
 
-    trilium-desktop
-    gimp
-    typst
-    pdf2svg
-    dig
-    whois
-    nmap
-    dnslookup
-    pdfpc
+    trilium-desktop # notes app
+    # gimp
+    typst # new generation typing
+    pdf2svg # converter
+    dig # check DNS record
+    whois # check who owns domain
+    nmap # check network
+    dnslookup # check domain
+    pdfpc # display pdf as slides
 
     kdePackages.dolphin
     kdePackages.kio-fuse #to mount remote filesystems via FUSE
     kdePackages.kio-extras #extra protocols support (sftp, fish and more)
     kdePackages.qtsvg
 
-    ddcutil
-    prusa-slicer
-    openssl
+    ddcutil # control other screen brightness and other parameters
+    prusa-slicer # 3d printing software
+    openssl #
 
-    freecad
-    brave
+    # freecad # CAD
+    brave # chromium browser for testing
 
-    comma
-    libinput
-    gcr
+    comma # use comma before for command that is not installed
+    # libinput
+    # gcr
     # lmms
     # alsa-utils
     # libgig
-    rpi-imager
-    tenv
-    jellyfin-media-player
-    memento
+    rpi-imager # raspberry pi image flasher
+    tenv # terraform/open tofu, version manager
+    jellyfin-media-player # connect jellyfin with any other player
+    memento # mpv fork that allows to translate subs
     # nicotine-plus
     # vagrant
-    rubocop
-    ansible
+    # rubocop
+    ansible # scripts
 
     yubikey-manager
     yubioath-flutter
     # wireshark
-    tcpdump
+    # tcpdump
     wakatime-cli
 
-    jsonnet
+    # jsonnet
 
     # swaybg
 
-    bibata-cursors
-    wdisplays
+    bibata-cursors # change default cursor for something different
+    wdisplays # better looking display manager
 
     qt5.qtwayland
-    jq
+    jq # query tool
     #icu
-    #
-    brlaser
-    brgenml1lpr
-    brgenml1cupswrapper
+    # brlaser
+    # brgenml1lpr
+    # brgenml1cupswrapper
 
-    openconnect
+    openconnect # VPN stuff
 
-    aseprite
-    typescript
+    # aseprite
+    # typescript
 
-    age-plugin-yubikey
-    git-agecrypt
+    age-plugin-yubikey # combine nixos age with yubikey
+    git-agecrypt # encrypt stuff that goes onto github repository
+
+    claude-code
+    qgis
   ];
 }

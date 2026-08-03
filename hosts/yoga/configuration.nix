@@ -57,10 +57,11 @@
       xdg-desktop-portal-hyprland
       xdg-desktop-portal-gtk
     ];
-    config.common.default = [
-      "hyprland"
-      "gtk"
-    ];
+    config.common = {
+      default = ["hyprland" "gtk"];
+      "org.freedesktop.impl.portal.ScreenCast" = ["hyprland"];
+      "org.freedesktop.impl.portal.Screenshot" = ["hyprland"];
+    };
   };
 
   nixpkgs.config = {
@@ -89,10 +90,13 @@
         "brgenml1lpr"
 
         "aseprite"
+
+        "claude-code"
       ];
     allowInsecurePredicate = pkg:
       builtins.elem (lib.getName pkg) [
         "electron"
+        # "pnpm-9.15.9"
       ];
   };
 
@@ -311,10 +315,13 @@
     iperf3 = {
       enable = true;
     };
-    logind.settings.Login = {
-      HandleLidSwitch = "suspend";
-      HandleLidSwitchExternalPower = "lock";
-      HandleLidSwitchDocked = "ignore";
+    logind = {
+      enable = true;
+      settings.Login = {
+        HandleLidSwitch = "suspend";
+        HandleLidSwitchExternalPower = "lock";
+        HandleLidSwitchDocked = "ignore";
+      };
     };
   };
   ### === END OF SERVICES === ###

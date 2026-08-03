@@ -16,6 +16,7 @@ in
         python-pkgs.graphviz
         python-pkgs.pyserial
         python-pkgs.diagrams
+        python-pkgs.pytest
       ]))
     ];
     shell = pkgs.zsh;

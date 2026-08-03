@@ -31,14 +31,16 @@ in {
         "$terminal" = "foot";
         "$fileManager" = "thunar";
         "$menu" = "wofi -G --allow-images --show drun";
+        "$clipboard" = "cliphist list | wofi --dmenu | cliphist decode | wl-copy";
         exec-once = [
           "$terminal &"
           "waybar &"
-          #"flameshot &"
+          "XDG_CURRENT_DESKTOP=sway flameshot &"
           "kdeconnectd &"
 
           "bash -c 'while true; do ${randomWall}; sleep 6000; done'"
-          "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+          "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=Hyprland"
+          "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         ];
         # exec = [
         #   "hyprshade auto"
@@ -64,12 +66,13 @@ in {
             "$mod, C, killactive,"
             "$mod, M, exit,"
             "$mod, E, exec, $fileManager"
-            "$mod, V, togglefloating,"
+            "$mod, B, togglefloating,"
             "$mod, R, exec, $menu"
             "$mod, P, pseudo,"
             # "$mod, J, togglesplit,"
             "$mod, L, exec, hyprlock"
             "$mod, D, exec, vesktop"
+            "$mod, V, exec, $clipboard"
             "$mod, Return, exec, $terminal"
             "$mod, $print, exec, grimblast copy area"
             ", $print, exec, XDG_CURRENT_DESKTOP=sway flameshot gui"
@@ -155,20 +158,56 @@ in {
         #   "move 0 0, title:flameshot"
         #   "suppressevent fullscreen, title:flameshot"
         # ];
-        windowrule = [
-          "match:class ^(flameshot)$, animation none"
-          "match:class ^(flameshot)$, float true"
-          "match:class ^(flameshot)$, move 0 0"
-          "match:class ^(flameshot)$, pin true"
-          "match:class ^(flameshot)$, focus_on_activate true"
-          #"match:class ^(flameshot)$, focusonactivate true"
-          "match:class ^(flameshot)$, monitor 1"
+        # windowrule = [
+        #   "match:class ^(flameshot)$, animation none"
+        #   "match:class ^(flameshot)$, float true"
+        #   "match:class ^(flameshot)$, move 0 0"
+        #   "match:class ^(flameshot)$, pin true"
+        #   "match:class ^(flameshot)$, focus_on_activate true"
+        #   #"match:class ^(flameshot)$, focusonactivate true"
+        #   "match:class ^(flameshot)$, monitor 1"
+        #
+        #   "match:title ^(flameshot)$, float true"
+        #   "match:title ^(flameshot)$, move 0 0"
+        #   "match:title ^(zoom)$, float true"
+        #   "match:title ^(flameshot)$, suppress_event fullscreen"
+        # ];
 
-          "match:title ^(flameshot)$, float true"
-          "match:title ^(flameshot)$, move 0 0"
-          "match:title ^(zoom)$, float true"
-          "match:title ^(flameshot)$, suppress_event fullscreen"
+        windowrule = [
+          # Flameshot rules
+          "float 1, match:class ^(flameshot)$"
+          "move 0 0, match:class ^(flameshot)$"
+          "pin 1, match:class ^(flameshot)$"
+          "no_anim 1, match:class ^(flameshot)$"
+          "focus_on_activate 1, match:class ^(flameshot)$"
+          "suppress_event fullscreen, match:class ^(flameshot)$"
+          "monitor 1, match:class ^(flameshot)$"
+
+          # Zoom rules
+          "float 1, match:title ^(zoom)$"
         ];
+
+        # window_rule = [
+        #   {
+        #     match.class = "^(flameshot)$";
+        #     animation = "none";
+        #     float = true;
+        #     move = "0 0";
+        #     pin = true;
+        #     focus_on_activate = true;
+        #     monitor = 1;
+        #   }
+        #   {
+        #     match.title = "^(flameshot)$";
+        #     float = true;
+        #     move = "0 0";
+        #     suppress_event = "fullscreen";
+        #   }
+        #   {
+        #     match.title = "^(zoom)$";
+        #     float = true;
+        #   }
+        # ];
 
         # windowrulev2 = [
         #   # Ignore maximize requests from apps. You'll probably like this.

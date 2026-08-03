@@ -82,11 +82,11 @@ in {
           autopairs.nvim-autopairs.enable = true; # Auto-close brackets, quotes, etc.
           formatter.conform-nvim = {
             enable = true; # Code formatter integration
-            setupOpts = {
-              formatters_by_ft = {
-                jsonnet = ["jsonnetfmt"];
-              };
-            };
+            # setupOpts = {
+            #   formatters_by_ft = {
+            #     jsonnet = ["jsonnetfmt"];
+            #   };
+            # };
           };
           filetree.neo-tree.enable = true; # Alternative file tree explorer
           #filetree.nvimTree.enable = true; # File explorer on the left sidebar
@@ -200,7 +200,7 @@ in {
             nvim-docs-view.enable = true; # View LSP docs in a split window
             presets = {
               deno.enable = false;
-              astro-language-server.enable = true;
+              # astro-language-server.enable = true;
             };
           };
 
@@ -237,12 +237,14 @@ in {
             enableFormat = true;
             enableDAP = false;
             enableTreesitter = true;
+
+            ### languages
             assembly.enable = false;
-            astro = {
-              enable = true;
-              lsp.enable = true;
-              format.enable = true;
-            };
+            # astro = {
+            #   enable = true;
+            #   lsp.enable = true;
+            #   format.enable = true;
+            # };
             bash = {
               enable = true;
               lsp.enable = true;
@@ -272,6 +274,7 @@ in {
             };
             haskell.enable = false;
             hcl = {
+              # terraform language
               enable = true;
               lsp.enable = true;
             };
@@ -284,8 +287,8 @@ in {
               lsp.enable = true;
             };
             java = {
-              enable = true;
-              lsp.enable = true;
+              enable = false;
+              lsp.enable = false;
             };
             json = {
               enable = true;
@@ -296,8 +299,8 @@ in {
             just.enable = false;
             kotlin.enable = false;
             lua = {
-              enable = true;
-              lsp.enable = true;
+              enable = false;
+              lsp.enable = false;
             };
             markdown = {
               enable = true;
@@ -351,12 +354,12 @@ in {
             };
             scala.enable = false;
             scss = {
-              enable = true;
-              format.enable = true;
+              enable = false;
+              format.enable = false;
             };
             sql = {
-              enable = true;
-              lsp.enable = true;
+              enable = false;
+              lsp.enable = false;
             };
             svelte.enable = false;
             # tailwind = {
@@ -469,7 +472,7 @@ in {
                   owner = "dsabsay";
                   repo = "vim-tanka";
                   rev = "master";
-                  hash = "sha256-YRdhH4wuOr9mJASBJx7rAsVIoIAg4mCUxgi46M1s5Nw=";
+                  hash = "sha256-9sRm6Kqw951d/PPzgzAUAv6ZjxGRe+Np9NtZJuwqdhs=";
                 };
               };
             };
@@ -481,7 +484,7 @@ in {
                   owner = "hadolint";
                   repo = "hadolint";
                   rev = "master";
-                  hash = "sha256-YRdhH4wuOr9mJASBJx7rAsVIoIAg4mCUxgi46M1s5Nw=";
+                  hash = "sha256-9sRm6Kqw951d/PPzgzAUAv6ZjxGRe+Np9NtZJuwqdhs=";
                 };
               };
             };
