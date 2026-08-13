@@ -1,5 +1,6 @@
 {
   config,
+  osConfig, # NixOS config, to reach the decrypted agenix secret path
   lib,
   pkgs, # Added pkgs to reference tooling binaries deterministically
   ...
@@ -69,7 +70,8 @@ in {
           name = "ETHZ LLM";
           options = {
             baseURL = "http://127.0.0.1:8087/v1";
-            apiKey = "EBwtx6s2Yq5oJ1SyTB";
+            # Read from decrypted agenix secret at runtime; opencode expands {file:...}
+            apiKey = "{file:${osConfig.age.secrets.opencode-api-key.path}}";
           };
           models = {
             "qwen3-coder-next" = {

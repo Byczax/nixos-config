@@ -1,1 +1,2 @@
 assets/** filter=git-agecrypt diff=git-agecrypt
+hosts/yoga/private.nix filter=git-agecrypt diff=git-agecrypt

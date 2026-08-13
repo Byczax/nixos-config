@@ -16,6 +16,20 @@
     secrets.enable = true;
   };
 
+  # opencode ETHZ LLM api key. Create/edit with: agenix edit secrets/opencode-api-key.age
+  age.secrets.opencode-api-key = {
+    rekeyFile = ../../secrets/opencode-api-key.age;
+    owner = config.meta.mainUser.username;
+    mode = "0400";
+  };
+
+  # borg backup passphrase. Create/edit with: agenix edit secrets/borg-passphrase.age
+  age.secrets.borg-passphrase = {
+    rekeyFile = ../../secrets/borg-passphrase.age;
+    owner = config.meta.mainUser.username;
+    mode = "0400";
+  };
+
   nix = {
     settings = {
       download-buffer-size = 524288000;

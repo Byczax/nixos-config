@@ -1,5 +1,6 @@
 {
   config,
+  osConfig, # NixOS config, to reach decrypted agenix secret paths
   pkgs,
   inputs,
   lib,
@@ -224,10 +225,11 @@
             ];
           };
           location = {
-            repositories = ["ssh://maciej_byczko@byczkosynology/var/services/homes/maciej_byczko/Backup/nixos"];
+            repositories = [(import ./private.nix).borgRepo];
             extraConfig = {
               remote_path = "/usr/local/bin/borg";
-              encryption_passphrase = "repokey";
+              # Passphrase read from decrypted agenix secret at runtime
+              encryption_passcommand = "cat ${osConfig.age.secrets.borg-passphrase.path}";
             };
             patterns = [
               "R /home/bq"

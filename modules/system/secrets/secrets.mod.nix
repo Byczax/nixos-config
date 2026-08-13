@@ -29,9 +29,16 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    # Host identity used to decrypt secrets at runtime (matches meta.host.hostPubkey).
+    age.identityPaths = ["/etc/ssh/ssh_host_ed25519_key"];
+
     age.rekey = {
       inherit (config.meta.host) hostPubkey;
       storageMode = "local";
+      # Master rekeyFiles (encrypted to the yubikeys) live in the repo-root
+      # /secrets dir. Rekeyed runtime copies land here, per host. Kept in a
+      # separate dir from the masters because `agenix rekey` deletes every stray
+      # file in localStorageDir.
       localStorageDir = self + "/hosts/${config.networking.hostName}/secrets";
 
       masterIdentities = [
