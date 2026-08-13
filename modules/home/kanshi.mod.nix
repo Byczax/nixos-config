@@ -161,6 +161,27 @@ in {
             ];
           };
         }
+        {
+          profile = {
+            name = "assotiation_office_4";
+            outputs = [
+              {
+                criteria = "AU Optronics 0x258C Unknown";
+                status = "enable";
+                mode = "1920x1080@60.05Hz";
+                scale = 1.0;
+                position = "723,1440";
+              }
+              {
+                criteria = "HP Inc. HP P34hc G4 CNC3192M6H";
+                status = "enable";
+                mode = "3440x1440@59.97Hz";
+                scale = 1.0;
+                position = "0,0";
+              }
+            ];
+          };
+        }
       ];
     };
   };

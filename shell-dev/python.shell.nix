@@ -17,6 +17,7 @@ in
         python-pkgs.pyserial
         python-pkgs.diagrams
         python-pkgs.pytest
+        python-pkgs.pymupdf
       ]))
     ];
     shell = pkgs.zsh;

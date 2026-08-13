@@ -35,7 +35,8 @@ in {
         exec-once = [
           "$terminal &"
           "waybar &"
-          "XDG_CURRENT_DESKTOP=sway flameshot &"
+          # Qt overlay broken under native Wayland; force XWayland (xcb) for flameshot UI, sway desktop makes it grab via grim
+          "QT_QPA_PLATFORM=xcb XDG_CURRENT_DESKTOP=sway flameshot &"
           "kdeconnectd &"
 
           "bash -c 'while true; do ${randomWall}; sleep 6000; done'"
@@ -74,9 +75,9 @@ in {
             "$mod, D, exec, vesktop"
             "$mod, V, exec, $clipboard"
             "$mod, Return, exec, $terminal"
-            "$mod, $print, exec, grimblast copy area"
-            ", $print, exec, XDG_CURRENT_DESKTOP=sway flameshot gui"
-            #", $print, exec, flameshot gui 2>/dev/null"
+            ", $print, exec, grimblast --freeze copy area"
+            "$mod, $print, exec, grim -g \"$(slurp)\" - | satty -f -"
+            "$mod CTRL, $print, exec, QT_QPA_PLATFORM=xcb XDG_CURRENT_DESKTOP=sway flameshot gui"
             #"$mod, F, exec, firefox"
 
             "$mod, F, fullscreen"
@@ -182,6 +183,11 @@ in {
           "focus_on_activate 1, match:class ^(flameshot)$"
           "suppress_event fullscreen, match:class ^(flameshot)$"
           "monitor 1, match:class ^(flameshot)$"
+
+          # Satty (screenshot annotation) rules
+          "float 1, match:class ^(com.gabm.satty)$"
+          "center 1, match:class ^(com.gabm.satty)$"
+          "size 80% 80%, match:class ^(com.gabm.satty)$"
 
           # Zoom rules
           "float 1, match:title ^(zoom)$"

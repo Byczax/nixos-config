@@ -41,6 +41,8 @@
 
     simple-scan # scanner
 
+    # texliveFull # Latex
+
     # (pkgs.texlive.combine {
     #   inherit
     #     (pkgs.texlive)
@@ -87,6 +89,61 @@
     #     ;
     # })
 
+    (pkgs.texliveSmall.withPackages (ps:
+      with ps; [
+        # Base setup, Document Class & Build Tools
+        scheme-basic
+        latex
+        latexmk
+        koma-script # Provides scrbook and scrhack
+
+        # Languages & Localization
+        babel
+        babel-english # Provides 'american' / 'english' language specs
+
+        # Mathematics & Units
+        amsmath
+        amscls # Provides amsthm
+        amsfonts
+        mathtools
+        siunitx
+        units # Provides nicefrac
+
+        # Fonts & Typography
+        newpx
+        fontaxes
+        microtype
+        # Layout, Tables & Styling
+        tools # Provides array.sty
+        float
+        booktabs
+        wrapfig
+        subfig
+        enumitem
+        xcolor
+        pdfpages
+        csquotes
+        natbib
+        # Diagrams & Graphics
+        pgf # Provides TikZ and positioning
+        pgfplots
+        msc
+        bytefield
+        forest
+        environ # Dependency required by forest
+
+        # Code Highlighting (minted dependencies)
+        minted
+        fvextra
+        xstring
+        upquote
+        lineno
+        framed
+        fancyvrb
+        # Cross-referencing & Links
+        hyperref
+        cleveref
+      ]))
     # bitwarden-desktop
 
     pavucontrol # add audio control alongside helvum

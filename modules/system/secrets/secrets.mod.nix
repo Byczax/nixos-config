@@ -36,6 +36,7 @@ in {
 
       masterIdentities = [
         {identity = ./yubikey-22488930.pub;}
+        {identity = ./yubikey-23303604.pub;}
       ];
     };
   };
