@@ -181,7 +181,12 @@ in {
           name = "ETHZ LLM";
           options = {
             baseURL = "http://127.0.0.1:8087/v1";
-            apiKey = "{file:${osConfig.age.secrets.opencode-api-key.path}}";
+            # Empty until secrets are available (fresh install), so opencode
+            # still installs without the rekeyed api-key secret present.
+            apiKey =
+              if osConfig.modules.secrets.enable
+              then "{file:${osConfig.age.secrets.opencode-api-key.path}}"
+              else "";
           };
           models = {
             "qwen3-coder-next" = {

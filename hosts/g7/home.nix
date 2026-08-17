@@ -38,8 +38,8 @@
     openconnect = false;
     yubikey-manager = false;
     yubioath-flutter = false;
-    age-plugin-yubikey = false;
-    git-agecrypt = false;
+    # age-plugin-yubikey + git-agecrypt kept enabled on g7 so it can decrypt
+    # secrets (git-agecrypt smudge of secrets/private.nix, agenix rekey).
     bibata-cursors = false;
     wdisplays = false;
     rpi-imager = false;

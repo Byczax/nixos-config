@@ -19,10 +19,14 @@
   };
 
   # opencode ETHZ LLM api key. Create/edit with: agenix edit secrets/opencode-api-key.age
-  age.secrets.opencode-api-key = {
-    rekeyFile = ../../secrets/opencode-api-key.age;
-    owner = config.meta.mainUser.username;
-    mode = "0400";
+  # Only declared when secrets are available, so a fresh install with
+  # modules.secrets.enable = false does not require the rekeyed copy.
+  age.secrets = lib.mkIf config.modules.secrets.enable {
+    opencode-api-key = {
+      rekeyFile = ../../secrets/opencode-api-key.age;
+      owner = config.meta.mainUser.username;
+      mode = "0400";
+    };
   };
 
   # --- host-specific unfree/insecure ---

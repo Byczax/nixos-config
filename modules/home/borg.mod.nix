@@ -5,7 +5,11 @@
 }: let
   # Driven by the NixOS-side toggle (modules/system/borg.mod.nix), so enabling borg
   # on a host also provisions the passphrase secret.
-  enabled = osConfig.modules.borg.enable;
+  # Also gate on the master secrets switch: when secrets are unavailable the
+  # passphrase and private.nix are missing, so borg must stay off. Because `base`
+  # below is only forced inside `lib.mkIf enabled`, a disabled host never imports
+  # the (possibly still-encrypted) secrets/private.nix — eval stays clean.
+  enabled = osConfig.modules.borg.enable && osConfig.modules.secrets.enable;
   base = (import ../../secrets/private.nix).borgRepoBase;
   # System-based repo path: each host backs up to its own subdir, never overwriting.
   repo = "${base}/${osConfig.networking.hostName}";
