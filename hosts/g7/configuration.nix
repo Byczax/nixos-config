@@ -18,7 +18,7 @@
     # TODO: set g7's real host key for agenix-rekey (needed before rekeying secrets,
     # e.g. the borg passphrase). Get it with:
     #   cat /etc/ssh/ssh_host_ed25519_key.pub
-    host.hostPubkey = "";
+    host.hostPubkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILMo9pgMfM4Zi40Wmru1ByyREmbqLej8IUsdlQNxWfgK";
   };
 
   # host-only overlay: openldap tests fail on this box
