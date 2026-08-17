@@ -3,9 +3,9 @@
   lib,
   ...
 }: let
-  cfg = config.module.zen;
+  cfg = config.modules.zen;
 in {
-  options.module.zen.enable = lib.mkEnableOption "Enable custom Zen browser config";
+  options.modules.zen.enable = lib.mkEnableOption "Enable custom Zen browser config";
 
   config = lib.mkIf cfg.enable {
     programs.zen-browser = {

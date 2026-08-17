@@ -1,19 +1,21 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
+# Host-specific config for `yoga`. Shared baseline lives in ../../modules/system/*.mod.nix.
 {
   lib,
   pkgs,
   config,
-  compositor,
   ...
 }: {
   imports = [
     ./hardware-configuration.nix
   ];
 
-  module = {
-    secrets.enable = true;
+  modules.secrets.enable = true;
+  modules.steam.enable = true;
+  modules.borg.enable = true;
+
+  meta = {
+    compositor = "hyprland";
+    host.hostPubkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK9pMrB6keoXhaYMfRji4uYAuBzyu0NGPHwTSIMtqidZ";
   };
 
   # opencode ETHZ LLM api key. Create/edit with: agenix edit secrets/opencode-api-key.age
@@ -23,108 +25,34 @@
     mode = "0400";
   };
 
-  # borg backup passphrase. Create/edit with: agenix edit secrets/borg-passphrase.age
-  age.secrets.borg-passphrase = {
-    rekeyFile = ../../secrets/borg-passphrase.age;
-    owner = config.meta.mainUser.username;
-    mode = "0400";
-  };
-
-  nix = {
-    settings = {
-      download-buffer-size = 524288000;
-      experimental-features = [
-        "auto-allocate-uids"
-        "ca-derivations"
-        "cgroups"
-        "flakes"
-        "nix-command"
-        "recursive-nix"
-        "pipe-operators"
-        # "no-url-literals"
-      ];
-      trusted-users = [
-        "bq"
-      ];
-      auto-optimise-store = true;
-      warn-dirty = false;
-      keep-going = true;
-      auto-allocate-uids = true;
-      use-cgroups = pkgs.stdenv.isLinux;
-      builders-use-substitutes = true;
-      accept-flake-config = false;
-      # no-url-literals = true;
-      # lint-url-literal = true;
-
-      max-jobs = "auto";
-      cores = 0;
-    };
-  };
-
-  meta = {
-    host.hostPubkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK9pMrB6keoXhaYMfRji4uYAuBzyu0NGPHwTSIMtqidZ";
-  };
-
-  xdg.portal = {
-    enable = true;
-    extraPortals = with pkgs; [
-      xdg-desktop-portal-hyprland
-      xdg-desktop-portal-gtk
-    ];
-    config.common = {
-      default = ["hyprland" "gtk"];
-      "org.freedesktop.impl.portal.ScreenCast" = ["hyprland"];
-      "org.freedesktop.impl.portal.Screenshot" = ["hyprland"];
-    };
-  };
-
+  # --- host-specific unfree/insecure ---
   nixpkgs.config = {
     allowUnfreePredicate = pkg:
       builtins.elem (lib.getName pkg) [
-        # Those are required to install steam and games
         "steam"
         "steam-original"
         "steam-unwrapped"
         "steam-run"
-
-        # printer driver for lenovo
-        "libfprint-2-tod1-goodix"
-        #"python3.12-youtube-dl-2021.12.17"
-
-        # Intel Wi-Fi firmware
+        "libfprint-2-tod1-goodix" # printer driver for lenovo
         "linux-firmware"
-
-        # sad but needed
         "zoom"
         "vagrant"
-
         "symbola"
         "vscode"
-
         "brgenml1lpr"
-
         "aseprite"
-
         "claude-code"
       ];
     allowInsecurePredicate = pkg:
       builtins.elem (lib.getName pkg) [
         "electron"
-        # "pnpm-9.15.9"
       ];
   };
 
+  # --- boot (host hardware) ---
   boot = {
-    loader = {
-      systemd-boot = {
-        enable = true;
-        configurationLimit = 10; # Amounts of build to store
-      };
-      timeout = 2; # time before it will start booting most recent build
-      efi.canTouchEfiVariables = true; # allow to register boots in boot
-    };
+    loader.timeout = 2;
     kernelParams = [
-      # "i915.force_probe=9a49"
       "i915.enable_psr=0"
       "mem_sleep_default=s2idle"
       "pci=noaer"
@@ -133,53 +61,27 @@
       "usbcore.autosuspend=-1"
       "pcie_pme=nomsi"
     ];
-    #kernelPackages = pkgs.linuxPackages_6_1;
     kernelPackages = pkgs.linuxPackages_latest;
-
-    # Needed kernel modules for Lenovo systems
     kernelModules = ["i2c-dev" "rtsx_usb"];
     extraModprobeConfig = ''
       options rtsx_usb device_table=0x5812
       options snd-hda-intel dmic_detect=0
     '';
+    initrd.systemd.network.wait-online.enable = false;
   };
 
-  security = {
-    sudo.enable = false;
-    sudo-rs.enable = true;
+  security.pam.services.kwallet.enable = true;
 
-    # required by pipewire
-    rtkit.enable = true;
-    pam.services.kwallet.enable = true;
-  };
-
+  # --- networking (host) ---
   networking = {
     modemmanager.enable = false;
     nftables.enable = true;
-    networkmanager = {
-      enable = true;
-      wifi = {
-        backend = "iwd";
-        powersave = false;
-      };
-    };
-    wireless.iwd = {
-      enable = true;
-      settings = {
-        Network = {
-          EnableIPv6 = true;
-        };
-        Settings = {
-          AutoConnect = true;
-        };
-      };
-    };
+    networkmanager.wifi.powersave = false;
     extraHosts = ''
       127.0.0.1 minio
       127.0.0.1 eventmanager-minio
       127.0.0.1 keycloak
     '';
-
     firewall = rec {
       allowedTCPPorts = [
         465
@@ -208,11 +110,6 @@
       ];
       allowedUDPPorts = allowedTCPPorts;
       allowedUDPPortRanges = allowedTCPPortRanges;
-
-      # add on top tailscale ports
-      # allowedUDPPorts = [config.services.tailscale.port];
-
-      # Tailscale interface
       trustedInterfaces = ["tailscale0" "virbr0"];
       checkReversePath = "loose";
     };
@@ -224,17 +121,10 @@
     enableRedistributableFirmware = true;
   };
 
+  # --- host-specific services / overrides ---
   services = {
-    connman.wifi.backend = "iwd";
-    dbus.enable = true;
-    # ratbagd.enable = true;
-
+    # extra virtual sink on top of the shared pipewire baseline
     pipewire = {
-      enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
-      wireplumber.enable = true;
       jack.enable = true;
       extraConfig.pipewire."91-virtual-sink" = {
         "context.objects" = [
@@ -252,26 +142,8 @@
       };
     };
 
-    greetd = {
-      enable = true;
-      settings = {
-        default_session = {
-          command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd 'systemd-cat -t Hyprland start-hyprland'";
-          #command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd 'systemd-cat -t niri niri'";
-          user = "bq";
-        };
-      };
-    };
+    tailscale.extraDaemonFlags = ["--no-logs-no-support"];
 
-    tailscale = {
-      enable = true; # tailscale, no option for home yet
-      extraDaemonFlags = [
-        "--no-logs-no-support"
-        #"--accept-dns=false"
-      ];
-      #extraSetFlags = ["--netfilter-mode=nodivert"];
-    };
-    thermald.enable = true; # proactively protect CPU overheating
     auto-cpufreq = {
       enable = true;
       settings = {
@@ -285,50 +157,17 @@
         };
       };
     };
-    upower.enable = true;
-
-    # service to autodiscover printers in the same network
-    avahi = {
-      enable = true;
-      nssmdns4 = true;
-      openFirewall = true;
-    };
-    gvfs.enable = true; # Mount, trash, and other functionalities
-    tumbler.enable = true; # Thumbnail support for images
-
-    #tor = {
-    #  enable = true;
-    #  openFirewall = true;
-    #  relay = {
-    #    enable = true;
-    #    role = "relay";
-    #  };
-    #};
 
     resolved = {
       enable = true;
-      #dnssec = "allow-downgrade";
-      #dnsovertls = "opportunistic";
       settings.Resolve.FallbackDNS = [
         "9.9.9.9"
         "1.1.1.1"
         "2620:fe::fe"
       ];
     };
-
-    # scion = {
-    #   enable = true;
-    #   bypassBootstrapWarning = true;
-    # };
     envfs.enable = true;
-
-    pcscd.enable = true;
-    # udev.packages = [pkgs.yubikey-personalization];
-
-    gnome.gnome-keyring.enable = true; # secret service
-    iperf3 = {
-      enable = true;
-    };
+    iperf3.enable = true;
     logind = {
       enable = true;
       settings.Login = {
@@ -338,181 +177,72 @@
       };
     };
   };
-  ### === END OF SERVICES === ###
 
   systemd = {
-    # 2. Force tailscaled to use nftables (Critical for clean nftables-only systems)
-    # This avoids the "iptables-compat" translation layer issues.
+    # Force tailscaled to use nftables (clean nftables-only systems).
     services.tailscaled.serviceConfig.Environment = [
       "TS_DEBUG_FIREWALL_MODE=nftables"
     ];
-
     services.Docker.wantedBy = lib.mkForce ["multi-user.target"];
     services."systemd-backlight@backlight:intel_backlight".enable = false;
     services.NetworkManager-wait-online.enable = false;
-    # 3. Optimization: Prevent systemd from waiting for network online
-    # (Optional but recommended for faster boot with VPNs)
     network.wait-online.enable = false;
-
     services.fprintd = {
       enable = false;
       wantedBy = ["multi-user.target"];
       serviceConfig.Type = "simple";
     };
   };
-  boot.initrd.systemd.network.wait-online.enable = false;
 
-  time.timeZone = "Europe/Zurich"; # timezone, to not be confused
+  # extra fonts on top of the shared baseline
+  fonts.packages = with pkgs; [
+    cardo
+    symbola
+    quivira
+    freefont_ttf
+    font-awesome
+  ];
 
-  console.keyMap = "pl"; # enable also polish in console
-
-  # language of the system with some of the formats
-  i18n.defaultLocale = "en_US.UTF-8";
-  i18n.supportedLocales = ["en_US.UTF-8/UTF-8" "pl_PL.UTF-8/UTF-8" "ja_JP.UTF-8/UTF-8"];
-
-  # Required for printer to work
-  services.printing = {
-    enable = true;
-    drivers = with pkgs; [
-      gutenprint
-    ];
-  };
-  hardware.sane.enable = true; # enables support for SANE scanners
-  services.colord.enable = true;
-
-  fonts = {
-    enableDefaultPackages = true;
-    packages = with pkgs; [
-      noto-fonts
-      noto-fonts-cjk-sans
-      noto-fonts-color-emoji
-      liberation_ttf
-      fira-code
-      fira-code-symbols
-      mplus-outline-fonts.githubRelease
-      dina-font
-      proggyfonts
-      nerd-fonts.fira-code
-      nerd-fonts.droid-sans-mono
-      cardo
-      symbola
-      quivira
-      freefont_ttf
-      font-awesome
-    ];
-  };
-  # system user
+  # extra groups on top of the shared user definition
   users = {
-    users.bq = {
-      isNormalUser = true;
-      description = "bq";
-      initialPassword = "changeme";
-      extraGroups = ["networkmanager" "wheel" "docker" "libvirtd" "video" "i2c" "input" "scion" "wireshark"];
-
-      shell = pkgs.zsh;
-    };
-    groups.netdev = {};
-    extraGroups.vboxusers.members = ["bq"];
-  };
-
-  environment = {
-    systemPackages = with pkgs; [
-      bash
-      coreutils
-      vim # optional
+    users.${config.meta.mainUser.username}.extraGroups = [
+      "i2c"
+      "input"
+      "scion"
+      "wireshark"
     ];
-    extraInit = ''
-      export XDG_DATA_DIRS="$XDG_DATA_DIRS:${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}"
-    '';
-    shells = with pkgs; [bash zsh];
+    groups.netdev = {};
+    extraGroups.vboxusers.members = [config.meta.mainUser.username];
   };
 
-  steam.enable = true; # enable steam from module
+  environment.extraInit = ''
+    export XDG_DATA_DIRS="$XDG_DATA_DIRS:${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}"
+  '';
+
+  powerManagement.powertop.enable = true;
 
   programs = {
     vim.enable = true;
-    # do I need it?
-    # dconf.enable = true;
     xfconf.enable = true;
-    thunar = {
-      enable = true;
-      plugins = with pkgs; [
-        thunar-archive-plugin
-        thunar-media-tags-plugin
-        thunar-volman
-      ];
-    };
-    zsh.enable = true;
-    hyprland.enable = true;
-
-    # nix-ld = {
-    #   enable = true;
-    #   libraries = with pkgs; [
-    #     ## Put here any library that is required when running a package
-    #     ## ...
-    #     ## Uncomment if you want to use the libraries provided by default in the steam distribution
-    #     ## but this is quite far from being exhaustive
-    #     ## https://github.com/NixOS/nixpkgs/issues/354513
-    #     # (pkgs.runCommand "steamrun-lib" {} "mkdir $out; ln -s ${pkgs.steam-run.fhsenv}/usr/lib64 $out/lib")
-    #   ];
-    # };
-
     gnupg.agent = {
       enable = true;
       enableSSHSupport = true;
     };
     wireshark.enable = true;
-
-    #niri.enable = true;
     virt-manager.enable = true;
-    coolercontrol.enable = true;
-  };
-
-  users.defaultUserShell = pkgs.zsh;
-
-  # control battery, but I think, it does not work with my laptop
-  powerManagement = {
-    enable = true;
-    powertop.enable = true;
   };
 
   virtualisation = {
-    docker = {
-      enable = true;
-    };
-    libvirtd = {
-      enable = true;
-      qemu = {
-        runAsRoot = false;
-        swtpm.enable = true;
-        vhostUserPackages = with pkgs; [virtiofsd];
-      };
+    libvirtd.qemu = {
+      runAsRoot = false;
+      swtpm.enable = true;
+      vhostUserPackages = with pkgs; [virtiofsd];
     };
     podman = {
       enable = true;
       dockerCompat = false;
     };
-    # incus = {
-    #   enable = true;
-    # };
-    # virtualbox.host = {
-    #   enable = true;
-    #   #enableExtensionPack = true;
-    # };
-    vmVariant = {
-      # following configuration is added only when building VM with build-vm
-      virtualisation = {
-        memorySize = 2048; # Use 2048MiB memory.
-        cores = 3;
-      };
-    };
   };
 
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "25.05"; # Did you read the comment?
+  system.stateVersion = "25.05";
 }

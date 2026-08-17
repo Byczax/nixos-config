@@ -4,9 +4,9 @@
   lib,
   ...
 }: let
-  cfg = config.module.waybar;
+  cfg = config.modules.waybar;
 in {
-  options.module.waybar.enable = lib.mkEnableOption "Enable custom waybar config";
+  options.modules.waybar.enable = lib.mkEnableOption "Enable custom waybar config";
 
   config = lib.mkIf cfg.enable {
     programs.waybar = {

@@ -4,9 +4,9 @@
   lib,
   ...
 }: let
-  cfg = config.module.activitywatch;
+  cfg = config.modules.activitywatch;
 in {
-  options.module.activitywatch.enable = lib.mkEnableOption "Enable custom activitywatch config";
+  options.modules.activitywatch.enable = lib.mkEnableOption "Enable custom activitywatch config";
 
   config = lib.mkIf cfg.enable {
     services.activitywatch = {

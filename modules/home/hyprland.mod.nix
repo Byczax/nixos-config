@@ -4,7 +4,7 @@
   lib,
   ...
 }: let
-  cfg = config.module.hyprland;
+  cfg = config.modules.hyprland;
 
   randomWall = pkgs.writeShellScript "random-wall" ''
     DIR="$HOME/nixos-config/assets/"
@@ -18,7 +18,7 @@
     done
   '';
 in {
-  options.module.hyprland.enable = lib.mkEnableOption "Enable custom hyprland config";
+  options.modules.hyprland.enable = lib.mkEnableOption "Enable custom hyprland config";
 
   config = lib.mkIf cfg.enable {
     wayland.windowManager.hyprland = {

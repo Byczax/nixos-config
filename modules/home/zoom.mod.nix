@@ -4,9 +4,9 @@
   lib,
   ...
 }: let
-  cfg = config.module.zoom;
+  cfg = config.modules.zoom;
 in {
-  options.module.zoom.enable = lib.mkEnableOption "Enable custom Zoom config";
+  options.modules.zoom.enable = lib.mkEnableOption "Enable custom Zoom config";
 
   config = lib.mkIf cfg.enable {
     home.packages = [pkgs.zoom-us];

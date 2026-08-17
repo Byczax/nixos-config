@@ -4,9 +4,9 @@
   lib,
   ...
 }: let
-  enableSteam = config.steam.enable;
+  enableSteam = config.modules.steam.enable;
 in {
-  options.steam.enable = lib.mkOption {
+  options.modules.steam.enable = lib.mkOption {
     type = lib.types.bool;
     default = false;
     description = "Enable Steam and related packages/services.";

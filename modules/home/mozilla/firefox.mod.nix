@@ -3,9 +3,9 @@
   lib,
   ...
 }: let
-  cfg = config.module.firefox;
+  cfg = config.modules.firefox;
 in {
-  options.module.firefox.enable = lib.mkEnableOption "Enable custom firefox browser config";
+  options.modules.firefox.enable = lib.mkEnableOption "Enable custom firefox browser config";
 
   config = lib.mkIf cfg.enable {
     programs.firefox = {

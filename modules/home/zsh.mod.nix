@@ -1,18 +1,14 @@
 {
   config,
+  osConfig,
   pkgs,
   lib,
   ...
 }: let
-  cfg = config.module.zsh;
+  cfg = config.modules.zsh;
+  host = osConfig.networking.hostName;
 in {
-  options.module.zsh = {
-    enable = lib.mkEnableOption "Enable custom zsh config";
-    host = lib.mkOption {
-      type = lib.types.str;
-      description = "Host name for nh";
-    };
-  };
+  options.modules.zsh.enable = lib.mkEnableOption "Enable custom zsh config";
 
   config = lib.mkIf cfg.enable {
     programs.zsh = {
@@ -21,9 +17,9 @@ in {
       autosuggestion.enable = true;
       syntaxHighlighting.enable = true;
       shellAliases = {
-        update = "nh os switch $HOME/nixos-config -H ${cfg.host} --ask --diff always";
-        update_boot = "nh os boot $HOME/nixos-config -H ${cfg.host} --ask --diff always";
-        test_vm = "sudo nixos-rebuild build-vm --flake $HOME/nixos-config#${cfg.host}";
+        update = "nh os switch $HOME/nixos-config -H ${host} --ask --diff always";
+        update_boot = "nh os boot $HOME/nixos-config -H ${host} --ask --diff always";
+        test_vm = "sudo nixos-rebuild build-vm --flake $HOME/nixos-config#${host}";
         calc = "qalc";
         bat_protect_on = "sudo echo 1 > /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode";
         bat_protect_off = "sudo echo 0 > /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode";

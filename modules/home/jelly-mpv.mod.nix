@@ -3,9 +3,9 @@
   lib,
   ...
 }: let
-  cfg = config.module.jelly-mpv;
+  cfg = config.modules.jelly-mpv;
 in {
-  options.module.jelly-mpv.enable = lib.mkEnableOption "Enable custom jelly-mpv config";
+  options.modules.jelly-mpv.enable = lib.mkEnableOption "Enable custom jelly-mpv config";
 
   config = lib.mkIf cfg.enable {
     services.jellyfin-mpv-shim = {

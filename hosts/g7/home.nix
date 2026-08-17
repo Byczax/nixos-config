@@ -1,17 +1,75 @@
 {
   config,
+  osConfig,
   lib,
   pkgs,
   inputs,
   ...
 }: {
-  imports = [
-    ./programs.nix
-  ];
+  modules.apps = {
+    latexPackages = ps:
+      with ps; [
+        scheme-basic
+        latex
+        geometry
+        xcolor
+        amsmath
+        fontspec
+        hyperref
+        moderncv
+        polski
+        latexmk
+        enumitem
+        pgf
+        titlesec
+      ];
+
+    jq = false;
+    qtwayland = false;
+    grim = false;
+    slurp = false;
+    gopls = false;
+    wakatime-cli = false;
+    claude-code = false;
+    ansible = false;
+    tenv = false;
+    jellyfin-media-player = false;
+    memento = false;
+    openconnect = false;
+    yubikey-manager = false;
+    yubioath-flutter = false;
+    age-plugin-yubikey = false;
+    git-agecrypt = false;
+    bibata-cursors = false;
+    wdisplays = false;
+    rpi-imager = false;
+    qgis = false;
+  };
+
+  programs = {
+    git.enable = true;
+    lazygit.enable = true;
+    direnv = {
+      enable = true;
+      enableZshIntegration = true;
+      nix-direnv.enable = true;
+    };
+    tmux.enable = true;
+    go.enable = true;
+    feh.enable = true;
+    fastfetch.enable = true;
+    vesktop.enable = true;
+    k9s.enable = true;
+    fzf = {
+      enable = true;
+      enableZshIntegration = true;
+    };
+  };
+  
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
-  home.username = "bq";
-  home.homeDirectory = "/home/bq";
+  home.username = osConfig.meta.mainUser.username;
+  home.homeDirectory = osConfig.meta.mainUser.homeDirectory;
 
   # This value determines the Home Manager release that your
   # configuration is compatible with. This helps avoid breakage
@@ -60,9 +118,6 @@
     package = pkgs.bibata-cursors;
   };
 
-  # the bar on the top
-  #programs.waybar = import ../../waybar.nix ../../style.css;
-
   # terminal
   programs.foot = {
     enable = true;
@@ -70,9 +125,6 @@
       main = {
         font = "Fira Code:size=11";
       };
-      #url = {
-      #  launch = "xdg-open";
-      #};
     };
   };
   home.file.".config/electron-flags.conf".text = ''
@@ -108,7 +160,7 @@
   services.swayidle.enable = true;
 
   # hyprland stack
-  module.hyprland.enable = true;
+  modules.hyprland.enable = true;
   programs.hyprlock.enable = true;
   services.hypridle = {
     enable = true;
@@ -246,20 +298,19 @@
 
   # modules
   #nvim.enable = true;
-  module.helix.enable = true;
+  modules.helix.enable = true;
 
-  module.nvf.enable = true;
+  modules.nvf.enable = true;
 
-  module.waybar.enable = true;
+  modules.waybar.enable = true;
 
-  module.zoom.enable = true;
+  modules.zoom.enable = true;
 
-  module.zsh = {
+  modules.zsh = {
     enable = true;
-    host = "g7";
   };
 
-  module.activitywatch.enable = true;
+  modules.activitywatch.enable = true;
 
   #catppuccin.enable = true;
 }

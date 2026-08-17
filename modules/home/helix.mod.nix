@@ -4,9 +4,9 @@
   lib,
   ...
 }: let
-  cfg = config.module.helix;
+  cfg = config.modules.helix;
 in {
-  options.module.helix.enable = lib.mkEnableOption "Enable custom Helix config";
+  options.modules.helix.enable = lib.mkEnableOption "Enable custom Helix config";
 
   config = lib.mkIf cfg.enable {
     programs.helix = {

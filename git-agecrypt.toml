@@ -1,6 +1,6 @@
 [config]
 "assets/wp_0ecedf88004b20f0cd7569eddf3001ac.png" = ["age1yubikey1q2alxkjzmr63s032tge8wxneg3svqtkck7xfz33ydsdjuk7wldln58j9vus"]
-"hosts/yoga/private.nix" = ["age1yubikey1q2alxkjzmr63s032tge8wxneg3svqtkck7xfz33ydsdjuk7wldln58j9vus"]
+"secrets/private.nix" = ["age1yubikey1q2alxkjzmr63s032tge8wxneg3svqtkck7xfz33ydsdjuk7wldln58j9vus"]
 "assets/wp_394b2302728e163efb4679a386c309f4.webp" = ["age1yubikey1q2alxkjzmr63s032tge8wxneg3svqtkck7xfz33ydsdjuk7wldln58j9vus"]
 "assets/wp_85e159bbdfc2cfe2a575724d87038e5b.png" = ["age1yubikey1q2alxkjzmr63s032tge8wxneg3svqtkck7xfz33ydsdjuk7wldln58j9vus"]
 "assets/wp_50842c43072539d9e5d453551c47170a.jpg" = ["age1yubikey1q2alxkjzmr63s032tge8wxneg3svqtkck7xfz33ydsdjuk7wldln58j9vus"]

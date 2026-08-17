@@ -1,6 +1,4 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
+# Host-specific config for `g7`. Shared baseline lives in ../../modules/system/*.mod.nix.
 {
   config,
   lib,
@@ -8,90 +6,52 @@
   ...
 }: {
   imports = [
-    # Include the results of the hardware scan.
     ./hardware-configuration.nix
   ];
 
-  # Enable flakes, because they are amazing
-  nix = {
-    settings = {
-      download-buffer-size = 524288000;
-      experimental-features = [
-        "auto-allocate-uids"
-        "ca-derivations"
-        "cgroups"
-        "flakes"
-        "nix-command"
-        "recursive-nix"
-        "pipe-operators"
-        # "no-url-literals"
-      ];
-      trusted-users = [
-        "bq"
-      ];
-      auto-optimise-store = true;
-      warn-dirty = false;
-      keep-going = true;
-      auto-allocate-uids = true;
-      use-cgroups = pkgs.stdenv.isLinux;
-      builders-use-substitutes = true;
-      accept-flake-config = false;
-      # no-url-literals = true;
-      # lint-url-literal = true;
+  modules.secrets.enable = true;
+  modules.steam.enable = true;
+  modules.borg.enable = true;
 
-      max-jobs = "auto";
-      cores = 0;
-    };
+  meta = {
+    compositor = "hyprland";
+    # TODO: set g7's real host key for agenix-rekey (needed before rekeying secrets,
+    # e.g. the borg passphrase). Get it with:
+    #   cat /etc/ssh/ssh_host_ed25519_key.pub
+    host.hostPubkey = "";
   };
 
+  # host-only overlay: openldap tests fail on this box
   nixpkgs.overlays = [
     (final: prev: {
-      openldap = prev.openldap.overrideAttrs (oldAttrs: {
+      openldap = prev.openldap.overrideAttrs (_: {
         doCheck = false;
       });
     })
   ];
 
-  module = {
-    secrets.enable = true;
+  nixpkgs.config = {
+    allowUnfreePredicate = pkg:
+      builtins.elem (lib.getName pkg) [
+        "steam"
+        "steam-original"
+        "steam-unwrapped"
+        "steam-run"
+        "libfprint-2-tod1-goodix" # printer driver for lenovo
+        "python3.12-youtube-dl-2021.12.17"
+        "linux-firmware"
+        "zoom"
+        "nvidia-x11"
+        "nvidia-settings"
+        "claude-code"
+      ];
+    allowInsecurePredicate = pkg:
+      builtins.elem (lib.getName pkg) [
+        "electron"
+      ];
   };
 
-  xdg.portal = {
-    enable = true;
-    extraPortals = with pkgs; [xdg-desktop-portal-hyprland];
-    config.common.default = ["hyprland"];
-  };
-
-  nixpkgs.config.allowUnfreePredicate = pkg:
-    builtins.elem (lib.getName pkg) [
-      # Those are required to install steam and games
-      "steam"
-      "steam-original"
-      "steam-unwrapped"
-      "steam-run"
-
-      # printer driver for lenovo
-      "libfprint-2-tod1-goodix"
-      "python3.12-youtube-dl-2021.12.17"
-
-      # Intel Wi-Fi firmware
-      "linux-firmware"
-
-      "zoom"
-      "nvidia-x11"
-      "nvidia-settings"
-    ];
-
-  # boot specifications
   boot = {
-    loader = {
-      systemd-boot = {
-        enable = true;
-        configurationLimit = 10; # Amounts of build to store
-      };
-      timeout = 3; # time before it will start booting most recent build
-      efi.canTouchEfiVariables = true; # allow to register boots in boot
-    };
     kernelParams = [
       "alienware-wmi"
       "i2c-dev"
@@ -104,8 +64,8 @@
       "nvidia-drm.modeset=1"
       "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
       "nvidia.NVreg_EnableGpuFirmware=0"
-      #"module_blacklist=i915"
     ];
+    kernelModules = ["acpi_call" "tp_smapi" "i2c-dev" "alienware-wmi"];
     extraModprobeConfig = ''
       options nvidia NVreg_PreserveVideoMemoryAllocations=1
       options i915 reset=1
@@ -113,234 +73,6 @@
     '';
   };
 
-  security = {
-    # use sudo written in Rust
-    sudo.enable = false;
-    sudo-rs.enable = true;
-
-    # required by pipewire
-    rtkit.enable = true;
-  };
-
-  # enable internet and wifi support
-  networking = {
-    networkmanager = {
-      enable = true;
-      wifi = {
-        backend = "iwd";
-        powersave = true;
-      };
-    };
-    wireless.iwd = {
-      enable = true;
-      settings = {
-        Network = {
-          EnableIPv6 = true;
-        };
-        Settings = {
-          AutoConnect = true;
-        };
-      };
-    };
-  };
-  services.connman.wifi.backend = "iwd";
-
-  services.hardware.openrgb = {
-    enable = true;
-    motherboard = "intel";
-  };
-
-  services.hardware.dell-bios-fan-control.enable = true;
-
-  services.udev.extraRules = ''
-    SUBSYSTEM=="usb", ATTRS{idVendor}=="187c", ATTRS{idProduct}=="0550", MODE="0666"
-  '';
-
-  services.xserver = {
-    videoDrivers = ["nvidia"];
-    #displayManager.startx.enable = false;
-    #windowManager.default = "hyprland";
-  };
-  # bluetooth, what else
-  hardware = {
-    bluetooth.enable = true;
-
-    graphics = {
-      enable = true;
-      #extraPackages = with pkgs; [
-      #  intel-media-sdk
-      #];
-    };
-
-    nvidia = {
-      open = true;
-      modesetting.enable = true;
-      prime = {
-        sync.enable = true;
-        offload.enable = false;
-        #enable = true;
-        intelBusId = "PCI:0:2:0";
-        nvidiaBusId = "PCI:1:0:0";
-      };
-      powerManagement.enable = false;
-      nvidiaSettings = false;
-    };
-    enableRedistributableFirmware = true;
-  };
-
-  services.dbus.enable = true;
-
-  services.gnome.gnome-keyring.enable = true;
-
-  services = {
-    # for multimedia
-    pipewire = {
-      enable = true; # if not already enabled
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
-      wireplumber.enable = true;
-    };
-
-    # login screen with Hyprland as window manager
-    greetd = {
-      enable = true;
-      settings = {
-        default_session = {
-          command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd 'systemd-cat -t Hyprland start-hyprland'";
-          user = "bq";
-        };
-      };
-    };
-
-    # enable polish as keyboard layout
-    xserver.xkb = {
-      layout = "pl";
-      variant = "";
-    };
-
-    # tailscale, no option for home yet
-    tailscale.enable = true;
-
-    # proactively protect CPU overheating
-    thermald.enable = true;
-
-    # Show data about CPU
-    auto-cpufreq.enable = true;
-
-    upower.enable = true;
-  };
-
-  # timezone, to not be confused
-  time.timeZone = "Europe/Zurich";
-
-  # enable also polish in console
-  console.keyMap = "pl"; # maybe pl2
-
-  # language of the system with some of the formats
-  i18n.defaultLocale = "en_US.UTF-8";
-  i18n.supportedLocales = ["en_US.UTF-8/UTF-8" "ja_JP.UTF-8/UTF-8"];
-
-  # service to autodiscover printers in the same network
-  services.avahi = {
-    enable = true;
-    nssmdns4 = true;
-    openFirewall = true;
-  };
-
-  # do I need it?
-  programs.dconf.enable = true;
-
-  # Required for printer to work
-  services.printing.enable = true;
-  hardware.sane.enable = true; # enables support for SANE scanners
-  services.colord.enable = true;
-
-  systemd.services.fprintd = {
-    wantedBy = ["multi-user.target"];
-    serviceConfig.Type = "simple";
-  };
-  services.fprintd.enable = true;
-  #services.fprintd.tod.enable = true;
-  #services.fprintd.tod.driver = pkgs.libfprint-2-tod1-goodix;
-
-  fonts = {
-    enableDefaultPackages = true;
-    #fontDir.enable = true;
-    packages = with pkgs; [
-      noto-fonts
-      noto-fonts-cjk-sans
-      noto-fonts-color-emoji
-      liberation_ttf
-      fira-code
-      fira-code-symbols
-      mplus-outline-fonts.githubRelease
-      dina-font
-      proggyfonts
-      nerd-fonts.fira-code
-      nerd-fonts.droid-sans-mono
-    ];
-  };
-  # system user
-  users.users.bq = {
-    isNormalUser = true;
-    description = "bq";
-    initialPassword = "changeme";
-    extraGroups = ["networkmanager" "wheel" "docker" "libvirtd" "video"];
-    shell = pkgs.zsh;
-    packages = with pkgs; [];
-  };
-
-  environment.systemPackages = with pkgs; [
-    bash
-    coreutils
-    vim # optional
-  ];
-  programs.hyprland.enable = true;
-  programs.coolercontrol.enable = true;
-
-  # eanble steam from module
-  steam.enable = true;
-
-  programs.thunar = {
-    enable = true;
-    plugins = with pkgs; [
-      thunar-archive-plugin
-      thunar-media-tags-plugin
-      thunar-volman
-    ];
-  };
-  services.gvfs.enable = true; # Mount, trash, and other functionalities
-  services.tumbler.enable = true; # Thumbnail support for images
-
-  # use zsh
-  programs.zsh.enable = true;
-  users.defaultUserShell = pkgs.zsh;
-  environment.shells = with pkgs; [zsh];
-
-  # control battery, but I think, it does not work with my laptop
-  powerManagement.enable = true;
-  services.tlp = {
-    enable = true;
-    settings = {
-      CPU_SCALING_GOVERNOR_ON_AC = "performance";
-      CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-
-      CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
-      CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
-
-      CPU_MIN_PERF_ON_AC = 0;
-      CPU_MAX_PERF_ON_AC = 100;
-      CPU_MIN_PERF_ON_BAT = 0;
-      CPU_MAX_PERF_ON_BAT = 20;
-
-      #Optional helps save long term battery health
-      START_CHARGE_THRESH_BAT0 = 40; # 40 and below it starts to charge
-      STOP_CHARGE_THRESH_BAT0 = 80; # 80 and above it stops charging
-    };
-  };
-
-  # enable ports used by tailscale
   networking.firewall = rec {
     allowedTCPPortRanges = [
       {
@@ -351,27 +83,68 @@
     allowedUDPPortRanges = allowedTCPPortRanges;
   };
 
-  # Needed kernel modules for Lenovo systems
-  boot.kernelModules = ["acpi_call" "tp_smapi" "i2c-dev" "alienware-wmi"];
-  virtualisation.docker = {
+  # --- host hardware: nvidia + alienware ---
+  services.hardware.openrgb = {
     enable = true;
+    motherboard = "intel";
   };
+  services.hardware.dell-bios-fan-control.enable = true;
+  services.udev.extraRules = ''
+    SUBSYSTEM=="usb", ATTRS{idVendor}=="187c", ATTRS{idProduct}=="0550", MODE="0666"
+  '';
 
-  virtualisation.libvirtd.enable = true;
-
-  virtualisation.vmVariant = {
-    # following configuration is added only when building VM with build-vm
-    virtualisation = {
-      memorySize = 2048; # Use 2048MiB memory.
-      cores = 3;
+  services.xserver = {
+    videoDrivers = ["nvidia"];
+    xkb = {
+      layout = "pl";
+      variant = "";
     };
   };
 
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "25.05"; # Did you read the comment?
+  hardware = {
+    bluetooth.enable = true;
+    graphics.enable = true;
+    nvidia = {
+      open = true;
+      modesetting.enable = true;
+      prime = {
+        sync.enable = true;
+        offload.enable = false;
+        intelBusId = "PCI:0:2:0";
+        nvidiaBusId = "PCI:1:0:0";
+      };
+      powerManagement.enable = false;
+      nvidiaSettings = false;
+    };
+    enableRedistributableFirmware = true;
+  };
+
+  programs.dconf.enable = true;
+
+  # fingerprint reader
+  systemd.services.fprintd = {
+    wantedBy = ["multi-user.target"];
+    serviceConfig.Type = "simple";
+  };
+  services.fprintd.enable = true;
+
+  # --- battery / thermal (this host uses both tlp and auto-cpufreq) ---
+  services.auto-cpufreq.enable = true;
+  services.tlp = {
+    enable = true;
+    settings = {
+      CPU_SCALING_GOVERNOR_ON_AC = "performance";
+      CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+      CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
+      CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
+      CPU_MIN_PERF_ON_AC = 0;
+      CPU_MAX_PERF_ON_AC = 100;
+      CPU_MIN_PERF_ON_BAT = 0;
+      CPU_MAX_PERF_ON_BAT = 20;
+      START_CHARGE_THRESH_BAT0 = 40;
+      STOP_CHARGE_THRESH_BAT0 = 80;
+    };
+  };
+
+  system.stateVersion = "25.05";
 }

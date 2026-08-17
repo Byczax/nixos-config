@@ -7,15 +7,11 @@
   compositor,
   ...
 }: {
-  imports = [
-    ./programs.nix
-  ];
-
   home = {
     # Home Manager needs a bit of information about you and the
     # paths it should manage.
-    username = "bq";
-    homeDirectory = "/home/bq";
+    username = osConfig.meta.mainUser.username;
+    homeDirectory = osConfig.meta.mainUser.homeDirectory;
 
     # This value determines the Home Manager release that your
     # configuration is compatible with. This helps avoid breakage
@@ -51,13 +47,11 @@
       }
 
       (lib.mkIf (compositor == "hyprland") {
-        AAA = "1";
         XDG_CURRENT_DESKTOP = "Hyprland";
         QT_QPA_PLATFORM = "wayland";
       })
 
       (lib.mkIf (compositor == "niri") {
-        BBB = "1";
         XDG_CURRENT_DESKTOP = "niri";
         QT_QPA_PLATFORM = "wayland";
       })
@@ -143,7 +137,7 @@
       enable = true;
       clean.enable = true;
       clean.extraArgs = "--keep-since 4d --keep 3";
-      flake = "/home/bq/nixos-config";
+      flake = "${config.home.homeDirectory}/nixos-config";
     };
     zathura = {
       enable = true;
@@ -200,55 +194,7 @@
       };
     };
 
-    borgmatic = {
-      enable = true;
-      backups = {
-        synology = {
-          consistency = {
-            checks = [
-              {
-                name = "repository";
-                frequency = "2 weeks";
-              }
-              {
-                name = "archives";
-                frequency = "4 weeks";
-              }
-              {
-                name = "data";
-                frequency = "6 weeks";
-              }
-              {
-                name = "extract";
-                frequency = "6 weeks";
-              }
-            ];
-          };
-          location = {
-            repositories = [(import ./private.nix).borgRepo];
-            extraConfig = {
-              remote_path = "/usr/local/bin/borg";
-              # Passphrase read from decrypted agenix secret at runtime
-              encryption_passcommand = "cat ${osConfig.age.secrets.borg-passphrase.path}";
-            };
-            patterns = [
-              "R /home/bq"
-              "- /home/bq/.cache"
-              "- /home/bq/.config"
-              "- /home/bq/.local"
-              "- /home/bq/Media"
-              "- /home/bq/.java"
-            ];
-          };
-          retention = {
-            keepDaily = 7; # last week
-            keepWeekly = 4; # last month
-            keepMonthly = 12; # last year
-            keepYearly = 3; # long-term
-          };
-        };
-      };
-    };
+    # borgmatic moved to modules/home/borg.mod.nix (enabled via modules.borg.enable)
     nix-init = {
       enable = true;
     };
@@ -544,11 +490,6 @@
       };
     };
 
-    borgmatic = {
-      enable = true;
-      frequency = "daily";
-    };
-
     cliphist = {
       enable = true;
 
@@ -580,7 +521,7 @@
 
   # modules
   #nvim.enable = true;
-  module = {
+  modules = {
     hyprland.enable = true;
     helix.enable = true;
     nvf.enable = true;
@@ -589,15 +530,37 @@
     zoom.enable = true;
     thunderbird.enable = true;
     firefox.enable = true;
-    zsh = {
-      enable = true;
-      host = "yoga";
-    };
+    zsh.enable = true;
     activitywatch.enable = true;
     kanshi.enable = true;
     jelly-mpv.enable = true;
     opencode.enable = true;
     #catppuccin.enable = true;
+
+    # Apps this host does NOT want (present on g7, not on yoga). Everything else
+    # in modules/home/apps.mod.nix installs by default.
+    apps = {
+      iperf = false;
+      font-awesome = false;
+      tree-sitter = false;
+      hugo = false;
+      vscodium = false;
+      opentofu = false;
+      logseq = false;
+      joplin = false;
+      notesnook = false;
+      gimp = false;
+      freecad = false;
+      bitwarden-desktop = false;
+      xdotool = false;
+      libinput = false;
+      gcr = false;
+      hyprshade = false;
+      hyprsunset = false;
+      qemu = false;
+      virt-manager = false;
+      element-desktop = false;
+    };
   };
 
   i18n.inputMethod = {

@@ -3,9 +3,9 @@
   lib,
   ...
 }: let
-  cfg = config.module.kanshi;
+  cfg = config.modules.kanshi;
 in {
-  options.module.kanshi.enable = lib.mkEnableOption "Enable custom kanshi config";
+  options.modules.kanshi.enable = lib.mkEnableOption "Enable custom kanshi config";
 
   config = lib.mkIf cfg.enable {
     services.kanshi = {

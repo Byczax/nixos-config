@@ -4,9 +4,9 @@
   lib,
   ...
 }: let
-  cfg = config.module.nvf;
+  cfg = config.modules.nvf;
 in {
-  options.module.nvf.enable = lib.mkEnableOption "Enable custom nvf config";
+  options.modules.nvf.enable = lib.mkEnableOption "Enable custom nvf config";
 
   config = lib.mkIf cfg.enable {
     programs.nvf = {

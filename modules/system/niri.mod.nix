@@ -4,9 +4,9 @@
   lib,
   ...
 }: let
-  enableNiri = config.niri.enable;
+  enableNiri = config.modules.niri.enable;
 in {
-  options.niri.enable = lib.mkOption {
+  options.modules.niri.enable = lib.mkOption {
     type = lib.types.bool;
     default = false;
     description = "Enable Niri and related packages/services.";

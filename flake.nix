@@ -57,55 +57,18 @@
 
   outputs = {self, ...} @ inputs: let
     inherit (inputs.nixpkgs) lib;
-    inherit (builtins) map toString;
 
     systems = ["x86_64-linux"];
     eachSystem = lib.genAttrs systems;
     pkgsFor = inputs.nixpkgs.legacyPackages;
-
-    mkSystem = system: hostname: conf-name: compositor:
-      inputs.nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs compositor self;};
-        modules =
-          [
-            ./hosts/${conf-name}/configuration.nix
-            ./modules/system/secrets/secrets.mod.nix
-
-            inputs.home-manager.nixosModules.home-manager
-            {
-              networking.hostName = hostname;
-              nixpkgs.hostPlatform = system;
-            }
-            {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                extraSpecialArgs = {inherit inputs compositor;};
-
-                users.bq.imports =
-                  [
-                    ./hosts/${conf-name}/home.nix
-                    inputs.nvf.homeManagerModules.default
-                    inputs.zen-browser.homeModules.twilight
-                    inputs.agenix.homeManagerModules.default
-                  ]
-                  ++ lib.filter (lib.hasSuffix ".mod.nix") (map toString (lib.filesystem.listFilesRecursive ./modules/home));
-              };
-            }
-          ]
-          ++ lib.filter (lib.hasSuffix ".mod.nix") (map toString (lib.filesystem.listFilesRecursive ./modules/system));
-      };
   in {
-    nixosConfigurations = {
-      yoga = mkSystem "x86_64-linux" "yoga" "yoga" "hyprland";
-      g7 = mkSystem "x86_64-linux" "g7" "g7" "hyprland";
-    };
+    nixosConfigurations = import ./hosts inputs;
+
     agenix-rekey = inputs.agenix-rekey.configure {
       userFlake = self;
       nixosConfigurations = self.nixosConfigurations;
     };
 
-    # Your development shell handles importing the binary directly
     devShells = eachSystem (system: let
       pkgs = pkgsFor.${system};
     in {
