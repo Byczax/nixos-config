@@ -55,6 +55,12 @@ in {
           input   = { kb_layout = "pl", kb_options = "grp:alt_shift_toggle" },
         })
 
+        -- Monitors: sane default for every output — native (preferred) mode,
+        -- auto position, scale 1. kanshi overrides per-profile when docked.
+        -- scale "auto" was picking a fractional/2x scale on some panels (the
+        -- "zoomed in" look), so pin it to 1.
+        hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1 })
+
         -- Autostart (waybar is started by its systemd user service)
         hl.on("hyprland.start", function()
           hl.exec_cmd(terminal)
@@ -153,7 +159,8 @@ in {
         })
 
         -- NOTE: the hyprlang monitors.conf (written by nwg-displays) cannot be
-        -- sourced from Lua (no hl.source). Monitor layout is managed by kanshi.
+        -- sourced from Lua (no hl.source). The default hl.monitor above covers
+        -- the internal panel; kanshi manages docked multi-monitor layouts.
       '';
     };
 
