@@ -5,10 +5,40 @@
   ...
 }: let
   cfg = config.modules.nvf;
+
+  # Build the vim-dirtytalk "programming" spell file at build time from its
+  # bundled wordlists. The plugin ships only *.words (no *.spl) and normally
+  # generates the spell file via :DirtytalkUpdate at runtime — which fails
+  # against the read-only Nix store, so neovim prompts to "download" a language
+  # it cannot fetch. Prebuilding it and placing it on the spell path (below)
+  # makes spelllang=programming resolve with no runtime download.
+  # Wordlist source (the nvf-pinned plugin isn't reachable from pkgs.vimPlugins).
+  dirtytalkSrc = pkgs.fetchFromGitHub {
+    owner = "psliwka";
+    repo = "vim-dirtytalk";
+    rev = "aa57ba90";
+    sha256 = "0ikk2z9axk9hys3an3cvp7m8fwrmrxb570iw1km3yz7z9f73jdbb";
+  };
+
+  programmingSpell = pkgs.runCommand "dirtytalk-programming-spell" {
+    nativeBuildInputs = [pkgs.neovim];
+  } ''
+    export HOME=$(mktemp -d)
+    cat ${dirtytalkSrc}/wordlists/*.words > words.txt
+    mkdir -p $out/spell
+    nvim -es -u NONE -i NONE \
+      -c "set encoding=utf-8" \
+      -c "silent mkspell! $out/spell/programming words.txt" \
+      -c "qa!"
+    test -f $out/spell/programming.utf-8.spl
+  '';
 in {
   options.modules.nvf.enable = lib.mkEnableOption "Enable custom nvf config";
 
   config = lib.mkIf cfg.enable {
+    # Prebuilt dirtytalk programming spell file on neovim's data spell path.
+    home.file.".local/share/nvim/site/spell/programming.utf-8.spl".source = "${programmingSpell}/spell/programming.utf-8.spl";
+
     programs.nvf = {
       enable = true;
       settings = {
