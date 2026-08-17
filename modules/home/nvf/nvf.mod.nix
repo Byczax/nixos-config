@@ -472,7 +472,7 @@ in {
                   owner = "dsabsay";
                   repo = "vim-tanka";
                   rev = "master";
-                  hash = "sha256-9sRm6Kqw951d/PPzgzAUAv6ZjxGRe+Np9NtZJuwqdhs=";
+                  hash = "sha256-13lgdoyzFqZVrZoj55y+aQpgoNX0AF0cXSqnuyg0a8k=";
                 };
               };
             };
@@ -484,7 +484,7 @@ in {
                   owner = "hadolint";
                   repo = "hadolint";
                   rev = "master";
-                  hash = "sha256-9sRm6Kqw951d/PPzgzAUAv6ZjxGRe+Np9NtZJuwqdhs=";
+                  hash = "sha256-13lgdoyzFqZVrZoj55y+aQpgoNX0AF0cXSqnuyg0a8k=";
                 };
               };
             };

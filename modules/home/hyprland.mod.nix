@@ -34,7 +34,7 @@ in {
         "$clipboard" = "cliphist list | wofi --dmenu | cliphist decode | wl-copy";
         exec-once = [
           "$terminal &"
-          "waybar &"
+          # waybar started by its systemd user service (see waybar.mod.nix)
           # Qt overlay broken under native Wayland; force XWayland (xcb) for flameshot UI, sway desktop makes it grab via grim
           "QT_QPA_PLATFORM=xcb XDG_CURRENT_DESKTOP=sway flameshot &"
           "kdeconnectd &"
@@ -124,7 +124,10 @@ in {
           "$mod, mouse:273, resizewindow"
         ];
         bindl = [
-          ",switch:Lid Switch, exec, hyprlock"
+          # Route lid-close through the session locker (guarded lock_cmd in
+          # hypridle) instead of spawning hyprlock directly — spawning it raw
+          # bypasses the single-instance guard and duplicate instances crash.
+          ",switch:Lid Switch, exec, loginctl lock-session"
         ];
         bindel = [
           ",XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"

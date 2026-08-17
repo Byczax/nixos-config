@@ -9,8 +9,20 @@ in {
   options.modules.waybar.enable = lib.mkEnableOption "Enable custom waybar config";
 
   config = lib.mkIf cfg.enable {
+    # Run waybar as a systemd user service so it survives monitor hotplug
+    # (docking/undocking). Without a supervisor waybar dies when its output
+    # disappears and never comes back until manual restart.
+    systemd.user.services.waybar.Service = {
+      Restart = lib.mkForce "always";
+      RestartSec = lib.mkForce "1";
+    };
+
     programs.waybar = {
       enable = true;
+      systemd = {
+        enable = true;
+        target = "hyprland-session.target";
+      };
       style = ./waybar_style.css;
       settings = [
         {

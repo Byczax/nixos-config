@@ -128,6 +128,18 @@
   };
   services.fprintd.enable = true;
 
+  # Lid behaviour: suspend on battery, lock on charger, lock when docked
+  # (external monitors keep working, no suspend so no wake-with-new-monitors
+  # crash path). Matches yoga.
+  services.logind = {
+    enable = true;
+    settings.Login = {
+      HandleLidSwitch = "suspend";
+      HandleLidSwitchExternalPower = "lock";
+      HandleLidSwitchDocked = "lock";
+    };
+  };
+
   # --- battery / thermal (this host uses both tlp and auto-cpufreq) ---
   services.auto-cpufreq.enable = true;
   services.tlp = {

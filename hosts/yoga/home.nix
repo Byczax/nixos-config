@@ -385,7 +385,9 @@
         general = {
           lock_cmd = "pidof hyprlock || hyprlock";
           before_sleep_cmd = "loginctl lock-session";
-          after_sleep_cmd = "hyprctl dispatch dpms on";
+          # dpms on, then ensure a locker is up: if hyprlock crashed on the
+          # monitor change during sleep, respawn it so wake never lands unlocked.
+          after_sleep_cmd = "hyprctl dispatch dpms on; pidof hyprlock || hyprlock";
           ignore_dbus_inhibit = false;
         };
         listener = [
