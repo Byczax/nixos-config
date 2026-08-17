@@ -29,7 +29,7 @@ in {
         enable = true;
         # graphical-session.target is reached under both hyprland and niri, so
         # the bar starts regardless of compositor.
-        target = "graphical-session.target";
+        targets = ["graphical-session.target"];
       };
       style = ./waybar_style.css;
       settings = [

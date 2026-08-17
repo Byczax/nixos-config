@@ -1,0 +1,200 @@
+# OLD hyprlang-backend version of the hyprland home module, kept as a fallback.
+#
+# NOTE: this file's name does not end in `.mod.nix`, so the flake's auto-import
+# glob (lib.hasSuffix ".mod.nix") does NOT pick it up — it is inert. To use it,
+# swap its contents back into hyprland.mod.nix.
+#
+# The live module (hyprland.mod.nix) uses the Lua config backend instead.
+{
+  config,
+  pkgs,
+  lib,
+  compositor,
+  ...
+}: let
+  cfg = config.modules.hyprland;
+
+  randomWall = pkgs.writeShellScript "random-wall" ''
+    DIR="$HOME/nixos-config/assets/"
+    ${pkgs.hyprland}/bin/hyprctl hyprpaper unload all
+
+    for MON in $(${pkgs.hyprland}/bin/hyprctl monitors -j | ${pkgs.jq}/bin/jq -r '.[].name'); do
+      WALL=$(find "$DIR" -type f | shuf -n 1)
+      ${pkgs.hyprland}/bin/hyprctl hyprpaper preload "$WALL"
+      ${pkgs.hyprland}/bin/hyprctl hyprpaper wallpaper "$MON,$WALL"
+      sleep 1
+    done
+  '';
+in {
+  # Defaults to on only when this host boots hyprland. Flip meta.compositor to
+  # "niri" and this turns itself off (and modules/home/niri.mod.nix turns on).
+  options.modules.hyprland.enable = lib.mkOption {
+    type = lib.types.bool;
+    default = compositor == "hyprland";
+    description = "Enable custom hyprland config";
+  };
+
+  config = lib.mkIf cfg.enable {
+    wayland.windowManager.hyprland = {
+      configType = "hyprlang";
+      enable = true;
+      systemd.enable = true;
+      settings = {
+        "$mod" = "SUPER";
+        "$print" = "XF86SelectiveScreenshot";
+        "$terminal" = "foot";
+        "$fileManager" = "thunar";
+        "$menu" = "wofi -G --allow-images --show drun";
+        "$clipboard" = "cliphist list | wofi --dmenu | cliphist decode | wl-copy";
+        exec-once = [
+          "$terminal &"
+          # waybar started by its systemd user service (see waybar.mod.nix)
+          # Qt overlay broken under native Wayland; force XWayland (xcb) for flameshot UI, sway desktop makes it grab via grim
+          "QT_QPA_PLATFORM=xcb XDG_CURRENT_DESKTOP=sway flameshot &"
+          "kdeconnectd &"
+
+          "bash -c 'while true; do ${randomWall}; sleep 6000; done'"
+          "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=Hyprland"
+          "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+        ];
+        # exec = [
+        #   "hyprshade auto"
+        # ];
+        env = [
+          "XCURSOR_SIZE,24"
+          # "HYPRCURSOR_SIZE,24"
+          "XCURSOR_THEME,Bibata-Modern-Classic"
+        ];
+
+        general = {
+          gaps_in = 0;
+          gaps_out = 0;
+          border_size = 0;
+        };
+        input = {
+          "kb_layout" = "pl";
+          "kb_options" = "grp:alt_shift_toggle";
+        };
+        bind =
+          [
+            "$mod, Q, exec, $terminal"
+            "$mod, C, killactive,"
+            "$mod, M, exit,"
+            "$mod, E, exec, $fileManager"
+            "$mod, B, togglefloating,"
+            "$mod, R, exec, $menu"
+            "$mod, P, pseudo,"
+            # "$mod, J, togglesplit,"
+            "$mod, L, exec, hyprlock"
+            "$mod, D, exec, vesktop"
+            "$mod, V, exec, $clipboard"
+            "$mod, Return, exec, $terminal"
+            ", $print, exec, grimblast --freeze copy area"
+            "$mod, $print, exec, grim -g \"$(slurp)\" - | satty -f -"
+            "$mod CTRL, $print, exec, QT_QPA_PLATFORM=xcb XDG_CURRENT_DESKTOP=sway flameshot gui"
+            #"$mod, F, exec, firefox"
+
+            "$mod, F, fullscreen"
+
+            # Move focus with mod + arrow keys
+            "$mod, left, movefocus, l"
+            "$mod, right, movefocus, r"
+            "$mod, up, movefocus, u"
+            "$mod, down, movefocus, d"
+
+            # Move window with mod + arrow keys
+            "$mod SHIFT, left, movewindow, l"
+            "$mod SHIFT, right, movewindow, r"
+            "$mod SHIFT, up, movewindow, u"
+            "$mod SHIFT, down, movewindow, d"
+
+            "$mod, t, togglegroup"
+            "$mod, k, changegroupactive, f"
+            "$mod, j, changegroupactive, b"
+
+            # Example special workspace (scratchpad)
+            "$mod, S, togglespecialworkspace, magic"
+            "$mod SHIFT, S, movetoworkspace, special:magic"
+
+            # Scroll through existing workspaces with mod + scroll
+            "$mod, mouse_down, workspace, e+1"
+            "$mod, mouse_up, workspace, e-1"
+
+            "$mod, 0, workspace, 10"
+            "$mod SHIFT, 0, movetoworkspace, 10"
+          ]
+          ++ (
+            builtins.concatLists (builtins.genList (i: let
+                ws = i;
+              in [
+                "$mod, ${toString i}, workspace, ${toString ws}"
+                "$mod SHIFT, ${toString i}, movetoworkspace, ${toString ws}"
+              ])
+              10)
+          );
+        bindm = [
+          # Move/resize windows with mod + LMB/RMB and dragging
+          "$mod, mouse:272, movewindow"
+          "$mod, mouse:273, resizewindow"
+        ];
+        bindl = [
+          # Route lid-close through the session locker (guarded lock_cmd in
+          # hypridle) instead of spawning hyprlock directly — spawning it raw
+          # bypasses the single-instance guard and duplicate instances crash.
+          ",switch:Lid Switch, exec, loginctl lock-session"
+        ];
+        bindel = [
+          ",XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
+          ",XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+          ",XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+          ",XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
+          ",XF86MonBrightnessUp, exec, brightnessctl s 5%+"
+          ",XF86MonBrightnessDown, exec, brightnessctl s 5%-"
+
+          # Requires playerctl
+          ", XF86AudioNext, exec, playerctl next"
+          ", XF86AudioPause, exec, playerctl play-pause"
+          ", XF86AudioPlay, exec, playerctl play-pause"
+          ", XF86AudioPrev, exec, playerctl previous"
+        ];
+        source = ["~/.config/hypr/monitors.conf"];
+        #monitor = [
+        #  "desc:AU Optronics 0x258C,1920x1080@60.05,1920x120,1.0"
+        #  "desc:BNQ BenQ XL2420T P7C01529SL0,1920x1080@60.0,5760x0,1.0"
+        #  "desc:BNQ BenQ XL2420T P7C01529SL0,transform,1"
+        #  "desc:Dell Inc. DELL U2415 08DXD5C422HS,1920x1200@59.95,0x0,1.0"
+        #  "desc:Ancor Communications Inc VG248 F7LMQS100286,1920x1080@60.0,3840x120,1.0"
+        #];
+        # Hyprland 0.56 unified window rules: `windowrule = RULE, MATCHER`.
+        # Matchers use class:^(...)$ / title:^(...)$.
+        windowrule = [
+          # Flameshot: floating, pinned across workspaces, primary monitor,
+          # no fullscreen takeover, no open animation.
+          "float, class:^(flameshot)$"
+          "move 0 0, class:^(flameshot)$"
+          "pin, class:^(flameshot)$"
+          "noanim, class:^(flameshot)$"
+          "suppressevent fullscreen, class:^(flameshot)$"
+          "monitor 1, class:^(flameshot)$"
+
+          # Satty (screenshot annotation): centered floating window at 80%.
+          "float, class:^(com.gabm.satty)$"
+          "center, class:^(com.gabm.satty)$"
+          "size 80% 80%, class:^(com.gabm.satty)$"
+
+          # Zoom popups float.
+          "float, title:^(zoom)$"
+        ];
+      };
+    };
+
+    services.hyprpaper = {
+      enable = true;
+    };
+
+    home.sessionVariables = {
+      XDG_CURRENT_DESKTOP = "Hyprland";
+      QT_QPA_PLATFORM = "wayland";
+    };
+  };
+}

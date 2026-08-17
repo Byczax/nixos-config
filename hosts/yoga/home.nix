@@ -465,6 +465,12 @@
 
       settings = {
         General = {
+          # Wayland: capture via grim instead of an X11 grab. Required with
+          # enableWlrSupport, otherwise flameshot produces black/empty shots
+          # under Hyprland. disabledGrimWarning silences the nag.
+          useGrimAdapter = true;
+          disabledGrimWarning = true;
+
           # Save Path
           # savePath = "/home/user/Screenshots";
           # Tray

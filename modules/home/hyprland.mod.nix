@@ -29,219 +29,132 @@ in {
 
   config = lib.mkIf cfg.enable {
     wayland.windowManager.hyprland = {
-      configType = "hyprlang";
+      # Lua config backend (Hyprland 0.5x). The whole config is authored as
+      # native Lua via extraConfig (appended to ~/.config/hypr/hyprland.lua);
+      # `hl` is the global Hyprland Lua API. settings is left empty.
+      configType = "lua";
       enable = true;
       systemd.enable = true;
-      settings = {
-        "$mod" = "SUPER";
-        "$print" = "XF86SelectiveScreenshot";
-        "$terminal" = "foot";
-        "$fileManager" = "thunar";
-        "$menu" = "wofi -G --allow-images --show drun";
-        "$clipboard" = "cliphist list | wofi --dmenu | cliphist decode | wl-copy";
-        exec-once = [
-          "$terminal &"
-          # waybar started by its systemd user service (see waybar.mod.nix)
-          # Qt overlay broken under native Wayland; force XWayland (xcb) for flameshot UI, sway desktop makes it grab via grim
-          "QT_QPA_PLATFORM=xcb XDG_CURRENT_DESKTOP=sway flameshot &"
-          "kdeconnectd &"
+      settings = {};
+      extraConfig = ''
+        -- Variables
+        local mod         = "SUPER"
+        local printKey    = "XF86SelectiveScreenshot"
+        local terminal    = "foot"
+        local fileManager = "thunar"
+        local menu        = "wofi -G --allow-images --show drun"
+        local clipboard   = "cliphist list | wofi --dmenu | cliphist decode | wl-copy"
 
-          "bash -c 'while true; do ${randomWall}; sleep 6000; done'"
-          "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=Hyprland"
-          "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-        ];
-        # exec = [
-        #   "hyprshade auto"
-        # ];
-        env = [
-          "XCURSOR_SIZE,24"
-          # "HYPRCURSOR_SIZE,24"
-          "XCURSOR_THEME,Bibata-Modern-Classic"
-        ];
+        -- Environment
+        hl.env("XCURSOR_SIZE", "24")
+        hl.env("XCURSOR_THEME", "Bibata-Modern-Classic")
 
-        general = {
-          gaps_in = 0;
-          gaps_out = 0;
-          border_size = 0;
-        };
-        input = {
-          "kb_layout" = "pl";
-          "kb_options" = "grp:alt_shift_toggle";
-        };
-        bind =
-          [
-            "$mod, Q, exec, $terminal"
-            "$mod, C, killactive,"
-            "$mod, M, exit,"
-            "$mod, E, exec, $fileManager"
-            "$mod, B, togglefloating,"
-            "$mod, R, exec, $menu"
-            "$mod, P, pseudo,"
-            # "$mod, J, togglesplit,"
-            "$mod, L, exec, hyprlock"
-            "$mod, D, exec, vesktop"
-            "$mod, V, exec, $clipboard"
-            "$mod, Return, exec, $terminal"
-            ", $print, exec, grimblast --freeze copy area"
-            "$mod, $print, exec, grim -g \"$(slurp)\" - | satty -f -"
-            "$mod CTRL, $print, exec, QT_QPA_PLATFORM=xcb XDG_CURRENT_DESKTOP=sway flameshot gui"
-            #"$mod, F, exec, firefox"
+        -- Keyword config (general / input)
+        hl.config({
+          general = { gaps_in = 0, gaps_out = 0, border_size = 0 },
+          input   = { kb_layout = "pl", kb_options = "grp:alt_shift_toggle" },
+        })
 
-            "$mod, F, fullscreen"
+        -- Autostart (waybar is started by its systemd user service)
+        hl.on("hyprland.start", function()
+          hl.exec_cmd(terminal)
+          -- Qt overlay broken under native Wayland; force XWayland for flameshot UI
+          hl.exec_cmd("QT_QPA_PLATFORM=xcb XDG_CURRENT_DESKTOP=sway flameshot")
+          hl.exec_cmd("kdeconnectd")
+          hl.exec_cmd("bash -c 'while true; do ${randomWall}; sleep 6000; done'")
+          hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=Hyprland")
+          hl.exec_cmd("systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
+        end)
 
-            # Move focus with mod + arrow keys
-            "$mod, left, movefocus, l"
-            "$mod, right, movefocus, r"
-            "$mod, up, movefocus, u"
-            "$mod, down, movefocus, d"
+        -- Applications
+        hl.bind(mod .. " + Q",      hl.dsp.exec_cmd(terminal))
+        hl.bind(mod .. " + C",      hl.dsp.window.close())
+        hl.bind(mod .. " + M",      hl.dsp.exit())
+        hl.bind(mod .. " + E",      hl.dsp.exec_cmd(fileManager))
+        hl.bind(mod .. " + B",      hl.dsp.window.float({ action = "toggle" }))
+        hl.bind(mod .. " + R",      hl.dsp.exec_cmd(menu))
+        hl.bind(mod .. " + P",      hl.dsp.window.pseudo())
+        hl.bind(mod .. " + L",      hl.dsp.exec_cmd("hyprlock"))
+        hl.bind(mod .. " + D",      hl.dsp.exec_cmd("vesktop"))
+        hl.bind(mod .. " + V",      hl.dsp.exec_cmd(clipboard))
+        hl.bind(mod .. " + RETURN", hl.dsp.exec_cmd(terminal))
+        hl.bind(mod .. " + F",      hl.dsp.window.fullscreen())
 
-            # Move window with mod + arrow keys
-            "$mod SHIFT, left, movewindow, l"
-            "$mod SHIFT, right, movewindow, r"
-            "$mod SHIFT, up, movewindow, u"
-            "$mod SHIFT, down, movewindow, d"
+        -- Screenshots
+        hl.bind(printKey,                        hl.dsp.exec_cmd("grimblast --freeze copy area"))
+        hl.bind(mod .. " + " .. printKey,        hl.dsp.exec_cmd("grim -g \"$(slurp)\" - | satty -f -"))
+        hl.bind(mod .. " + CTRL + " .. printKey, hl.dsp.exec_cmd("QT_QPA_PLATFORM=xcb XDG_CURRENT_DESKTOP=sway flameshot gui"))
 
-            "$mod, t, togglegroup"
-            "$mod, k, changegroupactive, f"
-            "$mod, j, changegroupactive, b"
+        -- Focus movement
+        hl.bind(mod .. " + left",  hl.dsp.focus({ direction = "left" }))
+        hl.bind(mod .. " + right", hl.dsp.focus({ direction = "right" }))
+        hl.bind(mod .. " + up",    hl.dsp.focus({ direction = "up" }))
+        hl.bind(mod .. " + down",  hl.dsp.focus({ direction = "down" }))
 
-            # Example special workspace (scratchpad)
-            "$mod, S, togglespecialworkspace, magic"
-            "$mod SHIFT, S, movetoworkspace, special:magic"
+        -- Move window
+        hl.bind(mod .. " + SHIFT + left",  hl.dsp.window.move({ direction = "left" }))
+        hl.bind(mod .. " + SHIFT + right", hl.dsp.window.move({ direction = "right" }))
+        hl.bind(mod .. " + SHIFT + up",    hl.dsp.window.move({ direction = "up" }))
+        hl.bind(mod .. " + SHIFT + down",  hl.dsp.window.move({ direction = "down" }))
 
-            # Scroll through existing workspaces with mod + scroll
-            "$mod, mouse_down, workspace, e+1"
-            "$mod, mouse_up, workspace, e-1"
+        -- Groups
+        hl.bind(mod .. " + T", hl.dsp.group.toggle())
+        hl.bind(mod .. " + K", hl.dsp.group.next())
+        hl.bind(mod .. " + J", hl.dsp.group.prev())
 
-            "$mod, 0, workspace, 10"
-            "$mod SHIFT, 0, movetoworkspace, 10"
-          ]
-          ++ (
-            builtins.concatLists (builtins.genList (i: let
-                ws = i;
-              in [
-                "$mod, ${toString i}, workspace, ${toString ws}"
-                "$mod SHIFT, ${toString i}, movetoworkspace, ${toString ws}"
-              ])
-              10)
-          );
-        bindm = [
-          # Move/resize windows with mod + LMB/RMB and dragging
-          "$mod, mouse:272, movewindow"
-          "$mod, mouse:273, resizewindow"
-        ];
-        bindl = [
-          # Route lid-close through the session locker (guarded lock_cmd in
-          # hypridle) instead of spawning hyprlock directly — spawning it raw
-          # bypasses the single-instance guard and duplicate instances crash.
-          ",switch:Lid Switch, exec, loginctl lock-session"
-        ];
-        bindel = [
-          ",XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
-          ",XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-          ",XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-          ",XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
-          ",XF86MonBrightnessUp, exec, brightnessctl s 5%+"
-          ",XF86MonBrightnessDown, exec, brightnessctl s 5%-"
+        -- Special workspace (scratchpad)
+        hl.bind(mod .. " + S",         hl.dsp.workspace.toggle_special("magic"))
+        hl.bind(mod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" }))
 
-          # Requires playerctl
-          ", XF86AudioNext, exec, playerctl next"
-          ", XF86AudioPause, exec, playerctl play-pause"
-          ", XF86AudioPlay, exec, playerctl play-pause"
-          ", XF86AudioPrev, exec, playerctl previous"
-        ];
-        source = ["~/.config/hypr/monitors.conf"];
-        #monitor = [
-        #  "desc:AU Optronics 0x258C,1920x1080@60.05,1920x120,1.0"
-        #  "desc:BNQ BenQ XL2420T P7C01529SL0,1920x1080@60.0,5760x0,1.0"
-        #  "desc:BNQ BenQ XL2420T P7C01529SL0,transform,1"
-        #  "desc:Dell Inc. DELL U2415 08DXD5C422HS,1920x1200@59.95,0x0,1.0"
-        #  "desc:Ancor Communications Inc VG248 F7LMQS100286,1920x1080@60.0,3840x120,1.0"
-        #];
-        # windowrule = [
-        #    "noanim, class:flameshot"
-        #   "float, class:flameshot"
-        #   "move 0 0, class:flameshot"
-        #   "pin, class:flameshot"
-        #   "noinitialfocus, class:flameshot"
-        #   "monitor 1, class:flameshot"
-        #   "float, title:flameshot"
-        #   "move 0 0, title:flameshot"
-        #   "suppressevent fullscreen, title:flameshot"
-        # ];
-        # windowrule = [
-        #   "match:class ^(flameshot)$, animation none"
-        #   "match:class ^(flameshot)$, float true"
-        #   "match:class ^(flameshot)$, move 0 0"
-        #   "match:class ^(flameshot)$, pin true"
-        #   "match:class ^(flameshot)$, focus_on_activate true"
-        #   #"match:class ^(flameshot)$, focusonactivate true"
-        #   "match:class ^(flameshot)$, monitor 1"
-        #
-        #   "match:title ^(flameshot)$, float true"
-        #   "match:title ^(flameshot)$, move 0 0"
-        #   "match:title ^(zoom)$, float true"
-        #   "match:title ^(flameshot)$, suppress_event fullscreen"
-        # ];
+        -- Scroll through workspaces
+        hl.bind(mod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
+        hl.bind(mod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }))
 
-        windowrule = [
-          # Flameshot rules
-          "float 1, match:class ^(flameshot)$"
-          "move 0 0, match:class ^(flameshot)$"
-          "pin 1, match:class ^(flameshot)$"
-          "no_anim 1, match:class ^(flameshot)$"
-          "focus_on_activate 1, match:class ^(flameshot)$"
-          "suppress_event fullscreen, match:class ^(flameshot)$"
-          "monitor 1, match:class ^(flameshot)$"
+        -- Workspaces 1..10 (key 0 = workspace 10)
+        for i = 1, 10 do
+          local key = i % 10
+          hl.bind(mod .. " + " .. key,         hl.dsp.focus({ workspace = i }))
+          hl.bind(mod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = i }))
+        end
 
-          # Satty (screenshot annotation) rules
-          "float 1, match:class ^(com.gabm.satty)$"
-          "center 1, match:class ^(com.gabm.satty)$"
-          "size 80% 80%, match:class ^(com.gabm.satty)$"
+        -- Mouse drag / resize
+        hl.bind(mod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
+        hl.bind(mod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
-          # Zoom rules
-          "float 1, match:title ^(zoom)$"
-        ];
+        -- Lid close -> route through the guarded session locker (hypridle lock_cmd)
+        hl.bind("switch:Lid Switch", hl.dsp.exec_cmd("loginctl lock-session"), { locked = true })
 
-        # window_rule = [
-        #   {
-        #     match.class = "^(flameshot)$";
-        #     animation = "none";
-        #     float = true;
-        #     move = "0 0";
-        #     pin = true;
-        #     focus_on_activate = true;
-        #     monitor = 1;
-        #   }
-        #   {
-        #     match.title = "^(flameshot)$";
-        #     float = true;
-        #     move = "0 0";
-        #     suppress_event = "fullscreen";
-        #   }
-        #   {
-        #     match.title = "^(zoom)$";
-        #     float = true;
-        #   }
-        # ];
+        -- Volume / brightness (work while locked, key-repeat)
+        hl.bind("XF86AudioRaiseVolume",  hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"),   { locked = true, repeating = true })
+        hl.bind("XF86AudioLowerVolume",  hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),   { locked = true, repeating = true })
+        hl.bind("XF86AudioMute",         hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),  { locked = true, repeating = true })
+        hl.bind("XF86AudioMicMute",      hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"),{ locked = true, repeating = true })
+        hl.bind("XF86MonBrightnessUp",   hl.dsp.exec_cmd("brightnessctl s 5%+"),                        { locked = true, repeating = true })
+        hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl s 5%-"),                        { locked = true, repeating = true })
 
-        # windowrulev2 = [
-        #   # Ignore maximize requests from apps. You'll probably like this.
-        #   "suppressevent maximize, class:.*"
-        #
-        #   # Fix some dragging issues with XWayland
-        #   "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
-        #
-        #   # moves the window to x0, y0 on the screen
-        #   "move 0 0,class:(flameshot),title:(flameshot)"
-        #   # shows the window on all workspaces
-        #   "pin,class:(flameshot),title:(flameshot)"
-        #   # tell the application it's in fullscreen mode
-        #   "fullscreenstate,class:(flameshot),title:(flameshot)"
-        #   # force the window to be floating ( not in a tiled pane )
-        #   "float,class:(flameshot),title:(flameshot)"
-        # ];
-      };
+        -- Media keys
+        hl.bind("XF86AudioNext",  hl.dsp.exec_cmd("playerctl next"),       { locked = true })
+        hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
+        hl.bind("XF86AudioPlay",  hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
+        hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("playerctl previous"),   { locked = true })
+
+        -- Window rules
+        hl.window_rule({
+          name = "flameshot", match = { class = "^(flameshot)$" },
+          float = true, move = "0 0", pin = true, no_anim = true,
+          suppress_event = "fullscreen", monitor = 1,
+        })
+        hl.window_rule({
+          name = "satty", match = { class = "^(com.gabm.satty)$" },
+          float = true, center = true, size = "80% 80%",
+        })
+        hl.window_rule({
+          name = "zoom", match = { title = "^(zoom)$" }, float = true,
+        })
+
+        -- NOTE: the hyprlang monitors.conf (written by nwg-displays) cannot be
+        -- sourced from Lua (no hl.source). Monitor layout is managed by kanshi.
+      '';
     };
 
     services.hyprpaper = {

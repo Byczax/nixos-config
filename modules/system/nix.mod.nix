@@ -36,7 +36,7 @@
     warn-dirty = false;
     keep-going = true;
     auto-allocate-uids = true;
-    use-cgroups = pkgs.stdenv.isLinux;
+    use-cgroups = pkgs.stdenv.hostPlatform.isLinux;
     builders-use-substitutes = true;
     accept-flake-config = false;
     max-jobs = "auto";
