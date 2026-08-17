@@ -173,7 +173,7 @@
       settings.Login = {
         HandleLidSwitch = "suspend";
         HandleLidSwitchExternalPower = "lock";
-        HandleLidSwitchDocked = "ignore";
+        HandleLidSwitchDocked = "ignore"; # the error with hyprlock still persist
       };
     };
   };
@@ -197,7 +197,7 @@
   # extra fonts on top of the shared baseline
   fonts.packages = with pkgs; [
     cardo
-    symbola
+    # symbola
     quivira
     freefont_ttf
     font-awesome
