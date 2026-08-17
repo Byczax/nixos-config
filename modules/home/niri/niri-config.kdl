@@ -15,7 +15,8 @@ input {
             // For example:
             // layout "us,ru"
             layout "pl"
-            // options "grp:win_space_toggle,compose:ralt,ctrl:nocaps"
+            // parity with hyprland: alt+shift cycles layouts
+            options "grp:alt_shift_toggle"
 
             // If this section is empty, niri will fetch xkb settings
             // from org.freedesktop.locale1. You can control these using
@@ -273,9 +274,16 @@ layout {
 spawn-at-startup "waybar"
 spawn-at-startup "foot"
 spawn-at-startup "kdeconnectd"
+spawn-at-startup "kdeconnect-indicator"
 spawn-at-startup "fcitx5"
 spawn-at-startup "flameshot"
 spawn-sh-at-startup "swaybg -i ~/nixos-config/assets/blossom_valley.jpg -m fill"
+// parity with hyprland stack: idle-lock, polkit agent, XWayland.
+// (clipboard history comes from the home-manager cliphist service, which binds
+// to graphical-session.target and so runs under niri too.)
+spawn-at-startup "hypridle"
+spawn-at-startup "hyprpolkitagent"
+spawn-at-startup "xwayland-satellite"
 
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
 // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
@@ -386,6 +394,8 @@ binds {
     Super+D { spawn "vesktop"; }
     Super+Return { spawn "foot"; }
     Super+E { spawn "thunar"; }
+    // clipboard history (parity with hyprland Mod+V)
+    Super+V { spawn-sh "cliphist list | wofi --dmenu | cliphist decode | wl-copy"; }
 
     // Use spawn-sh to run a shell command. Do this if you need pipes, multiple commands, etc.
     // Note: the entire command goes as a single argument. It's passed verbatim to `sh -c`.

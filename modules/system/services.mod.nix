@@ -1,5 +1,8 @@
 {pkgs, ...}: {
   services = {
+    # Periodic SSD TRIM — sustained write performance + drive longevity.
+    fstrim.enable = true;
+
     # autodiscover printers on the LAN
     avahi = {
       enable = true;

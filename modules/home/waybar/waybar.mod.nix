@@ -2,9 +2,15 @@
   config,
   pkgs,
   lib,
+  compositor,
   ...
 }: let
   cfg = config.modules.waybar;
+  # Left-side workspace/window modules follow the active compositor.
+  wsModules =
+    if compositor == "niri"
+    then ["niri/workspaces" "niri/window"]
+    else ["hyprland/workspaces" "hyprland/window"];
 in {
   options.modules.waybar.enable = lib.mkEnableOption "Enable custom waybar config";
 
@@ -21,19 +27,16 @@ in {
       enable = true;
       systemd = {
         enable = true;
-        target = "hyprland-session.target";
+        # graphical-session.target is reached under both hyprland and niri, so
+        # the bar starts regardless of compositor.
+        target = "graphical-session.target";
       };
       style = ./waybar_style.css;
       settings = [
         {
           "layer" = "top";
           "position" = "top";
-          modules-left = [
-            "hyprland/workspaces"
-            "hyprland/window"
-            # "niri/workspaces"
-            # "niri/window"
-          ];
+          modules-left = wsModules;
           modules-center = [];
           modules-right = [
             "tray"

@@ -10,7 +10,8 @@ in {
   config = lib.mkIf cfg.enable {
     services.kanshi = {
       enable = true;
-      systemdTarget = "hyprland-session.target";
+      # graphical-session.target is reached under both hyprland and niri.
+      systemdTarget = "graphical-session.target";
       settings = [
         {
           profile = {

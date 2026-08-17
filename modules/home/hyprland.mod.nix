@@ -2,6 +2,7 @@
   config,
   pkgs,
   lib,
+  compositor,
   ...
 }: let
   cfg = config.modules.hyprland;
@@ -18,7 +19,13 @@
     done
   '';
 in {
-  options.modules.hyprland.enable = lib.mkEnableOption "Enable custom hyprland config";
+  # Defaults to on only when this host boots hyprland. Flip meta.compositor to
+  # "niri" and this turns itself off (and modules/home/niri.mod.nix turns on).
+  options.modules.hyprland.enable = lib.mkOption {
+    type = lib.types.bool;
+    default = compositor == "hyprland";
+    description = "Enable custom hyprland config";
+  };
 
   config = lib.mkIf cfg.enable {
     wayland.windowManager.hyprland = {

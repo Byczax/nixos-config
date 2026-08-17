@@ -495,10 +495,9 @@
     cliphist = {
       enable = true;
 
-      # A Wayland session
-      # systemdTargets = ["config.wayland.systemd.target"];
-      # Hyprland session
-      systemdTargets = ["hyprland-session.target"];
+      # graphical-session.target is reached under both hyprland and niri, so
+      # clipboard history works regardless of compositor.
+      systemdTargets = ["graphical-session.target"];
 
       # Sway Target
       # if using make sure that:
@@ -516,7 +515,8 @@
     arrpc.enable = true;
   };
 
-  xdg.configFile."niri/config.kdl".source = ../../modules/home/niri/niri-config.kdl;
+  # niri config now deployed by modules/home/niri.mod.nix (only when
+  # meta.compositor = "niri"). Left here intentionally blank.
   #xdg.configFile."flameshot.ini".force = true;
   # do I need it?
   #fonts.fontconfig.enable = true;
@@ -524,7 +524,7 @@
   # modules
   #nvim.enable = true;
   modules = {
-    hyprland.enable = true;
+    # hyprland.enable defaults from meta.compositor (on for hyprland, off for niri)
     helix.enable = true;
     nvf.enable = true;
     waybar.enable = true;

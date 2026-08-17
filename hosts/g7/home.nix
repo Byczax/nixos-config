@@ -159,8 +159,7 @@
 
   services.swayidle.enable = true;
 
-  # hyprland stack
-  modules.hyprland.enable = true;
+  # hyprland stack (modules.hyprland.enable defaults from meta.compositor)
   programs.hyprlock.enable = true;
   services.hypridle = {
     enable = true;
