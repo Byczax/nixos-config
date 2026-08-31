@@ -1,9 +1,8 @@
 {
   foldlevel = 99;
-  formatexpr = "v:lua.require'lazyvim.util'.format.formatexpr()";
   formatoptions = "jcroqlnt"; # tcqj
   grepformat = "%f:%l:%c:%m";
-  grepprg = "rg #vimgrep";
+  grepprg = "rg --vimgrep";
   ignorecase = true; # Ignore case
   inccommand = "nosplit"; # preview incremental substitute
   jumpoptions = "view";

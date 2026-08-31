@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }: let
   cfg = config.modules.jelly-mpv;
@@ -8,6 +9,9 @@ in {
   options.modules.jelly-mpv.enable = lib.mkEnableOption "Enable custom jelly-mpv config";
 
   config = lib.mkIf cfg.enable {
+    home.packages = [pkgs.jellyfin-mpv-shim];
+    systemd.user.services.jellyfin-mpv-shim.Install.WantedBy = lib.mkForce [];
+
     services.jellyfin-mpv-shim = {
       enable = true;
       settings = {

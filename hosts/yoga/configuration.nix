@@ -27,6 +27,22 @@
       owner = config.meta.mainUser.username;
       mode = "0400";
     };
+
+    litellm-base-url = {
+      rekeyFile = ../../secrets/litellm-base-url.age;
+      owner = config.meta.mainUser.username;
+      mode = "0400";
+    };
+    litellm-api-key = {
+      rekeyFile = ../../secrets/litellm-api-key.age;
+      owner = config.meta.mainUser.username;
+      mode = "0400";
+    };
+    ethz-base-url = {
+      rekeyFile = ../../secrets/ethz-base-url.age;
+      owner = config.meta.mainUser.username;
+      mode = "0400";
+    };
   };
 
   # --- host-specific unfree/insecure ---
@@ -180,6 +196,11 @@
         HandleLidSwitchDocked = "ignore"; # the error with hyprlock still persist
       };
     };
+
+    udev.extraRules = ''
+      ACTION=="add", SUBSYSTEM=="i2c", KERNEL=="i2c-MSFT0001:00", ATTR{power/wakeup}="disabled"
+      ACTION=="add", SUBSYSTEM=="serio", KERNEL=="serio0", ATTR{power/wakeup}="disabled"
+    '';
   };
 
   systemd = {

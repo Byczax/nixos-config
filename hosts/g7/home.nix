@@ -30,7 +30,6 @@
     slurp = false;
     gopls = false;
     wakatime-cli = false;
-    claude-code = false;
     ansible = false;
     tenv = false;
     jellyfin-media-player = false;

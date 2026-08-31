@@ -183,6 +183,27 @@ in {
             ];
           };
         }
+        {
+          profile = {
+            name = "home_poland";
+            outputs = [
+              {
+                criteria = "AU Optronics 0x258C Unknown";
+                status = "enable";
+                mode = "1920x1080@60.05Hz";
+                scale = 1.0;
+                position = "0,0";
+              }
+              {
+                criteria = "Dell Inc. DELL U2913WM 5YD8C2C8187L";
+                status = "enable";
+                mode = "2560x1080@60.00Hz";
+                scale = 1.0;
+                position = "1920,0";
+              }
+            ];
+          };
+        }
       ];
     };
   };

@@ -52,7 +52,6 @@
     luarocks = luarocks;
     gopls = gopls;
     wakatime-cli = wakatime-cli;
-    claude-code = claude-code;
     tree-sitter = tree-sitter;
     hugo = hugo;
     vscodium = vscodium;
@@ -94,6 +93,7 @@
     prusa-slicer = prusa-slicer;
     gimp = gimp;
     freecad = freecad;
+    drawio = drawio;
 
     # --- media -------------------------------------------------------------
     qbittorrent = qbittorrent;

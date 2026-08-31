@@ -62,6 +62,10 @@
     eachSystem = lib.genAttrs systems;
     pkgsFor = inputs.nixpkgs.legacyPackages;
   in {
+    # Packages that are not in nixpkgs yet. Applied to every host by
+    # hosts/default.nix.
+    overlays.default = import ./pkgs;
+
     nixosConfigurations = import ./hosts inputs;
 
     agenix-rekey = inputs.agenix-rekey.configure {

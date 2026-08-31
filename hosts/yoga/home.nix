@@ -543,6 +543,8 @@
     kanshi.enable = true;
     jelly-mpv.enable = true;
     opencode.enable = true;
+    claudeCode.enable = true;
+    deepseek-harness.enable = true;
     #catppuccin.enable = true;
 
     # Apps this host does NOT want (present on g7, not on yoga). Everything else

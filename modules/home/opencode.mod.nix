@@ -45,7 +45,7 @@ in {
     programs.opencode = {
       enable = true;
       settings = {
-        model = "ethz/qwen3-coder-next";
+        model = "litellm/qwen3-coder-next";
         autoupdate = false; # Deterministic, Nix-pinned toolchain
 
         # Load repo/house conventions into every session so generated code matches
@@ -175,12 +175,52 @@ in {
           };
         };
 
-        # 6. Provider Definition
+        # 6. Provider Definitions
+        # LiteLLM proxy. Both the address and the token are `{file:...}`
+        # references that opencode resolves when it loads its config, so
+        # neither value is interpolated into opencode.json — only the
+        # /run/agenix paths are, and those reveal nothing. Verified with
+        # `opencode debug config`: substitution applies to any string field,
+        # not just apiKey, and strips a trailing newline.
+        provider.litellm = {
+          npm = "@ai-sdk/openai-compatible";
+          name = "LiteLLM";
+          options = {
+            baseURL =
+              if osConfig.modules.secrets.enable
+              then "{file:${osConfig.age.secrets.litellm-base-url.path}}"
+              else "http://127.0.0.1:4000/v1";
+            apiKey =
+              if osConfig.modules.secrets.enable
+              then "{file:${osConfig.age.secrets.litellm-api-key.path}}"
+              else "";
+          };
+          models = {
+            # Model id must match the `model_name` LiteLLM exposes in its
+            # router config, not the upstream vendor's own name.
+            "qwen3-coder-next" = {
+              name = "Qwen3 Coder Next (LiteLLM)";
+              limit = {
+                context = 262144;
+                output = 8192;
+              };
+              options = {
+                temperature = 0.2;
+                top_p = 0.9;
+              };
+            };
+          };
+        };
+
+        # Direct llama-server route, bypassing the proxy. Kept for offline use.
         provider.ethz = {
           npm = "@ai-sdk/openai-compatible";
           name = "ETHZ LLM";
           options = {
-            baseURL = "http://127.0.0.1:8087/v1";
+            baseURL =
+              if osConfig.modules.secrets.enable
+              then "{file:${osConfig.age.secrets.ethz-base-url.path}}"
+              else "http://127.0.0.1:8087/v1";
             # Empty until secrets are available (fresh install), so opencode
             # still installs without the rekeyed api-key secret present.
             apiKey =

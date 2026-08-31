@@ -40,6 +40,7 @@ in
           repositories = [repo];
           extraConfig = {
             remote_path = "/usr/local/bin/borg";
+            encryption_mode = "repokey-blake2";
             # Passphrase read from decrypted agenix secret at runtime.
             encryption_passcommand = "cat ${osConfig.age.secrets.borg-passphrase.path}";
           };

@@ -15,6 +15,7 @@ inputs: let
           {
             networking.hostName = hostname;
             nixpkgs.hostPlatform = system;
+            nixpkgs.overlays = [self.overlays.default];
           }
           ./${hostname}/default.nix
         ]
