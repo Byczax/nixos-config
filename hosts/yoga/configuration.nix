@@ -9,10 +9,11 @@
     ./hardware-configuration.nix
   ];
 
-  modules.secrets.enable = true;
-  modules.steam.enable = true;
-  modules.borg.enable = true;
-
+  modules = {
+    secrets.enable = true;
+    steam.enable = true;
+    borg.enable = true;
+  };
   meta = {
     compositor = "hyprland";
     host.hostPubkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK9pMrB6keoXhaYMfRji4uYAuBzyu0NGPHwTSIMtqidZ";

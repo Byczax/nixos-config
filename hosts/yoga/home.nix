@@ -559,7 +559,7 @@
       logseq = false;
       joplin = false;
       notesnook = false;
-      gimp = false;
+      gimp = true;
       freecad = false;
       bitwarden-desktop = false;
       xdotool = false;
