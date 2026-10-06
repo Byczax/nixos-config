@@ -23,6 +23,23 @@ in {
           "zen.workspaces.separate-essentials" = false;
           "browser.ctrlTab.sortByRecentlyUsed" = true;
           "browser.download.useDownloadDir" = false;
+          "pdfjs.disabled" = false;
+          "browser.download.open_pdf_attachments_inline" = true;
+
+          # Security & privacy
+          "dom.security.https_only_mode" = true;
+          "privacy.fingerprintingProtection" = true;
+          "privacy.donottrackheader.enabled" = true;
+          "network.prefetch-next" = false;
+          "network.dns.disablePrefetch" = true;
+          "network.predictor.enabled" = false;
+
+          # Noise & weight
+          "browser.newtabpage.activity-stream.showSponsored" = false;
+          "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
+          "browser.urlbar.suggest.quicksuggest.sponsored" = false;
+          "browser.tabs.unloadOnLowMemory" = true;
+          "middlemouse.paste" = false;
         };
         mods = [
           "253a3a74-0cc4-47b7-8b82-996a64f030d5" # Floating History
@@ -193,7 +210,37 @@ in {
         # Enable search suggestions
         SearchSuggestEnabled = true;
 
-        DnsOverHTTPS = "Enabled";
+        DnsOverHTTPS = {
+          Enabled = true;
+          Fallback = true;
+          Locked = true;
+        };
+
+        EnableTrackingProtection = {
+          Value = true;
+          Locked = false;
+          Cryptomining = true;
+          Fingerprinting = true;
+          EmailTracking = true;
+        };
+        SSLVersionMin = "tls1.2";
+        PostQuantumKeyAgreementEnabled = true;
+        Permissions = {
+          Location.BlockNewRequests = true;
+          Notifications.BlockNewRequests = true;
+        };
+        FirefoxSuggest = {
+          WebSuggestions = false;
+          SponsoredSuggestions = false;
+          ImproveSuggest = false;
+        };
+        NoDefaultBookmarks = true;
+        UserMessaging = {
+          WhatsNew = false;
+          ExtensionRecommendations = false;
+          FeatureRecommendations = false;
+          SkipOnboarding = true;
+        };
 
         ExtensionSettings = let
           moz = short: "https://addons.mozilla.org/firefox/downloads/latest/${short}/latest.xpi";
@@ -207,12 +254,12 @@ in {
           "languagetool-webextension@languagetool.org" = {
             install_url = moz "languagetool";
             installation_mode = "force_installed";
-            updates_disabled = true;
+            updates_disabled = false;
           };
           "{446900e4-71c2-419f-a6a7-df9c091e268b}" = {
             install_url = moz "bitwarden-password-manager";
             installation_mode = "force_installed";
-            updates_disabled = true;
+            updates_disabled = false;
           };
           # "easyscreenshot@mozillaonline.com" = {
           #   install_url = moz "easyscreenshot";
@@ -222,57 +269,57 @@ in {
           "@contain-facebook" = {
             install_url = moz "facebook-container";
             installation_mode = "force_installed";
-            updates_disabled = true;
+            updates_disabled = false;
           };
           "@testpilot-containers" = {
             install_url = moz "multi-account-containers";
             installation_mode = "force_installed";
-            updates_disabled = true;
+            updates_disabled = false;
           };
           "firefox-translations-addon@mozilla.org" = {
             install_url = moz "firefox-translations";
             installation_mode = "force_installed";
-            updates_disabled = true;
+            updates_disabled = false;
           };
           "foxyproxy@eric.h.jung" = {
             install_url = moz "foxyproxy-standard";
             installation_mode = "force_installed";
-            updates_disabled = true;
+            updates_disabled = false;
           };
           "markdown-viewer@outofindex.com" = {
             install_url = moz "markdown-viewer-chrome";
             installation_mode = "force_installed";
-            updates_disabled = true;
+            updates_disabled = false;
           };
           "{73a6fe31-595d-460b-a920-fcc0f8843232}" = {
             install_url = moz "noscript";
             installation_mode = "force_installed";
-            updates_disabled = true;
+            updates_disabled = false;
           };
           "tab-stash@condordes.net" = {
             install_url = moz "tab-stash";
             installation_mode = "force_installed";
-            updates_disabled = true;
+            updates_disabled = false;
           };
           "uBlock0@raymondhill.net" = {
             install_url = moz "ublock-origin";
             installation_mode = "force_installed";
-            updates_disabled = true;
+            updates_disabled = false;
           };
-          #"{aecec67f-0d10-4fa7-b7c7-609a2db280cf}" = {
-          #  install_url = moz "violentmonkey";
-          #  installation_mode = "force_installed";
-          #  updates_disabled = true;
-          #};
+          "{aecec67f-0d10-4fa7-b7c7-609a2db280cf}" = {
+            install_url = moz "violentmonkey";
+            installation_mode = "force_installed";
+            updates_disabled = false;
+          };
           "{6b733b82-9261-47ee-a595-2dda294a4d08}" = {
             install_url = moz "yomitan";
             installation_mode = "force_installed";
-            updates_disabled = true;
+            updates_disabled = false;
           };
           "{0d7cafdd-501c-49ca-8ebb-e3341caaa55e}" = {
             install_url = moz "youtube-nonstop";
             installation_mode = "force_installed";
-            updates_disabled = true;
+            updates_disabled = false;
           };
           # "addon@darkreader.org" = {
           #   install_url = moz "darkreader";
@@ -282,12 +329,15 @@ in {
           "gdpr@cavi.au.dk" = {
             install_url = moz "consent-o-matic";
             installation_mode = "force_installed";
-            updates_disabled = true;
+            updates_disabled = false;
           };
-          "firefox@tampermonkey.net" = {
-            install_url = moz "tampermonkey";
-            installation_mode = "force_installed";
-            updates_disabled = true;
+        };
+        Handlers = {
+          mimeTypes = {
+            "application/pdf" = {
+              action = "handleInternally";
+              ask = false;
+            };
           };
         };
         SearchEngines = {

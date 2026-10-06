@@ -78,16 +78,11 @@
       "mem_sleep_default=s2idle"
       "pci=noaer"
       "acpi_mask_gpe=0x69"
-      "acpi_mask_gpe=69"
       "usbcore.autosuspend=-1"
       "pcie_pme=nomsi"
     ];
     kernelPackages = pkgs.linuxPackages_latest;
     kernelModules = ["i2c-dev" "rtsx_usb"];
-    extraModprobeConfig = ''
-      options rtsx_usb device_table=0x5812
-      options snd-hda-intel dmic_detect=0
-    '';
     initrd.systemd.network.wait-online.enable = false;
   };
 
@@ -209,7 +204,7 @@
     services.tailscaled.serviceConfig.Environment = [
       "TS_DEBUG_FIREWALL_MODE=nftables"
     ];
-    services.Docker.wantedBy = lib.mkForce ["multi-user.target"];
+    services.docker.wantedBy = lib.mkForce ["multi-user.target"];
     services."systemd-backlight@backlight:intel_backlight".enable = false;
     services.NetworkManager-wait-online.enable = false;
     network.wait-online.enable = false;

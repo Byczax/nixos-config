@@ -126,14 +126,14 @@ in {
               {
                 criteria = "Dell Inc. DELL P2720DC JWGNKF3";
                 status = "enable";
-                mode = "2560x1440@59.9Hz";
+                mode = "2560x1440@59.951Hz";
                 scale = 1.0;
                 position = "0,0";
               }
               {
                 criteria = "Eizo Nanao Corporation EV2736W 0x013F1BB3";
                 status = "enable";
-                mode = "2560x1440@29.94Hz";
+                mode = "2560x1440@29.935Hz";
                 scale = 1.0;
                 transform = "90";
                 position = "2560,0";
