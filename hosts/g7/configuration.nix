@@ -158,5 +158,5 @@
     };
   };
 
-  system.stateVersion = "25.05";
+  stdenv.hostPlatform.system.stateVersion = "25.05";
 }

@@ -57,7 +57,13 @@
       })
     ];
   };
-
+  imports = [inputs.orden.homeManagerModules.default];
+  programs.orden = {
+    enable = true;
+    package = inputs.orden.packages.${pkgs.stdenv.hostPlatform.system}.orden-unstable.overrideAttrs (oldAttrs: {
+      pnpmDepsHash = "sha256-3OH5zSUgmuLgwXRe8vXdx7E7T4n5SVMdQvmNDEP2yL8=";
+    });
+  };
   qt = {
     enable = true;
     platformTheme.name = "qtct";
@@ -544,7 +550,7 @@
     jelly-mpv.enable = true;
     opencode.enable = true;
     claudeCode.enable = true;
-    deepseek-harness.enable = true;
+    deepseek-harness.enable = false;
     #catppuccin.enable = true;
 
     # Apps this host does NOT want (present on g7, not on yoga). Everything else

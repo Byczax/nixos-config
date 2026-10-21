@@ -11,6 +11,7 @@
   pkgs,
   lib,
   config,
+  inputs,
   ...
 }: let
   inherit (lib) mkOption types mkIf mapAttrs filterAttrs attrValues optionals;
@@ -18,54 +19,66 @@
 
   # name -> package. Keys are plain identifiers (option paths); pick camelCase
   # where the package name has dots/dashes.
-  catalog = with pkgs; {
+  catalog = {
     # --- base CLI ----------------------------------------------------------
-    fira-code = fira-code;
-    brightnessctl = brightnessctl;
-    traceroute = traceroute;
-    unzip = unzip;
-    gdu = gdu;
-    dysk = dysk;
-    btop = btop;
-    libqalculate = libqalculate;
-    libnotify = libnotify;
-    fd = fd;
-    ripgrep = ripgrep;
-    jq = jq;
-    comma = comma;
-    xlsclients = xlsclients;
-    wl-clipboard = wl-clipboard;
-    qtwayland = qt5.qtwayland;
-    iperf = iperf;
-    font-awesome = font-awesome;
+    inherit
+      (pkgs)
+      fira-code
+      brightnessctl
+      traceroute
+      unzip
+      gdu
+      dysk
+      btop
+      libqalculate
+      libnotify
+      fd
+      ripgrep
+      jq
+      comma
+      xlsclients
+      wl-clipboard
+      iperf
+      font-awesome
+      ;
+    qtwayland = pkgs.qt5.qtwayland;
 
     # --- screenshot / annotation ------------------------------------------
-    grim = grim;
-    slurp = slurp;
-    grimblast = grimblast;
+    inherit
+      (pkgs)
+      grim
+      slurp
+      grimblast
+      ;
 
     # --- development -------------------------------------------------------
-    gcc = gcc;
-    gnumake = gnumake;
-    nodejs = nodejs;
-    lua = lua;
-    luarocks = luarocks;
-    gopls = gopls;
-    wakatime-cli = wakatime-cli;
-    tree-sitter = tree-sitter;
-    hugo = hugo;
-    vscodium = vscodium;
+    inherit
+      (pkgs)
+      gcc
+      gnumake
+      nodejs
+      lua
+      luarocks
+      gopls
+      wakatime-cli
+      tree-sitter
+      hugo
+      vscodium
+      ;
 
     # --- kubernetes / infra -----------------------------------------------
-    kubectl = kubectl;
-    krew = krew;
-    tanka = tanka;
-    jsonnet-bundler = jsonnet-bundler;
-    kubeseal = kubeseal;
-    ansible = ansible;
-    tenv = tenv;
-    opentofu = opentofu;
-    helm = wrapHelm kubernetes-helm {
+    inherit
+      (pkgs)
+      kubectl
+      krew
+      tanka
+      jsonnet-bundler
+      kubeseal
+      ansible
+      tenv
+      opentofu
+      ;
+    helm = pkgs.wrapHelm pkgs.kubernetes-helm {
       plugins = with pkgs.kubernetes-helmPlugins; [
         helm-secrets
         helm-diff
@@ -75,79 +88,106 @@
     };
 
     # --- documents / office / notes / PDF ---------------------------------
-    xournalpp = xournalpp;
-    libreoffice = libreoffice-qt6-fresh;
-    trilium-desktop = trilium-desktop;
-    typst = typst;
-    pdf2svg = pdf2svg;
-    pdfpc = pdfpc;
-    logseq = logseq;
-    joplin = joplin;
-    notesnook = notesnook;
+    inherit
+      (pkgs)
+      xournalpp
+      trilium-desktop
+      typst
+      pdf2svg
+      pdfpc
+      logseq
+      joplin
+      notesnook
+      ;
+    libreoffice = pkgs.libreoffice-qt;
 
     # --- creative / graphics / 3D -----------------------------------------
-    inkscape = inkscape-with-extensions;
-    blender = blender;
-    krita = krita;
-    imagemagick = imagemagick;
-    prusa-slicer = prusa-slicer;
-    gimp = gimp;
-    freecad = freecad;
-    drawio = drawio;
+    inherit
+      (pkgs)
+      blender
+      krita
+      imagemagick
+      prusa-slicer
+      gimp
+      freecad
+      drawio
+      ;
+    inkscape = pkgs.inkscape-with-extensions;
 
     # --- media -------------------------------------------------------------
-    qbittorrent = qbittorrent;
-    vlc = vlc;
-    jellyfin-media-player = jellyfin-media-player;
-    memento = memento;
+    inherit
+      (pkgs)
+      qbittorrent
+      vlc
+      jellyfin-media-player
+      memento
+      ;
 
     # --- network diagnostics / VPN ----------------------------------------
-    dig = dig;
-    whois = whois;
-    nmap = nmap;
-    dnslookup = dnslookup;
-    openconnect = openconnect;
-    openssl = openssl;
+    inherit
+      (pkgs)
+      dig
+      whois
+      nmap
+      dnslookup
+      openconnect
+      openssl
+      ;
 
     # --- security / yubikey / secrets -------------------------------------
-    yubikey-manager = yubikey-manager;
-    yubioath-flutter = yubioath-flutter;
-    age-plugin-yubikey = age-plugin-yubikey;
-    git-agecrypt = git-agecrypt;
-    bitwarden-desktop = bitwarden-desktop;
+    inherit
+      (pkgs)
+      yubikey-manager
+      yubioath-flutter
+      age-plugin-yubikey
+      git-agecrypt
+      bitwarden-desktop
+      keepass
+      ;
 
     # --- desktop / file manager / display ---------------------------------
-    pavucontrol = pavucontrol;
-    adwaita-icon-theme = adwaita-icon-theme;
-    bibata-cursors = bibata-cursors;
-    nwg-displays = nwg-displays;
-    wdisplays = wdisplays;
-    lm_sensors = lm_sensors;
-    ddcutil = ddcutil;
-    dolphin = kdePackages.dolphin;
-    kio-fuse = kdePackages.kio-fuse;
-    kio-extras = kdePackages.kio-extras;
-    qtsvg = kdePackages.qtsvg;
-    xdotool = xdotool;
-    libinput = libinput;
-    gcr = gcr;
-    hyprshade = hyprshade;
-    hyprsunset = hyprsunset;
+    inherit
+      (pkgs)
+      pavucontrol
+      adwaita-icon-theme
+      bibata-cursors
+      nwg-displays
+      wdisplays
+      lm_sensors
+      ddcutil
+      xdotool
+      libinput
+      gcr
+      hyprshade
+      hyprsunset
+      ;
+    dolphin = pkgs.kdePackages.dolphin;
+    kio-fuse = pkgs.kdePackages.kio-fuse;
+    kio-extras = pkgs.kdePackages.kio-extras;
+    qtsvg = pkgs.kdePackages.qtsvg;
 
     # --- hardware / flashing / virtualization / scanner -------------------
-    popsicle = popsicle;
-    rpi-imager = rpi-imager;
-    simple-scan = simple-scan;
-    quickemu = quickemu;
-    qemu = qemu;
-    virt-manager = virt-manager;
+    inherit
+      (pkgs)
+      popsicle
+      rpi-imager
+      simple-scan
+      quickemu
+      qemu
+      virt-manager
+      ;
 
     # --- browser / messaging / gaming / gis -------------------------------
-    brave = brave;
-    signal-desktop = signal-desktop;
-    element-desktop = element-desktop;
-    prismlauncher = prismlauncher;
-    qgis = qgis;
+    inherit
+      (pkgs)
+      brave
+      signal-desktop
+      element-desktop
+      prismlauncher
+      qgis
+      ;
+
+    # orden = inputs.orden.packages.${pkgs.system}.orden-unstable;
   };
 
   # LaTeX bundle. Toggle with modules.apps.latex; the package selection is

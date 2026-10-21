@@ -27,6 +27,10 @@
       url = "github:oddlama/agenix-rekey";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    orden = {
+      url = "github:lxorb/orden/unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     # watt = {
     #   url = "github:notashelf/watt";
     #   inputs.nixpkgs.follows = "nixpkgs";
@@ -72,6 +76,14 @@
       userFlake = self;
       nixosConfigurations = self.nixosConfigurations;
     };
+
+    packages = eachSystem (system: {
+      # Regenerates modules/home/nvf/shortcuts.md from keymaps.nix.
+      nvim-shortcuts = import ./modules/home/nvf/shortcuts-gen.nix {
+        pkgs = pkgsFor.${system};
+        inherit lib;
+      };
+    });
 
     devShells = eachSystem (system: let
       pkgs = pkgsFor.${system};

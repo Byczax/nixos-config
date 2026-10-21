@@ -18,32 +18,12 @@ in
     programs.borgmatic = {
       enable = true;
       backups.synology = {
-        consistency.checks = [
-          {
-            name = "repository";
-            frequency = "2 weeks";
-          }
-          {
-            name = "archives";
-            frequency = "4 weeks";
-          }
-          {
-            name = "data";
-            frequency = "6 weeks";
-          }
-          {
-            name = "extract";
-            frequency = "6 weeks";
-          }
-        ];
-        location = {
-          repositories = [repo];
-          extraConfig = {
-            remote_path = "/usr/local/bin/borg";
-            encryption_mode = "repokey-blake2";
-            # Passphrase read from decrypted agenix secret at runtime.
-            encryption_passcommand = "cat ${osConfig.age.secrets.borg-passphrase.path}";
-          };
+        settings = {
+          keep_daily = 7; # last week
+          keep_weekly = 4; # last month
+          keep_monthly = 12; # last year
+          keep_yearly = 3; # long-term
+
           patterns = [
             "R /home/${osConfig.meta.mainUser.username}"
             "- /home/${osConfig.meta.mainUser.username}/.cache"
@@ -52,12 +32,32 @@ in
             "- /home/${osConfig.meta.mainUser.username}/Media"
             "- /home/${osConfig.meta.mainUser.username}/.java"
           ];
-        };
-        retention = {
-          keepDaily = 7; # last week
-          keepWeekly = 4; # last month
-          keepMonthly = 12; # last year
-          keepYearly = 3; # long-term
+
+          repositories = [repo];
+
+          remote_path = "/usr/local/bin/borg";
+          encryption_mode = "repokey-blake2";
+          # Passphrase read from decrypted agenix secret at runtime.
+          encryption_passcommand = "cat ${osConfig.age.secrets.borg-passphrase.path}";
+
+          checks = [
+            {
+              name = "repository";
+              frequency = "2 weeks";
+            }
+            {
+              name = "archives";
+              frequency = "4 weeks";
+            }
+            {
+              name = "data";
+              frequency = "6 weeks";
+            }
+            {
+              name = "extract";
+              frequency = "6 weeks";
+            }
+          ];
         };
       };
     };
