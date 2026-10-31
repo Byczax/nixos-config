@@ -45,18 +45,18 @@
       mode = "0400";
     };
   };
-
-  nixpkgs.overlays = [
-    (final: prev: {
-      mozc = prev.mozc.overrideAttrs (oldAttrs: {
-        postPatch =
-          (oldAttrs.postPatch or "")
-          + ''
-            find src/gui -name "*.ui" -exec sed -i 's/::mozc::gui::/mozc::gui::/g' {} +
-          '';
-      });
-    })
-  ];
+  #
+  # nixpkgs.overlays = [
+  #   (final: prev: {
+  #     mozc = prev.mozc.overrideAttrs (oldAttrs: {
+  #       postPatch =
+  #         (oldAttrs.postPatch or "")
+  #         + ''
+  #           find src/gui -name "*.ui" -exec sed -i 's/::mozc::gui::/mozc::gui::/g' {} +
+  #         '';
+  #     });
+  #   })
+  # ];
   # --- host-specific unfree/insecure ---
   nixpkgs.config = {
     allowUnfreePredicate = pkg:

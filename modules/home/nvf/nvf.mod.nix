@@ -6,6 +6,49 @@
 }: let
   cfg = config.modules.nvf;
 
+  # Keymap-learning helpers derived from keymaps.nix (tiers, daily drill).
+  learning = import ./learning.nix {inherit lib;};
+
+  # 3 rotating keymaps shown on the dashboard. Deterministic per day, so the
+  # same three keys stay up all day and change tomorrow.
+  drillFooter = lib.generators.mkLuaInline ''
+    (function()
+      local drills = ${learning.drillTable}
+      local day = tonumber(os.date("%j"))
+      local out = {"", "keys of the day"}
+      for i = 0, 2 do
+        local d = drills[((day * 3 + i) % #drills) + 1]
+        out[#out + 1] = string.format("%-16s %s", d.key, d.desc)
+      end
+      return out
+    end)()
+  '';
+
+  # Wrap the text ourselves before handing it to vim.notify.
+  hardtimeNotify = lib.generators.mkLuaInline ''
+    function(text)
+      local width = math.max(30, math.min(60, vim.o.columns - 12))
+      local lines, line = {}, ""
+      for word in text:gmatch("%S+") do
+        if line == "" then
+          line = word
+        elseif #line + #word + 1 > width then
+          lines[#lines + 1] = line
+          line = word
+        else
+          line = line .. " " .. word
+        end
+      end
+      if line ~= "" then
+        lines[#lines + 1] = line
+      end
+      vim.notify(table.concat(lines, "\n"), vim.log.levels.WARN, {
+        title = "Hardtime",
+        timeout = 4000,
+      })
+    end
+  '';
+
   dirtytalkSrc = pkgs.fetchFromGitHub {
     owner = "psliwka";
     repo = "vim-dirtytalk";
@@ -40,6 +83,9 @@ in {
           viAlias = false;
           vimAlias = true;
           keymaps = import ./keymaps.nix;
+
+          # Local normal/visual keypress counter feeding `:KeyFreq`.
+          extraLuaFiles = [./keyfreq.lua];
           options = import ./options.nix;
 
           vendoredKeymaps.enable = true;
@@ -118,7 +164,10 @@ in {
           };
           #filetree.nvimTree.enable = true; # File explorer on the left sidebar
           notify.nvim-notify.enable = true; # Better notification system
-          dashboard.dashboard-nvim.enable = true; # Startup screen/dashboard
+          dashboard.dashboard-nvim = {
+            enable = true; # Startup screen/dashboard
+            setupOpts.config.footer = drillFooter; # 3 keymaps to learn today
+          };
           #lazy.enable = true; # Plugin lazy-loading manager
           tabline.nvimBufferline.enable = true; # Tab line with open buffers/tabs
           treesitter = {
@@ -240,7 +289,20 @@ in {
               };
             };
             cheatsheet.enable = true; # In-editor keybinding cheatsheet
-            # hardtime-nvim.enable = true; # Prevent bad habits by limiting repeated keys
+
+            # Breaks the hjkl/arrow-spam habit by suggesting the real motion.
+            # Start on "hint" (nags only); switch to "block" once the hints
+            # stop being a surprise. Toggle at runtime with <leader>uH.
+            hardtime-nvim = {
+              enable = true;
+              setupOpts = {
+                max_count = 4;
+                restriction_mode = "hint";
+                disable_mouse = false;
+                disabled_filetypes = ["neo-tree" "dashboard" "help" "qf" "lazygit" "TelescopePrompt"];
+                callback = hardtimeNotify; # wrap the hint so it is not clipped
+              };
+            };
           };
 
           # comments = {
@@ -418,6 +480,20 @@ in {
           utility = {
             vim-wakatime.enable = true; # Track coding activity
             motion.flash-nvim.enable = true; # Enhanced movement/navigation
+            # Virtual-text hints showing where each motion would land.
+            # Toggle with <leader>uP.
+            motion.precognition = {
+              enable = true;
+              setupOpts = {
+                startVisible = true;
+                showBlankVirtLine = false;
+                # Without this every f/t target on the line gets a label, so the
+                # virtual line reads "0 wffetftffff tftf t$" instead of the
+                # handful of motions worth seeing. Off = "0 ^ b w e $".
+                targetedMotionHints.enabled = false;
+                disabled_fts = ["startify" "dashboard" "neo-tree" "help" "qf"];
+              };
+            };
             preview.markdownPreview.enable = true;
             snacks-nvim = {
               enable = true; # Collection of mini-tools to boost productivity
@@ -499,7 +575,7 @@ in {
                   owner = "dsabsay";
                   repo = "vim-tanka";
                   rev = "master";
-                  hash = "sha256-13lgdoyzFqZVrZoj55y+aQpgoNX0AF0cXSqnuyg0a8k=";
+                  hash = "sha256-17imEImqE8HzKhSZPL0MExY/ZXZpPTzjVzo5JGSI/0A=";
                 };
               };
             };
@@ -511,7 +587,7 @@ in {
                   owner = "hadolint";
                   repo = "hadolint";
                   rev = "master";
-                  hash = "sha256-13lgdoyzFqZVrZoj55y+aQpgoNX0AF0cXSqnuyg0a8k=";
+                  hash = "sha256-17imEImqE8HzKhSZPL0MExY/ZXZpPTzjVzo5JGSI/0A=";
                 };
               };
             };

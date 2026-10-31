@@ -29,7 +29,7 @@ in {
     # compositor (hyprland's own portal, or gnome's for niri).
     extraPortals = with pkgs;
       [xdg-desktop-portal-gtk]
-      ++ lib.optional isHyprland xdg-desktop-portal-hyprland
+      # ++ lib.optional isHyprland xdg-desktop-portal-hyprland
       ++ lib.optional isNiri xdg-desktop-portal-gnome;
     config.common =
       if isHyprland

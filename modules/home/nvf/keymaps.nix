@@ -1,26 +1,4 @@
 # LazyVim-style keymaps, ported to nvf.
-#
-# Notes on the nvf keymap schema (modules/neovim/init/mappings.nix upstream):
-#   * `action` is a *string*. If it contains Lua, you MUST set `lua = true`,
-#     otherwise nvf passes it to `vim.keymap.set` as a literal RHS string.
-#   * There is no `remap` option — use `noremap = false` instead.
-#   * There is no `condition`/`cond` option.
-#   * `expr = true` + `lua = false` means the action is a *Vimscript* expression.
-#     `expr = true` + `lua = true` means the Lua function's return value is used.
-#
-# These keymaps are emitted last (after all plugin configs), so they win over
-# plugin defaults. Deliberately NOT re-mapped here, because nvf already binds
-# them to something better:
-#   <C-h/j/k/l>   vim-tmux-navigator pane/window focus
-#   <A-h/j/k/l>   mini.move (move line/selection)
-#   f F t T ; s S  mini.jump / flash
-#   gr gp gy gm gx mini.operators / mini.basics clipboard
-#   <leader>f*    telescope                          <leader>l*  LSP
-#   <leader>h*    gitsigns hunks                     <leader>b[nps]* bufferline
-#   <leader>d*    nvim-dap                           <leader>s*  session manager
-#   <leader>c[obt0] git-conflict                     <leader>t[bd] gitsigns toggles
-#   [b ]b [q ]q … mini.bracketed (kept anyway below for LazyVim parity)
-# See shortcuts.md for the full rendered list.
 [
   ###########################################################################
   # Motion
@@ -903,6 +881,26 @@
     action = "function() Snacks.toggle.words():toggle() end";
     lua = true;
     desc = "Toggle Reference Highlighting";
+  }
+  # Learning aids (see shortcuts.md).
+  {
+    key = "<leader>uP";
+    mode = ["n"];
+    action = "function() require('precognition').toggle() end";
+    lua = true;
+    desc = "Toggle Precognition Hints";
+  }
+  {
+    key = "<leader>uH";
+    mode = ["n"];
+    action = "<cmd>Hardtime toggle<cr>";
+    desc = "Toggle Hardtime";
+  }
+  {
+    key = "<leader>uk";
+    mode = ["n"];
+    action = "<cmd>KeyFreq<cr>";
+    desc = "Keypress Frequency Report";
   }
   {
     key = "<leader>uz";

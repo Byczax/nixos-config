@@ -566,7 +566,7 @@
       joplin = false;
       notesnook = false;
       gimp = true;
-      freecad = false;
+      freecad = true;
       bitwarden-desktop = false;
       xdotool = false;
       libinput = false;
