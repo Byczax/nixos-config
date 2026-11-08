@@ -318,7 +318,7 @@ in {
           };
         };
       };
-      tui.theme = "system";
+      cli.theme.name = "system";
     };
   };
 }
