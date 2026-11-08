@@ -142,6 +142,19 @@
     };
   };
 
+  i18n.inputMethod = {
+    #  # Available since NixOS 24.11
+    enable = true;
+    type = "fcitx5";
+    fcitx5 = {
+      waylandFrontend = true;
+      #ignoreUserConfig = true; # Use settings below, ignore user config
+      addons = with pkgs; [
+        fcitx5-mozc # Japanese input method
+      ];
+    };
+  };
+
   hardware = {
     bluetooth.enable = true;
     i2c.enable = true;
