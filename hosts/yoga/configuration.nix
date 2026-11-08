@@ -146,6 +146,10 @@
     bluetooth.enable = true;
     i2c.enable = true;
     enableRedistributableFirmware = true;
+    graphics = {
+      enable = true;
+      extraPackages = [pkgs.intel-media-driver];
+    };
   };
 
   # --- host-specific services / overrides ---

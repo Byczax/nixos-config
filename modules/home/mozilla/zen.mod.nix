@@ -1,13 +1,35 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }: let
   cfg = config.modules.zen;
+  zen = config.programs.zen-browser;
+
+  # Upstream `keyboardShortcuts` is a no-op since Zen 1.25 moved to customKeys.json.
+  shortcuts = import ./zen-shortcuts.nix;
+  toCustomKey = v:
+    if v == "disabled"
+    then {}
+    else v;
+  customKeysFile = pkgs.writeText "zen-customKeys.json" (builtins.toJSON
+    (lib.mapAttrs (_: toCustomKey) (lib.filterAttrs (_: v: v != "default") shortcuts)));
 in {
   options.modules.zen.enable = lib.mkEnableOption "Enable custom Zen browser config";
 
   config = lib.mkIf cfg.enable {
+    programs.zen-browser.activationFragments.default = [
+      {
+        priority = 200;
+        requiresLock = true;
+        skipSubject = "keyboard shortcuts";
+        text = ''
+          run install -Dm644 ${customKeysFile} "${zen.profilesPath}/${zen.profiles.default.path}/customKeys.json"
+        '';
+      }
+    ];
+
     programs.zen-browser = {
       enable = true;
 
@@ -16,10 +38,11 @@ in {
           "zen.workspaces.continue-where-left-off" = true;
           "zen.workspaces.natural-scroll" = true;
           "zen.view.compact.hide-tabbar" = true;
-          "zen.view.compact.hide-toolbar" = false;
+          "zen.view.compact.hide-toolbar" = true;
           "zen.view.compact.animate-sidebar" = false;
           "zen.welcome-screen.seen" = true;
           "zen.urlbar.behavior" = "float";
+          "zen.urlbar.single-toolbar-show-copy-url" = false;
           "zen.workspaces.separate-essentials" = false;
           "browser.ctrlTab.sortByRecentlyUsed" = true;
           "browser.download.useDownloadDir" = false;
@@ -40,6 +63,28 @@ in {
           "browser.urlbar.suggest.quicksuggest.sponsored" = false;
           "browser.tabs.unloadOnLowMemory" = true;
           "middlemouse.paste" = false;
+
+          # Performance
+          "gfx.webrender.all" = true;
+          "gfx.canvas.accelerated" = true;
+          "gfx.canvas.accelerated.cache-size" = 512;
+          "gfx.content.skia-font-cache-size" = 32;
+          "media.ffmpeg.vaapi.enabled" = true;
+          "media.hardware-video-decoding.force-enabled" = true;
+          "widget.dmabuf.force-enabled" = true;
+          "content.notify.interval" = 100000;
+          "browser.cache.jsbc_compression_level" = 3;
+          "media.memory_cache_max_size" = 65536;
+          "media.cache_readahead_limit" = 7200;
+          "media.cache_resume_threshold" = 3600;
+          "image.mem.decode_bytes_at_a_time" = 32768;
+          "network.http.max-connections" = 1800;
+          "network.http.max-persistent-connections-per-server" = 10;
+          "network.http.max-urgent-start-excessive-connections-per-host" = 5;
+          "network.http.pacing.requests.enabled" = false;
+          "network.dnsCacheExpiration" = 3600;
+          "network.ssl_tokens_cache_capacity" = 10240;
+          "browser.sessionstore.interval" = 60000;
         };
         mods = [
           "253a3a74-0cc4-47b7-8b82-996a64f030d5" # Floating History
@@ -64,10 +109,12 @@ in {
         spaces = {
           "Default" = {
             id = "05636e62-7109-4f89-a2da-ccd5a77759c2";
+            icon = "🏠";
             position = 1000;
           };
           "Work" = {
             id = "1774d7fc-788a-40ab-af0b-fba58459b2b8";
+            icon = "💼";
             position = 2000;
             theme = {
               type = "gradient";
@@ -115,6 +162,7 @@ in {
           };
           "Assotiations" = {
             id = "91ddf7b3-0fdd-4911-a8b9-258fbe9cdb55";
+            icon = "🤝";
             position = 3000;
             theme = {
               type = "gradient";
@@ -133,6 +181,7 @@ in {
           };
           "Research" = {
             id = "699ef794-ee11-4d66-910e-5e746103e5ec";
+            icon = "🔬";
             position = 4000;
             theme = {
               type = "gradient";
@@ -150,20 +199,6 @@ in {
             };
           };
         };
-        keyboardShortcuts = [
-          {
-            id = "zen-compact-mode-toggle";
-            key = "c";
-            modifiers = {
-              control = true;
-              alt = true;
-            };
-          }
-          {
-            id = "key_quitApplication";
-            disabled = true;
-          }
-        ];
       };
 
       policies = {
