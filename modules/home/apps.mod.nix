@@ -1,273 +1,244 @@
-# Central application catalog.
-#
-# Every entry below becomes an individual toggle `modules.apps.<name>` (default
-# true). A host installs an app unless it sets `modules.apps.<name> = false;`.
-# LaTeX is a single bundle behind `modules.apps.latex`.
-#
-# Workflow: to add an app, add it to `catalog`, then per host enable/disable it.
-# If an app should be on yoga but not g7: leave default (on) and set it false in
-# hosts/g7/home.nix (and vice versa).
+# Opt-in application bundles. A host installs a bundle by listing it in
+# `modules.apps.bundles`; one-off packages go straight into the host's `home.packages`.
 {
   pkgs,
   lib,
   config,
-  inputs,
   ...
 }: let
-  inherit (lib) mkOption types mkIf mapAttrs filterAttrs attrValues optionals;
+  inherit (lib) mkOption types mkIf attrValues attrNames concatMap elem optionals;
   cfg = config.modules.apps;
 
-  # name -> package. Keys are plain identifiers (option paths); pick camelCase
-  # where the package name has dots/dashes.
-  catalog = {
-    # --- base CLI ----------------------------------------------------------
-    inherit
-      (pkgs)
-      fira-code
-      brightnessctl
-      traceroute
-      unzip
-      gdu
-      dysk
-      btop
-      libqalculate
-      libnotify
-      fd
-      ripgrep
-      jq
-      comma
-      xlsclients
-      wl-clipboard
-      iperf
-      font-awesome
-      ;
-    qtwayland = pkgs.qt5.qtwayland;
-
-    # --- screenshot / annotation ------------------------------------------
-    inherit
-      (pkgs)
-      grim
-      slurp
-      grimblast
-      ;
-
-    # --- development -------------------------------------------------------
-    inherit
-      (pkgs)
-      gcc
-      gnumake
-      nodejs
-      lua
-      luarocks
-      gopls
-      wakatime-cli
-      tree-sitter
-      hugo
-      vscodium
-      ;
-
-    # --- kubernetes / infra -----------------------------------------------
-    inherit
-      (pkgs)
-      kubectl
-      krew
-      tanka
-      jsonnet-bundler
-      kubeseal
-      ansible
-      tenv
-      opentofu
-      ;
-    helm = pkgs.wrapHelm pkgs.kubernetes-helm {
-      plugins = with pkgs.kubernetes-helmPlugins; [
-        helm-secrets
-        helm-diff
-        helm-s3
-        helm-git
-      ];
+  bundles = {
+    cli = {
+      inherit
+        (pkgs)
+        fira-code
+        brightnessctl
+        traceroute
+        unzip
+        gdu
+        dysk
+        btop
+        libqalculate
+        libnotify
+        fd
+        ripgrep
+        comma
+        xlsclients
+        wl-clipboard
+        ;
     };
 
-    # --- documents / office / notes / PDF ---------------------------------
-    inherit
-      (pkgs)
-      xournalpp
-      trilium-desktop
-      typst
-      pdf2svg
-      pdfpc
-      logseq
-      joplin
-      notesnook
-      ;
-    libreoffice = pkgs.libreoffice-qt;
+    dev = {
+      inherit
+        (pkgs)
+        gcc
+        gnumake
+        nodejs
+        lua
+        luarocks
+        ;
+    };
 
-    # --- creative / graphics / 3D -----------------------------------------
-    inherit
-      (pkgs)
-      blender
-      krita
-      imagemagick
-      prusa-slicer
-      gimp
-      freecad
-      drawio
-      ;
-    inkscape = pkgs.inkscape-with-extensions;
+    infra = {
+      inherit
+        (pkgs)
+        kubectl
+        krew
+        tanka
+        jsonnet-bundler
+        kubeseal
+        ;
+      helm = pkgs.wrapHelm pkgs.kubernetes-helm {
+        plugins = with pkgs.kubernetes-helmPlugins; [
+          helm-secrets
+          helm-diff
+          helm-s3
+          helm-git
+        ];
+      };
+    };
 
-    # --- media -------------------------------------------------------------
-    inherit
-      (pkgs)
-      qbittorrent
-      vlc
-      jellyfin-media-player
-      memento
-      ;
+    office = {
+      inherit
+        (pkgs)
+        xournalpp
+        trilium-desktop
+        joplin-desktop
+        typst
+        pdf2svg
+        pdfpc
+        ;
+      libreoffice = pkgs.libreoffice-qt;
+    };
 
-    # --- network diagnostics / VPN ----------------------------------------
-    inherit
-      (pkgs)
-      dig
-      whois
-      nmap
-      dnslookup
-      openconnect
-      openssl
-      ;
+    creative = {
+      inherit
+        (pkgs)
+        blender
+        krita
+        imagemagick
+        prusa-slicer
+        gimp
+        freecad
+        openscad
+        drawio
+        ;
+      inkscape = pkgs.inkscape-with-extensions;
+    };
 
-    # --- security / yubikey / secrets -------------------------------------
-    inherit
-      (pkgs)
-      yubikey-manager
-      yubioath-flutter
-      age-plugin-yubikey
-      git-agecrypt
-      bitwarden-desktop
-      keepass
-      ;
+    media = {
+      inherit
+        (pkgs)
+        qbittorrent
+        vlc
+        ;
+    };
 
-    # --- desktop / file manager / display ---------------------------------
-    inherit
-      (pkgs)
-      pavucontrol
-      adwaita-icon-theme
-      bibata-cursors
-      nwg-displays
-      wdisplays
-      lm_sensors
-      ddcutil
-      xdotool
-      libinput
-      hyprshade
-      hyprsunset
-      ;
-    dolphin = pkgs.kdePackages.dolphin;
-    kio-fuse = pkgs.kdePackages.kio-fuse;
-    gcr = pkgs.gcr_4;
-    kio-extras = pkgs.kdePackages.kio-extras;
-    qtsvg = pkgs.kdePackages.qtsvg;
+    network = {
+      inherit
+        (pkgs)
+        dig
+        whois
+        nmap
+        dnslookup
+        openssl
+        ;
+    };
 
-    # --- hardware / flashing / virtualization / scanner -------------------
-    inherit
-      (pkgs)
-      popsicle
-      rpi-imager
-      simple-scan
-      quickemu
-      qemu
-      virt-manager
-      ;
+    security = {
+      inherit
+        (pkgs)
+        age-plugin-yubikey
+        git-agecrypt
+        keepass
+        ;
+    };
 
-    # --- browser / messaging / gaming / gis -------------------------------
-    inherit
-      (pkgs)
-      brave
-      signal-desktop
-      element-desktop
-      prismlauncher
-      qgis
-      ;
+    desktop = {
+      inherit
+        (pkgs)
+        grimblast
+        pavucontrol
+        adwaita-icon-theme
+        nwg-displays
+        lm_sensors
+        ddcutil
+        ;
+      dolphin = pkgs.kdePackages.dolphin;
+      kio-fuse = pkgs.kdePackages.kio-fuse;
+      kio-extras = pkgs.kdePackages.kio-extras;
+      qtsvg = pkgs.kdePackages.qtsvg;
+    };
 
-    # orden = inputs.orden.packages.${pkgs.system}.orden-unstable;
+    hardware = {
+      inherit
+        (pkgs)
+        popsicle
+        simple-scan
+        quickemu
+        ;
+    };
+
+    comms = {
+      inherit
+        (pkgs)
+        # ungoogled-chromium
+        signal-desktop
+        zoom-us
+        ;
+    };
+
+    games = {
+      inherit (pkgs) prismlauncher;
+    };
   };
 
-  # LaTeX bundle. Toggle with modules.apps.latex; the package selection is
-  # per-host via modules.apps.latexPackages so each host keeps exactly its set.
   latexBundle = pkgs.texliveSmall.withPackages cfg.latexPackages;
 in {
-  options.modules.apps =
-    {
-      # Master switch: off = this module installs nothing.
-      enable = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Install the application catalog";
-      };
-      latex = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Install the LaTeX (texlive) bundle";
-      };
-      # Function `ps: [ ... ]` selecting texlive packages. Default = yoga's set;
-      # a host can override with its own list.
-      latexPackages = mkOption {
-        type = types.anything;
-        default = ps:
-          with ps; [
-            scheme-basic
-            latex
-            latexmk
-            koma-script
-            babel
-            babel-english
-            amsmath
-            amscls
-            amsfonts
-            mathtools
-            siunitx
-            units
-            newpx
-            fontaxes
-            microtype
-            tools
-            float
-            booktabs
-            wrapfig
-            subfig
-            enumitem
-            xcolor
-            pdfpages
-            csquotes
-            natbib
-            pgf
-            pgfplots
-            msc
-            bytefield
-            forest
-            environ
-            minted
-            fvextra
-            xstring
-            upquote
-            lineno
-            framed
-            fancyvrb
-            hyperref
-            cleveref
-          ];
-        description = "texlive package selection function";
-      };
-    }
-    // mapAttrs (name: _:
-      mkOption {
-        type = types.bool;
-        default = true;
-        description = "Install ${name}";
-      })
-    catalog;
+  options.modules.apps = {
+    bundles = mkOption {
+      type = types.listOf (types.enum (attrNames bundles));
+      default = [];
+      description = "Application bundles to install";
+    };
+    latex = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Install the LaTeX (texlive) bundle";
+    };
+    latexPackages = mkOption {
+      type = types.anything;
+      default = ps:
+        with ps; [
+          scheme-basic
+          latex
+          latexmk
+          koma-script
+          babel
+          babel-english
+          amsmath
+          amscls
+          amsfonts
+          mathtools
+          siunitx
+          units
+          newpx
+          fontaxes
+          microtype
+          tools
+          float
+          booktabs
+          wrapfig
+          subfig
+          enumitem
+          xcolor
+          pdfpages
+          csquotes
+          natbib
+          pgf
+          pgfplots
+          msc
+          bytefield
+          forest
+          environ
+          minted
+          fvextra
+          xstring
+          upquote
+          lineno
+          framed
+          fancyvrb
+          hyperref
+          cleveref
+        ];
+      description = "texlive package selection function";
+    };
+  };
 
-  config = mkIf cfg.enable {
+  config = {
     home.packages =
-      attrValues (filterAttrs (name: _: cfg.${name}) catalog)
+      concatMap (b: attrValues bundles.${b}) cfg.bundles
       ++ optionals cfg.latex [latexBundle];
+
+    home.file.".config/zoomus.conf" = mkIf (elem "comms" cfg.bundles) {
+      text = ''
+        [General]
+        GeoLocale=system
+        SensitiveInfoMaskOn=true
+        autoScale=true
+        captureHDCamera=true
+        enableMiniWindow=true
+        forceEnableTrayIcon=true
+        newMeetingWithVideo=true
+        showSystemTitlebar=false
+        speaker_volume=255
+        system.audio.type=default
+        timeFormat12HoursEnable=true
+        useSystemTheme=false
+        xwayland=false
+      '';
+    };
   };
 }

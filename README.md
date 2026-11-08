@@ -8,6 +8,9 @@ I try my best to make it clean and by the rules of nixos community.
 
 - `hosts/<name>/` — one dir per machine; roles are picked in `hosts/default.nix`.
 - `modules/system/{base,desktop}` — NixOS modules per role (base is on everywhere).
+- `modules/home/` — home-manager modules; apps are opt-in bundles in `apps.mod.nix`.
+
+Install an app: add it to a bundle in `apps.mod.nix`, or to the host's `home.packages`.
 
 ## New machine
 
