@@ -152,7 +152,6 @@
   services = {
     # extra virtual sink on top of the shared pipewire baseline
     pipewire = {
-      jack.enable = true;
       extraConfig.pipewire."91-virtual-sink" = {
         "context.objects" = [
           {

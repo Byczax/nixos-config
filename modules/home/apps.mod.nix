@@ -157,12 +157,12 @@
       ddcutil
       xdotool
       libinput
-      gcr
       hyprshade
       hyprsunset
       ;
     dolphin = pkgs.kdePackages.dolphin;
     kio-fuse = pkgs.kdePackages.kio-fuse;
+    gcr = pkgs.gcr_4;
     kio-extras = pkgs.kdePackages.kio-extras;
     qtsvg = pkgs.kdePackages.qtsvg;
 
