@@ -3,11 +3,11 @@ inputs: let
   inherit (nixpkgs) lib;
   inherit (lib.filesystem) listFilesRecursive;
 
-  systemModules =
+  roleModules = role:
     lib.filter (lib.hasSuffix ".mod.nix")
-    (map toString (listFilesRecursive ../modules/system));
+    (map toString (listFilesRecursive ../modules/system/${role}));
 
-  mkSystem = system: hostname:
+  mkSystem = system: hostname: roles:
     lib.nixosSystem {
       specialArgs = {inherit inputs self;};
       modules =
@@ -19,9 +19,9 @@ inputs: let
           }
           ./${hostname}/default.nix
         ]
-        ++ systemModules;
+        ++ lib.concatMap roleModules (["base"] ++ roles);
     };
 in {
-  yoga = mkSystem "x86_64-linux" "yoga";
-  g7 = mkSystem "x86_64-linux" "g7";
+  yoga = mkSystem "x86_64-linux" "yoga" ["desktop"];
+  g7 = mkSystem "x86_64-linux" "g7" ["desktop"];
 }

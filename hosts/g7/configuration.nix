@@ -1,4 +1,4 @@
-# Host-specific config for `g7`. Shared baseline lives in ../../modules/system/*.mod.nix.
+# Host-specific config for `g7`. Shared baseline lives in ../../modules/system/{base,desktop}.
 {
   config,
   lib,
@@ -9,7 +9,6 @@
     ./hardware-configuration.nix
   ];
 
-  modules.secrets.enable = true;
   modules.steam.enable = true;
   modules.borg.enable = true;
 

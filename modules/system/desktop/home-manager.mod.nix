@@ -7,7 +7,7 @@
   user = config.meta.mainUser.username;
   homeModules =
     lib.filter (lib.hasSuffix ".mod.nix")
-    (map toString (lib.filesystem.listFilesRecursive ../home));
+    (map toString (lib.filesystem.listFilesRecursive ../../home));
 in {
   imports = [inputs.home-manager.nixosModules.home-manager];
 

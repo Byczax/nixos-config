@@ -1,4 +1,4 @@
-# Host-specific config for `yoga`. Shared baseline lives in ../../modules/system/*.mod.nix.
+# Host-specific config for `yoga`. Shared baseline lives in ../../modules/system/{base,desktop}.
 {
   lib,
   pkgs,
@@ -10,7 +10,6 @@
   ];
 
   modules = {
-    secrets.enable = true;
     steam.enable = true;
     borg.enable = true;
   };

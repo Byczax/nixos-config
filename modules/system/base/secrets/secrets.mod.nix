@@ -12,14 +12,18 @@ in {
     inputs.agenix-rekey.nixosModules.default
   ];
 
-  options.modules.secrets.enable = lib.mkEnableOption "Enable agenix-managed secrets";
+  options.modules.secrets.enable = lib.mkOption {
+    type = lib.types.bool;
+    default = config.meta.host.hostPubkey != "";
+    description = "agenix secrets; off until the host has a hostPubkey, so fresh installs never block on decryption";
+  };
 
-  config = lib.mkIf cfg.enable {
+  config = {
     # Host identity used to decrypt secrets at runtime (matches meta.host.hostPubkey).
     age.identityPaths = ["/etc/ssh/ssh_host_ed25519_key"];
 
     age.rekey = {
-      inherit (config.meta.host) hostPubkey;
+      hostPubkey = lib.mkIf cfg.enable config.meta.host.hostPubkey;
       storageMode = "local";
       # Master rekeyFiles (encrypted to the yubikeys) live in the repo-root
       # /secrets dir. Rekeyed runtime copies land here, per host. Kept in a

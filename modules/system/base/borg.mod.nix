@@ -13,7 +13,7 @@ in {
     # borg backup passphrase. Create/edit with: agenix edit secrets/borg-passphrase.age
     # Rekeyed per host into hosts/${hostName}/secrets by `agenix rekey`.
     age.secrets.borg-passphrase = {
-      rekeyFile = ../../secrets/borg-passphrase.age;
+      rekeyFile = ../../../secrets/borg-passphrase.age;
       owner = config.meta.mainUser.username;
       mode = "0400";
     };

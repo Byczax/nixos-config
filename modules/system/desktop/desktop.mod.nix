@@ -46,7 +46,7 @@ in {
   };
 
   programs = {
-    # niri itself is enabled in modules/system/niri.mod.nix (also keyed on
+    # niri itself is enabled in modules/system/desktop/niri.mod.nix (also keyed on
     # meta.compositor); here we only gate the hyprland program.
     hyprland.enable = isHyprland;
     coolercontrol.enable = true;
