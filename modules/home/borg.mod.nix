@@ -3,16 +3,11 @@
   lib,
   ...
 }: let
-  # Driven by the NixOS-side toggle (modules/system/borg.mod.nix), so enabling borg
+  # Driven by the NixOS-side toggle (modules/system/base/borg.mod.nix), so enabling borg
   # on a host also provisions the passphrase secret.
-  # Also gate on the master secrets switch: when secrets are unavailable the
-  # passphrase and private.nix are missing, so borg must stay off. Because `base`
-  # below is only forced inside `lib.mkIf enabled`, a disabled host never imports
-  # the (possibly still-encrypted) secrets/private.nix — eval stays clean.
   enabled = osConfig.modules.borg.enable && osConfig.modules.secrets.enable;
-  base = (import ../../secrets/private.nix).borgRepoBase;
-  # System-based repo path: each host backs up to its own subdir, never overwriting.
-  repo = "${base}/${osConfig.networking.hostName}";
+  # BORG_REPO_BASE comes from the borg-repo secret at runtime, so eval never needs decrypted files.
+  repo = "\${BORG_REPO_BASE}/${osConfig.networking.hostName}";
 in
   lib.mkIf enabled {
     programs.borgmatic = {
@@ -31,12 +26,18 @@ in
             "- /home/${osConfig.meta.mainUser.username}/.local"
             "- /home/${osConfig.meta.mainUser.username}/Media"
             "- /home/${osConfig.meta.mainUser.username}/.java"
+            "- sh:/home/${osConfig.meta.mainUser.username}/**/docker-data"
           ];
 
-          repositories = [repo];
+          repositories = [
+            {
+              path = repo;
+              label = "synology";
+              encryption = "repokey-blake2";
+            }
+          ];
 
           remote_path = "/usr/local/bin/borg";
-          encryption_mode = "repokey-blake2";
           # Passphrase read from decrypted agenix secret at runtime.
           encryption_passcommand = "cat ${osConfig.age.secrets.borg-passphrase.path}";
 
@@ -65,5 +66,9 @@ in
     services.borgmatic = {
       enable = true;
       frequency = "daily";
+    };
+    systemd.user.services.borgmatic = {
+      Unit.ConditionACPower = lib.mkForce "";
+      Service.EnvironmentFile = osConfig.age.secrets.borg-repo.path;
     };
   }

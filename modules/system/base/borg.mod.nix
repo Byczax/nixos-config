@@ -12,10 +12,10 @@ in {
   config = lib.mkIf (cfg.enable && config.modules.secrets.enable) {
     # borg backup passphrase. Create/edit with: agenix edit secrets/borg-passphrase.age
     # Rekeyed per host into hosts/${hostName}/secrets by `agenix rekey`.
-    age.secrets.borg-passphrase = {
-      rekeyFile = ../../../secrets/borg-passphrase.age;
+    age.secrets = lib.genAttrs ["borg-passphrase" "borg-repo"] (name: {
+      rekeyFile = ../../../secrets/${name}.age;
       owner = config.meta.mainUser.username;
       mode = "0400";
-    };
+    });
   };
 }
