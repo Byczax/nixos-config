@@ -19,15 +19,39 @@ in
           keep_monthly = 12; # last year
           keep_yearly = 3; # long-term
 
-          patterns = [
-            "R /home/${osConfig.meta.mainUser.username}"
-            "- /home/${osConfig.meta.mainUser.username}/.cache"
-            "- /home/${osConfig.meta.mainUser.username}/.config"
-            "- /home/${osConfig.meta.mainUser.username}/.local"
-            "- /home/${osConfig.meta.mainUser.username}/Media"
-            "- /home/${osConfig.meta.mainUser.username}/.java"
-            "- sh:/home/${osConfig.meta.mainUser.username}/**/docker-data"
-          ];
+          patterns = let
+            home = "/home/${osConfig.meta.mainUser.username}";
+            exclude = base: map (p: "! ${base}/${p}");
+          in
+            ["R ${home}"]
+            ++ exclude home [
+              ".cache"
+              ".cargo"
+              ".m2"
+              "Media"
+              ".java"
+              ".npm"
+              ".zoom"
+              "go"
+              ".gradle"
+              ".vscode"
+              ".nuget"
+            ]
+            ++ exclude "${home}/.local/share" [
+              "Steam"
+              "flatpak"
+              "containers"
+              "pnpm"
+              "Trash"
+              "baloo"
+              "PrismLauncher"
+              "uv"
+              "NuGet"
+              "libvirt"
+              "vesktop"
+            ]
+            ++ exclude "${home}/.local/state" ["nix" "home-manager"]
+            ++ exclude "${home}/**" ["docker-data" ".next" "node_modules"];
 
           repositories = [
             {
