@@ -66,10 +66,7 @@ in {
           hl.exec_cmd(terminal)
           -- Qt overlay broken under native Wayland; force XWayland for flameshot UI
           hl.exec_cmd("QT_QPA_PLATFORM=xcb XDG_CURRENT_DESKTOP=sway flameshot")
-          hl.exec_cmd("kdeconnectd")
           hl.exec_cmd("bash -c 'while true; do ${randomWall}; sleep 6000; done'")
-          hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=Hyprland")
-          hl.exec_cmd("systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
           -- i18n.inputMethod only ships XDG autostart, which Hyprland ignores
           hl.exec_cmd("fcitx5 -d --replace")
         end)

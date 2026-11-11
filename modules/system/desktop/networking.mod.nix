@@ -15,6 +15,4 @@
       };
     };
   };
-
-  services.connman.wifi.backend = "iwd";
 }

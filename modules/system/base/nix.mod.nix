@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  config,
+  ...
+}: {
   # Weekly garbage collection so the store does not grow unbounded (disk-fill is
   # a common cause of a system that suddenly won't build or boot).
   nix.gc = {
@@ -31,7 +35,7 @@
       "recursive-nix"
       "pipe-operators"
     ];
-    trusted-users = ["bq"];
+    trusted-users = [config.meta.mainUser.username];
     auto-optimise-store = true;
     warn-dirty = false;
     keep-going = true;

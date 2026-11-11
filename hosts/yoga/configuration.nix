@@ -109,14 +109,6 @@
       127.0.0.1 keycloak
     '';
     firewall = rec {
-      allowedTCPPorts = [
-        465
-        993
-        3000
-        4321
-        8000
-        config.services.tailscale.port
-      ];
       allowedTCPPortRanges = [
         # KDE Connect
         {
@@ -128,13 +120,7 @@
           from = 5201;
           to = 5201;
         }
-        # Tailscale
-        {
-          from = 41641;
-          to = 41641;
-        }
       ];
-      allowedUDPPorts = allowedTCPPorts;
       allowedUDPPortRanges = allowedTCPPortRanges;
       trustedInterfaces = ["tailscale0" "virbr0"];
       checkReversePath = "loose";
@@ -184,7 +170,10 @@
       };
     };
 
-    tailscale.extraDaemonFlags = ["--no-logs-no-support"];
+    tailscale = {
+      extraDaemonFlags = ["--no-logs-no-support"];
+      openFirewall = true;
+    };
 
     auto-cpufreq = {
       enable = true;
@@ -234,11 +223,7 @@
     services."systemd-backlight@backlight:intel_backlight".enable = false;
     services.NetworkManager-wait-online.enable = false;
     network.wait-online.enable = false;
-    services.fprintd = {
-      enable = false;
-      wantedBy = ["multi-user.target"];
-      serviceConfig.Type = "simple";
-    };
+    services.fprintd.enable = false;
   };
 
   # extra fonts on top of the shared baseline
@@ -265,8 +250,6 @@
   environment.extraInit = ''
     export XDG_DATA_DIRS="$XDG_DATA_DIRS:${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}"
   '';
-
-  powerManagement.powertop.enable = true;
 
   programs = {
     vim.enable = true;

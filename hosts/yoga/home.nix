@@ -8,7 +8,6 @@
   home = {
     stateVersion = "26.05";
     sessionVariables = {
-      WAYLAND_DISPLAY = "wayland-1";
       QT_WAYLAND_DISABLE_WINDOWDECORATION = 1;
     };
   };
