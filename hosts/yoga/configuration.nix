@@ -12,6 +12,7 @@
   modules = {
     steam.enable = true;
     borg.enable = true;
+    nextcloud.enable = true;
   };
   meta = {
     compositor = "hyprland";
