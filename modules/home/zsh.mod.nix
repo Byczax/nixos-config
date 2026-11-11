@@ -18,6 +18,8 @@ in {
       syntaxHighlighting.enable = true;
       shellAliases = {
         update = "nh os switch $HOME/nixos-config -H ${host} --ask --diff always";
+        update-remote = "nh os switch $HOME/nixos-config -H ${host} --ask --diff always -- --max-jobs 0";
+        update-local = "nh os switch $HOME/nixos-config -H ${host} --ask --diff always -- --builders ''";
         update_boot = "nh os boot $HOME/nixos-config -H ${host} --ask --diff always";
         test_vm = "sudo nixos-rebuild build-vm --flake $HOME/nixos-config#${host}";
         calc = "qalc";
