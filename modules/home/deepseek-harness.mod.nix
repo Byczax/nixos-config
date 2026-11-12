@@ -47,9 +47,13 @@
             models:
               # Must match the `model_name` LiteLLM exposes in its router
               # config, not the upstream vendor's own name.
-              - id: qwen3-coder-next
+              - id: qwen3-coder-next-abliterated
                 name: Qwen3 Coder Next (LiteLLM)
-                contextWindow: 262144
+                contextWindow: 65536
+                maxTokens: 8192
+              - id: qwen3.6-35b-a3b
+                name: Qwen3.6 35B A3B (LiteLLM)
+                contextWindow: 32768
                 maxTokens: 8192
 
           # Restated from the home layer, which this row supersedes — and with
@@ -200,7 +204,11 @@ in {
         then "litellm"
         else "ethz"
       }
-          model: qwen3-coder-next
+          model: ${
+        if secretsAvailable
+        then "qwen3-coder-next-abliterated"
+        else "qwen3-coder-next"
+      }
 
       # The pi-ai multi-provider adapter ships dormant (zero routes). This is a
       # hand-declared route: pi-ai's catalog knows nothing under this key, so
@@ -313,6 +321,26 @@ in {
               transport: stdio
               command: ${pkgs.uv}/bin/uvx
               args: ['--python', '${pkgs.python3}/bin/python3', 'mcp-server-fetch']
+              env:
+                UV_PYTHON_DOWNLOADS: 'never'
+
+          - id: mcp-search
+            name: '@deepseek-ai/dsh-mcp-client'
+            config:
+              serverName: search
+              transport: stdio
+              command: ${pkgs.uv}/bin/uvx
+              args: ['--python', '${pkgs.python3}/bin/python3', 'duckduckgo-mcp-server']
+              env:
+                UV_PYTHON_DOWNLOADS: 'never'
+
+          - id: mcp-time
+            name: '@deepseek-ai/dsh-mcp-client'
+            config:
+              serverName: time
+              transport: stdio
+              command: ${pkgs.uv}/bin/uvx
+              args: ['--python', '${pkgs.python3}/bin/python3', 'mcp-server-time', '--local-timezone', '${osConfig.time.timeZone}']
               env:
                 UV_PYTHON_DOWNLOADS: 'never'
 

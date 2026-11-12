@@ -192,7 +192,7 @@
     jelly-mpv.enable = true;
     opencode.enable = true;
     claudeCode.enable = true;
-    deepseek-harness.enable = false;
+    deepseek-harness.enable = true;
     #catppuccin.enable = true;
 
     apps = {

@@ -45,7 +45,7 @@ in {
     programs.opencode = {
       enable = true;
       settings = {
-        model = "litellm/qwen3-coder-next";
+        model = "litellm/qwen3-coder-next-abliterated";
         autoupdate = false; # Deterministic, Nix-pinned toolchain
 
         # Load repo/house conventions into every session so generated code matches
@@ -198,15 +198,22 @@ in {
           models = {
             # Model id must match the `model_name` LiteLLM exposes in its
             # router config, not the upstream vendor's own name.
-            "qwen3-coder-next" = {
+            "qwen3-coder-next-abliterated" = {
               name = "Qwen3 Coder Next (LiteLLM)";
               limit = {
-                context = 262144;
+                context = 65536;
                 output = 8192;
               };
               options = {
                 temperature = 0.2;
                 top_p = 0.9;
+              };
+            };
+            "qwen3.6-35b-a3b" = {
+              name = "Qwen3.6 35B A3B (LiteLLM)";
+              limit = {
+                context = 32768;
+                output = 8192;
               };
             };
           };
