@@ -47,7 +47,7 @@
       nh = {
         enable = true;
         clean.enable = true;
-        clean.extraArgs = "--keep-since 4d --keep 3";
+        clean.extraArgs = "--keep-since 4d --keep 3 --keep-one";
         flake = "${config.home.homeDirectory}/nixos-config";
       };
     };

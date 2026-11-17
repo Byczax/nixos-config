@@ -23,6 +23,7 @@ in {
         update-local = "nh os switch $HOME/nixos-config -H ${host} --ask --diff always -- --builders ''";
         update_boot = "nh os boot $HOME/nixos-config -H ${host} --ask --diff always";
         test_vm = "sudo nixos-rebuild build-vm --flake $HOME/nixos-config#${host}";
+        clean = "nh clean all --keep-since 4d --keep 3 --keep-one";
         calc = "qalc";
         bat_protect_on = "echo Long_Life > /sys/class/power_supply/BAT0/charge_types";
         bat_protect_off = "echo Standard > /sys/class/power_supply/BAT0/charge_types";
