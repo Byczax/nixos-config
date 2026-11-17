@@ -209,6 +209,7 @@
       };
     };
 
+      ACTION=="bind", SUBSYSTEM=="platform", DRIVER=="ideapad_acpi", RUN+="${pkgs.coreutils}/bin/chgrp wheel /sys/class/power_supply/BAT0/charge_types", RUN+="${pkgs.coreutils}/bin/chmod g+w /sys/class/power_supply/BAT0/charge_types"
     udev.extraRules = ''
       ACTION=="add", SUBSYSTEM=="i2c", KERNEL=="i2c-MSFT0001:00", ATTR{power/wakeup}="disabled"
       ACTION=="add", SUBSYSTEM=="serio", KERNEL=="serio0", ATTR{power/wakeup}="disabled"

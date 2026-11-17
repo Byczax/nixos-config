@@ -23,8 +23,8 @@ in {
         update_boot = "nh os boot $HOME/nixos-config -H ${host} --ask --diff always";
         test_vm = "sudo nixos-rebuild build-vm --flake $HOME/nixos-config#${host}";
         calc = "qalc";
-        bat_protect_on = "sudo echo 1 > /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode";
-        bat_protect_off = "sudo echo 0 > /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode";
+        bat_protect_on = "echo Long_Life > /sys/class/power_supply/BAT0/charge_types";
+        bat_protect_off = "echo Standard > /sys/class/power_supply/BAT0/charge_types";
       };
       history = {
         extended = true;
