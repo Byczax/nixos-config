@@ -58,6 +58,7 @@ in {
         hl.config({
           general = { gaps_in = 0, gaps_out = 0, border_size = 0 },
           input   = { kb_layout = "pl", kb_options = "grp:alt_shift_toggle" },
+          debug   = { disable_time = false, enable_stdout_logs = true },
         })
 
         -- Monitors: sane default for every output — native (preferred) mode,
