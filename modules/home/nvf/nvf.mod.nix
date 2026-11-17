@@ -74,7 +74,7 @@ in {
 
   config = lib.mkIf cfg.enable {
     # Prebuilt dirtytalk programming spell file on neovim's data spell path.
-    home.file.".local/share/nvim/site/spell/programming.utf-8.spl".source = "${programmingSpell}/spell/programming.utf-8.spl";
+    home.file.".local/share/nvf/site/spell/programming.utf-8.spl".source = "${programmingSpell}/spell/programming.utf-8.spl";
 
     programs.nvf = {
       enable = true;
@@ -200,6 +200,7 @@ in {
               "pl"
               "de"
               "ru"
+              "programming"
             ];
             programmingWordlist.enable = true;
             #vim-dirtytalk.enable = true;
@@ -215,7 +216,18 @@ in {
             bufremove.enable = true;
             clue.enable = true;
             colors.enable = true;
-            comment.enable = true;
+            comment = {
+              enable = true;
+              setupOpts.options.custom_commentstring = lib.generators.mkLuaInline ''
+                function(pos)
+                  local r, c = pos[1] - 1, pos[2] - 1
+                  if vim.bo.filetype == "astro"
+                    and vim.treesitter.get_parser(0):language_for_range({ r, c, r, c }):lang() == "astro" then
+                    return "{/* %s */}"
+                  end
+                end
+              '';
+            };
             # completion.enable = true;
             cursorword.enable = true;
             diff.enable = true;
@@ -276,7 +288,7 @@ in {
             nvim-docs-view.enable = true; # View LSP docs in a split window
             presets = {
               deno.enable = false;
-              # astro-language-server.enable = true;
+              astro-language-server.enable = true;
             };
           };
 
@@ -329,11 +341,11 @@ in {
 
             ### languages
             assembly.enable = false;
-            # astro = {
-            #   enable = true;
-            #   lsp.enable = true;
-            #   format.enable = true;
-            # };
+            astro = {
+              enable = true;
+              lsp.enable = true;
+              format.enable = true;
+            };
             bash = {
               enable = true;
               lsp.enable = true;
@@ -399,6 +411,7 @@ in {
                 render-markdown-nvim.enable = true;
               };
               format.enable = true;
+              format.type = ["prettier"];
             };
             nim.enable = false;
             nix = {
