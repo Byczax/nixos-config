@@ -84,18 +84,15 @@
   # --- boot (host hardware) ---
   boot = {
     loader.timeout = 2;
-    kernelParams = [
-      "i915.enable_psr=0"
-      "mem_sleep_default=s2idle"
-      "pci=noaer"
-      "acpi_mask_gpe=0x69"
-      "usbcore.autosuspend=-1"
-      "pcie_pme=nomsi"
-    ];
+    kernelParams = ["i915.enable_psr=0" "acpi_mask_gpe=0x6E"];
+    resumeDevice = "/dev/disk/by-uuid/8bba0dad-69e6-4f74-a5b4-4c0f574c26ec";
     kernelPackages = pkgs.linuxPackages_latest;
     kernelModules = ["i2c-dev" "rtsx_usb"];
     initrd.systemd.network.wait-online.enable = false;
   };
+
+  zramSwap.enable = true;
+  systemd.sleep.settings.Sleep.HibernateDelaySec = "2h";
 
   security.pam.services.kwallet.enable = true;
 
@@ -203,16 +200,16 @@
     logind = {
       enable = true;
       settings.Login = {
-        HandleLidSwitch = "suspend";
+        HandleLidSwitch = "suspend-then-hibernate";
         HandleLidSwitchExternalPower = "lock";
         HandleLidSwitchDocked = "ignore"; # the error with hyprlock still persist
       };
     };
 
-      ACTION=="bind", SUBSYSTEM=="platform", DRIVER=="ideapad_acpi", RUN+="${pkgs.coreutils}/bin/chgrp wheel /sys/class/power_supply/BAT0/charge_types", RUN+="${pkgs.coreutils}/bin/chmod g+w /sys/class/power_supply/BAT0/charge_types"
     udev.extraRules = ''
       ACTION=="add", SUBSYSTEM=="i2c", KERNEL=="i2c-MSFT0001:00", ATTR{power/wakeup}="disabled"
       ACTION=="add", SUBSYSTEM=="serio", KERNEL=="serio0", ATTR{power/wakeup}="disabled"
+      ACTION=="bind", SUBSYSTEM=="platform", DRIVER=="ideapad_acpi", RUN+="${pkgs.coreutils}/bin/chgrp wheel /sys/class/power_supply/BAT0/charge_types", RUN+="${pkgs.coreutils}/bin/chmod g+w /sys/class/power_supply/BAT0/charge_types"
     '';
   };
 
