@@ -7,12 +7,6 @@
         powersave = lib.mkDefault true;
       };
     };
-    wireless.iwd = {
-      enable = true;
-      settings = {
-        Network.EnableIPv6 = true;
-        Settings.AutoConnect = true;
-      };
-    };
+    wireless.iwd.enable = true;
   };
 }
