@@ -30,17 +30,6 @@
         ;
     };
 
-    dev = {
-      inherit
-        (pkgs)
-        gcc
-        gnumake
-        nodejs
-        lua
-        luarocks
-        ;
-    };
-
     infra = {
       inherit
         (pkgs)

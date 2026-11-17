@@ -39,7 +39,6 @@
           yank
         ];
       };
-      go.enable = true;
       feh.enable = true;
       fastfetch.enable = true;
       vesktop.enable = true;

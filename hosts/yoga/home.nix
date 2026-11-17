@@ -196,7 +196,7 @@
     #catppuccin.enable = true;
 
     apps = {
-      bundles = ["cli" "dev" "infra" "office" "creative" "media" "network" "security" "desktop" "hardware" "comms" "games"];
+      bundles = ["cli" "infra" "office" "creative" "media" "network" "security" "desktop" "hardware" "comms" "games"];
       latex = true;
     };
   };
