@@ -40,6 +40,7 @@
         ];
       };
       feh.enable = true;
+      translate-shell.enable = true;
       fastfetch.enable = true;
       vesktop.enable = true;
       k9s.enable = true;

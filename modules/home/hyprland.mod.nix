@@ -18,6 +18,11 @@
       sleep 1
     done
   '';
+
+  translate = pkgs.writeShellScript "translate" ''
+    lang=$(printf '%s\n' en pl de fr | ${pkgs.wofi}/bin/wofi --dmenu -p translate) || exit
+    exec ${pkgs.foot}/bin/foot -a translate sh -c "${pkgs.wl-clipboard}/bin/wl-paste -p | ${pkgs.translate-shell}/bin/trans -b :$lang | ${pkgs.less}/bin/less"
+  '';
 in {
   # Defaults to on only when this host boots hyprland. Flip meta.compositor to
   # "niri" and this turns itself off (and modules/home/niri.mod.nix turns on).
@@ -84,6 +89,7 @@ in {
         hl.bind(mod .. " + V",      hl.dsp.exec_cmd(clipboard))
         hl.bind(mod .. " + RETURN", hl.dsp.exec_cmd(terminal))
         hl.bind(mod .. " + F",      hl.dsp.window.fullscreen())
+        hl.bind(mod .. " + SHIFT + T", hl.dsp.exec_cmd("${translate}"))
 
         -- Screenshots
         hl.bind(printKey,                        hl.dsp.exec_cmd("grimblast --freeze copy area"))
@@ -152,6 +158,10 @@ in {
         hl.window_rule({
           name = "satty", match = { class = "^(com.gabm.satty)$" },
           float = true, center = true, size = "80% 80%",
+        })
+        hl.window_rule({
+          name = "translate", match = { class = "^(translate)$" },
+          float = true, center = true, size = "50% 50%",
         })
         hl.window_rule({
           name = "zoom", match = { title = "^(zoom)$" }, float = true,
