@@ -52,7 +52,13 @@ in {
           # Security & privacy
           "dom.security.https_only_mode" = true;
           "privacy.fingerprintingProtection" = true;
-          "privacy.donottrackheader.enabled" = true;
+          "privacy.fingerprintingProtection.overrides" = "+AllTargets,-CSSPrefersColorScheme";
+          "privacy.resistFingerprinting.letterboxing" = false;
+          "layout.css.font-visibility.standard" = 1;
+          "layout.css.font-visibility.trackingprotection" = 1;
+          "layout.css.font-visibility.private" = 1;
+          "privacy.donottrackheader.enabled" = false;
+          "privacy.globalprivacycontrol.enabled" = true;
           "network.prefetch-next" = false;
           "network.dns.disablePrefetch" = true;
           "network.predictor.enabled" = false;
@@ -259,11 +265,17 @@ in {
           EmailTracking = true;
         };
         SSLVersionMin = "tls1.2";
+        DisabledCiphers = lib.genAttrs [
+          "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA"
+          "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA"
+          "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"
+          "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA"
+          "TLS_RSA_WITH_AES_128_GCM_SHA256"
+          "TLS_RSA_WITH_AES_256_GCM_SHA384"
+          "TLS_RSA_WITH_AES_128_CBC_SHA"
+          "TLS_RSA_WITH_AES_256_CBC_SHA"
+        ] (_: true);
         PostQuantumKeyAgreementEnabled = true;
-        Permissions = {
-          Location.BlockNewRequests = true;
-          Notifications.BlockNewRequests = true;
-        };
         FirefoxSuggest = {
           WebSuggestions = false;
           SponsoredSuggestions = false;
@@ -326,11 +338,11 @@ in {
             installation_mode = "force_installed";
             updates_disabled = false;
           };
-          "{73a6fe31-595d-460b-a920-fcc0f8843232}" = {
-            install_url = moz "noscript";
-            installation_mode = "force_installed";
-            updates_disabled = false;
-          };
+          # "{73a6fe31-595d-460b-a920-fcc0f8843232}" = {
+          #   install_url = moz "noscript";
+          #   installation_mode = "force_installed";
+          #   updates_disabled = false;
+          # };
           "tab-stash@condordes.net" = {
             install_url = moz "tab-stash";
             installation_mode = "force_installed";
