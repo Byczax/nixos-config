@@ -122,9 +122,6 @@
         enable = true;
         package = pkgs.flameshot.override {enableWlrSupport = true;};
         settings.General = {
-          # Without the grim adapter, flameshot gives black shots under Hyprland.
-          useGrimAdapter = true;
-          disabledGrimWarning = true;
           saveAsFileExtension = ".png";
           showDesktopNotification = true;
           showHelp = true;
