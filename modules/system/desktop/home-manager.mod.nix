@@ -21,7 +21,7 @@ in {
     };
     users.${user}.imports =
       [
-        inputs.nvf.homeManagerModules.default
+        inputs.nvf.homeModules.default
         inputs.zen-browser.homeModules.twilight
         inputs.agenix.homeManagerModules.default
       ]
