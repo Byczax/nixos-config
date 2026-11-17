@@ -36,6 +36,8 @@ in
               ".gradle"
               ".vscode"
               ".nuget"
+              "Cloud"
+              "Programming/SORG/VIS/eventmanager/data/sql"
             ]
             ++ exclude "${home}/.local/share" [
               "Steam"
