@@ -38,6 +38,8 @@
     trusted-users = [config.meta.mainUser.username];
     auto-optimise-store = true;
     warn-dirty = false;
+    keep-outputs = true;
+    keep-derivations = true;
     keep-going = true;
     auto-allocate-uids = true;
     use-cgroups = pkgs.stdenv.hostPlatform.isLinux;
