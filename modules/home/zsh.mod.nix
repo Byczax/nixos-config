@@ -11,6 +11,7 @@ in {
   options.modules.zsh.enable = lib.mkEnableOption "Enable custom zsh config";
 
   config = lib.mkIf cfg.enable {
+    programs.nix-your-shell.enable = true;
     programs.zsh = {
       enable = true;
       enableCompletion = true;
@@ -45,6 +46,7 @@ in {
         export KUBECONFIG=$HOME/.kube/config
         source ${pkgs.nix-index}/etc/profile.d/command-not-found.sh
         ZSH_DISABLE_COMPFIX="true"
+        PROMPT='%F{blue}''${IN_NIX_SHELL:+(nix) }%f'$PROMPT
 
         translate() {
           if [ "$#" -ne 3 ]; then
