@@ -185,6 +185,27 @@ in {
         }
         {
           profile = {
+            name = "assotiation_office_5";
+            outputs = [
+              {
+                criteria = "AU Optronics 0x258C Unknown";
+                status = "enable";
+                mode = "1920x1080@60.05Hz";
+                scale = 1.0;
+                position = "320,1440";
+              }
+              {
+                criteria = "Dell Inc. DELL P2720DC HVBNKF3";
+                status = "enable";
+                mode = "2560x1440@59.951Hz";
+                scale = 1.0;
+                position = "0,0";
+              }
+            ];
+          };
+        }
+        {
+          profile = {
             name = "home_poland";
             outputs = [
               {
